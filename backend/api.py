@@ -11,6 +11,7 @@ import webview
 
 from . import airac, apps_manager, community_paths, config_manager, launch_orchestrator
 from .i18n import translate
+from .version import APP_VERSION
 
 
 class Api:
@@ -18,6 +19,9 @@ class Api:
         self._config = config_manager.load_config()
         self._apps = apps_manager.load_apps()
         self._session = None  # the in-flight LaunchSession, if any
+
+    def app_version(self):
+        return APP_VERSION
 
     # --- config ---
     def config_get(self):

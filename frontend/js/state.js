@@ -11,8 +11,10 @@ document.addEventListener("alpine:init", () => {
     strings: {},
     apps: {},
     uiScale: 100,
+    version: "",
 
     async init() {
+      this.version = await Api.appVersion();
       this.config = await Api.configGet();
       this.theme = this.config._theme || "system";
       this.applyTheme(this.theme);

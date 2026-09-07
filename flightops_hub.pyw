@@ -6,6 +6,7 @@ import webview
 from backend import config_manager, paths, win_native
 from backend.api import Api
 from backend.events import bus
+from backend.version import APP_VERSION
 
 
 def _get_saved_language_for_already_running_message():
@@ -50,7 +51,7 @@ def main():
     config = api.config_get()
 
     window = webview.create_window(
-        "FlightOps Hub",
+        f"FlightOps Hub {APP_VERSION}",
         paths.resource_path("frontend", "index.html"),
         js_api=api,
         width=config.get("_window_width", 500),
@@ -64,7 +65,7 @@ def main():
     bus.bind(window)
 
     try:
-        webview.start()
+        webview.start(icon=paths.resource_path("OIG3.ico"))
     except Exception:
         with open("crash_log.txt", "w", encoding="utf-8") as f:
             f.write("CRASH LOG:\n")

@@ -345,6 +345,13 @@ button.btn.danger {
   border-radius: 6px;
 }
 
+.version-footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-top: 18px;
+}
+
 .btn-launch {
   display: block;
   width: 100%;
