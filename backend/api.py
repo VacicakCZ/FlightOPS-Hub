@@ -235,7 +235,6 @@ class Api:
             airport = airports_data.lookup(leg["icao"])
             leg["lat"] = airport["lat"] if airport else None
             leg["lon"] = airport["lon"] if airport else None
-            leg["airport_name"] = airport["name"] if airport else None
         return {"ok": True, "legs": matched_legs}
 
     def scenery_apply(self, desired_states):
