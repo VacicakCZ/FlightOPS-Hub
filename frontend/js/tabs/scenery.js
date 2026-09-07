@@ -254,12 +254,40 @@ document.addEventListener("alpine:init", () => {
       this.$refs.mapContainer.classList.toggle("map-dark", this.isDarkMode());
     },
 
+    // Initial compass bearing (degrees, 0 = north, clockwise) from one
+    // lat/lon point to another - used to point the direction arrow along
+    // each route segment the same way a real course line would.
+    _bearingDeg(from, to) {
+      const toRad = (deg) => (deg * Math.PI) / 180;
+      const toDeg = (rad) => (rad * 180) / Math.PI;
+      const phi1 = toRad(from[0]);
+      const phi2 = toRad(to[0]);
+      const deltaLambda = toRad(to[1] - from[1]);
+      const y = Math.sin(deltaLambda) * Math.cos(phi2);
+      const x = Math.cos(phi1) * Math.sin(phi2) - Math.sin(phi1) * Math.cos(phi2) * Math.cos(deltaLambda);
+      return (toDeg(Math.atan2(y, x)) + 360) % 360;
+    },
+
+    _addDirectionArrow(from, to) {
+      const bearing = this._bearingDeg(from, to);
+      const midpoint = [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2];
+      const icon = L.divIcon({
+        className: "route-arrow",
+        html: `<div style="transform: rotate(${bearing}deg)">&#9650;</div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      });
+      L.marker(midpoint, { icon, interactive: false }).addTo(this._routeLayer);
+    },
+
     // Draws the SimBrief route on top of the scenery markers, using
     // coordinates the backend already looked up per leg - independent of
     // whether that airport has scenery installed at all, so an alternate
     // with no scenery still shows up. Main route (origin -> destination) is
     // a solid, bold line; the diversion to the alternate (off destination)
     // stays dashed to visually distinguish "the flight" from "the backup".
+    // A midpoint arrow on each segment shows which way it's flown, and
+    // every leg gets a permanent ICAO label instead of a hover-only one.
     renderRoute() {
       if (!this._routeLayer) return;
       this._routeLayer.clearLayers();
@@ -272,17 +300,16 @@ document.addEventListener("alpine:init", () => {
       const point = (leg) => [leg.lat, leg.lon];
 
       if (byRole.origin && byRole.destination) {
-        L.polyline([point(byRole.origin), point(byRole.destination)], {
-          color: accent,
-          weight: 4,
-        }).addTo(this._routeLayer);
+        const from = point(byRole.origin);
+        const to = point(byRole.destination);
+        L.polyline([from, to], { color: accent, weight: 4 }).addTo(this._routeLayer);
+        this._addDirectionArrow(from, to);
       }
       if (byRole.destination && byRole.alternate) {
-        L.polyline([point(byRole.destination), point(byRole.alternate)], {
-          color: accent,
-          weight: 2,
-          dashArray: "6 6",
-        }).addTo(this._routeLayer);
+        const from = point(byRole.destination);
+        const to = point(byRole.alternate);
+        L.polyline([from, to], { color: accent, weight: 2, dashArray: "6 6" }).addTo(this._routeLayer);
+        this._addDirectionArrow(from, to);
       }
 
       for (const leg of Object.values(byRole)) {
@@ -293,7 +320,7 @@ document.addEventListener("alpine:init", () => {
           fillOpacity: 1,
           weight: 2,
         })
-          .bindTooltip(`${this.$store.app.t("simbrief_role_" + leg.role)} ${leg.icao}`)
+          .bindTooltip(leg.icao, { permanent: true, direction: "top", offset: [0, -6], className: "route-icao-label" })
           .addTo(this._routeLayer);
       }
     },

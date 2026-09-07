@@ -657,6 +657,27 @@ button.btn.danger {
   background: var(--tab-bg);
 }
 
+/* Direction arrow at each route segment's midpoint - a white halo keeps it
+   readable over both the light OSM tiles and the inverted dark ones,
+   matching the white border already used on the scenery dot markers. */
+.route-arrow div {
+  font-size: 15px;
+  line-height: 1;
+  color: var(--accent);
+  text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 2px #fff;
+}
+
+/* Permanent ICAO label on each route leg - bold/bordered so it reads as a
+   fixed map label rather than a transient hover tooltip. */
+.route-icao-label {
+  font-weight: 700;
+  border-color: var(--accent);
+}
+
+.route-icao-label::before {
+  border-top-color: var(--accent);
+}
+
 .map-popup {
   font-size: 12px;
   min-width: 140px;
