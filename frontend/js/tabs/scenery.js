@@ -4,6 +4,7 @@ document.addEventListener("alpine:init", () => {
 
     allRecords: [],
     noCommunity: false,
+    dataLoaded: false,
     pending: {},
     expandedContinents: {},
     expandedCountries: {},
@@ -21,13 +22,18 @@ document.addEventListener("alpine:init", () => {
     },
 
     async load() {
+      // If a move is running (started from here or from the Aircraft tab -
+      // they share the same Community folder and busy flag), skip scanning
+      // entirely rather than reading a filesystem mid-move.
+      if (await Api.sceneryIsBusy()) {
+        this.applying = true;
+        this.statusText = this.$store.app.t("addon_apply_busy");
+        return;
+      }
       const result = await Api.sceneryScan();
       this.allRecords = result.records;
       this.noCommunity = result.no_community;
-      if (await Api.sceneryIsBusy()) {
-        this.applying = true;
-        this.statusText = this.$store.app.t("scenery_applying");
-      }
+      this.dataLoaded = true;
     },
 
     get byContinent() {

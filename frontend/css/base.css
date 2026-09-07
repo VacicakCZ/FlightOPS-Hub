@@ -465,6 +465,19 @@ button.btn.danger {
   flex-direction: column;
 }
 
+.livery-row {
+  padding-left: 20px;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.warning-text {
+  color: var(--warning);
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
 .btn-launch {
   display: block;
   width: 100%;

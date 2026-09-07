@@ -203,6 +203,28 @@ class Api:
         return self._addon_apply_active
 
     def scenery_apply(self, desired_states):
+        return self._run_addon_apply("scenery", desired_states)
+
+    # --- aircraft/liveries (shares scenery's Community folder + busy flag) ---
+    def aircraft_scan(self):
+        community_path = self._config.get("_community_path", "")
+        if not community_path or not os.path.isdir(community_path):
+            return {"aircraft": [], "liveries": [], "no_community": True}
+        disabled_locations = self._resolve_disabled_locations(community_path)
+        aircraft, liveries = scenery_data.scan_aircraft_and_liveries(community_path, disabled_locations)
+        return {"aircraft": aircraft, "liveries": liveries, "no_community": False}
+
+    def aircraft_is_busy(self):
+        return self._addon_apply_active
+
+    def aircraft_apply(self, desired_states):
+        return self._run_addon_apply("aircraft", desired_states)
+
+    def _run_addon_apply(self, event_prefix, desired_states):
+        """Shared by scenery_apply/aircraft_apply - both just move folders
+        between Community and a disabled-holding folder by name, so the
+        move/progress/busy-flag machinery is identical; only the event names
+        (so each tab's own frontend listener gets its update) differ."""
         if self._addon_apply_active:
             return {"ok": False, "error": "busy"}
 
@@ -214,7 +236,7 @@ class Api:
         disabled_locations = self._resolve_disabled_locations(community_path)
 
         def on_progress(idx, total, name, copied, total_bytes):
-            bus.emit("scenery_apply_progress", {
+            bus.emit(f"{event_prefix}_apply_progress", {
                 "idx": idx, "total": total, "name": name, "copied": copied, "total_bytes": total_bytes,
             })
 
@@ -228,7 +250,7 @@ class Api:
             finally:
                 self._addon_apply_active = False
             results = [{"folder_name": n, "ok": ok, "error": err} for n, ok, err in raw_results]
-            bus.emit("scenery_apply_done", {"results": results})
+            bus.emit(f"{event_prefix}_apply_done", {"results": results})
 
         threading.Thread(target=worker, daemon=True).start()
         return {"ok": True}
