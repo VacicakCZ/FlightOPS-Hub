@@ -9,7 +9,7 @@ import os
 
 import webview
 
-from . import airac, apps_manager, community_paths, config_manager, launch_orchestrator
+from . import airac, apps_manager, community_paths, config_manager, exe_xml_manager, launch_orchestrator
 from .i18n import translate
 from .version import APP_VERSION
 
@@ -104,6 +104,51 @@ class Api:
         self._config[config_manager.LAST_PROFILE_KEYS[kind]] = None
         config_manager.save_config(self._config)
         return {"profiles": self._config.get(store_key, {}), "last": None}
+
+    # --- exe.xml (MSFS AutoStart) ---
+    def _current_exe_xml_path(self):
+        return exe_xml_manager.get_exe_xml_path(
+            self._config.get("_sim_version", "MSFS 2024"),
+            self._config.get("_sim_platform", "Steam"),
+        )
+
+    def exe_list(self):
+        xml_path = self._current_exe_xml_path()
+        if not os.path.exists(xml_path):
+            return {"path": xml_path, "exists": False, "addons": [], "error": None}
+        try:
+            addons = exe_xml_manager.list_addons(xml_path, self._config.get("_exe_custom_names", {}))
+            return {"path": xml_path, "exists": True, "addons": addons, "error": None}
+        except Exception as e:
+            return {"path": xml_path, "exists": True, "addons": [], "error": str(e)}
+
+    def exe_toggle(self, unique_key, enabled):
+        exe_xml_manager.set_addons_enabled(self._current_exe_xml_path(), {unique_key: enabled})
+        return {"ok": True}
+
+    def exe_rename(self, unique_key, original_name, new_name):
+        new_name = (new_name or "").strip()
+        custom_names = self._config.setdefault("_exe_custom_names", {})
+        if not new_name or new_name == original_name:
+            custom_names.pop(unique_key, None)
+        else:
+            custom_names[unique_key] = new_name
+        config_manager.save_config(self._config)
+        return {"ok": True}
+
+    def exe_apply_profile(self, profile_name):
+        members = set(self._config.get("_exe_profiles", {}).get(profile_name, []))
+        xml_path = self._current_exe_xml_path()
+        try:
+            addons = exe_xml_manager.list_addons(xml_path, {})
+        except Exception:
+            return {"ok": False}
+
+        desired = {a["unique_key"]: (a["unique_key"] in members) for a in addons}
+        exe_xml_manager.set_addons_enabled(xml_path, desired)
+        self._config["_last_exe_profile"] = profile_name
+        config_manager.save_config(self._config)
+        return {"ok": True}
 
     # --- Navigraph AIRAC status ---
     def airac_status(self):

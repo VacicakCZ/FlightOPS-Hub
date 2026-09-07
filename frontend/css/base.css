@@ -352,6 +352,33 @@ button.btn.danger {
   margin-top: 18px;
 }
 
+.exe-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px;
+}
+
+.exe-row:hover {
+  background: var(--tab-bg);
+  border-radius: 6px;
+}
+
+.exe-row-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.exe-row-label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .btn-launch {
   display: block;
   width: 100%;

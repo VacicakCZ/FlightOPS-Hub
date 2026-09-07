@@ -61,9 +61,46 @@
         <button class="btn primary btn-launch" :disabled="launching" @click="launchAll()" x-text="$store.app.t('btn_launch')"></button>
       </section>
 
-      <section x-show="$store.app.activeTab === 'autostart'">
-        <h2 x-text="$store.app.t('tab_exe').trim()"></h2>
-        <p class="placeholder-note">Bude implementováno v milníku M3.</p>
+      <section x-show="$store.app.activeTab === 'autostart'" x-data="autostartTab">
+        <h2 x-text="$store.app.t('exe_title')"></h2>
+
+        <div class="field-row inline">
+          <label x-text="$store.app.t('exe_profile_label')"></label>
+          <select @change="onProfileChange($event.target.value)">
+            <option value="" :selected="!profileName" x-text="$store.app.t('default_profile')"></option>
+            <template x-for="name in profileNames" :key="name">
+              <option :value="name" :selected="name === profileName" x-text="name"></option>
+            </template>
+          </select>
+          <button class="btn" @click="updateProfile()" :disabled="!profileName" :title="$store.app.t('tt_update')" x-text="updateJustSaved ? '✓' : '🔄'"></button>
+          <button class="btn" @click="saveProfileAs()" :title="$store.app.t('tt_add')">➕</button>
+          <button class="btn" @click="deleteProfile()" :disabled="!profileName" :title="$store.app.t('tt_delete')">🗑</button>
+        </div>
+
+        <p class="hint" x-text="path"></p>
+        <p class="hint" x-text="$store.app.t('exe_rename_hint')"></p>
+
+        <template x-if="!exists">
+          <p class="error-text" x-text="$store.app.t('exe_not_found')"></p>
+        </template>
+
+        <template x-if="exists && error">
+          <p class="error-text" x-text="`${$store.app.t('exe_error')} ${error}`"></p>
+        </template>
+
+        <template x-if="exists && !error">
+          <div class="app-checklist">
+            <template x-for="addon in addons" :key="addon.unique_key">
+              <div class="exe-row">
+                <label class="exe-row-label">
+                  <input type="checkbox" :checked="addon.enabled" @change="toggle(addon)" />
+                  <span x-text="addon.display_name"></span>
+                </label>
+                <button class="btn" @click="rename(addon)" :title="$store.app.t('exe_rename_tt')">✏️</button>
+              </div>
+            </template>
+          </div>
+        </template>
       </section>
 
       <section x-show="$store.app.activeTab === 'scenery'">
@@ -218,6 +255,7 @@
   <script src="js/modal.js"></script>
   <script src="js/state.js"></script>
   <script src="js/tabs/flight.js"></script>
+  <script src="js/tabs/autostart.js"></script>
   <script src="js/tabs/settings.js"></script>
   <script src="vendor/alpine.min.js" defer></script>
 </body>

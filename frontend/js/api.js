@@ -41,6 +41,11 @@ window.Api = (() => {
     profilesSave: (kind, name, members) => call("profiles_save", kind, name, members),
     profilesDelete: (kind, name) => call("profiles_delete", kind, name),
 
+    exeList: () => call("exe_list"),
+    exeToggle: (uniqueKey, enabled) => call("exe_toggle", uniqueKey, enabled),
+    exeRename: (uniqueKey, originalName, newName) => call("exe_rename", uniqueKey, originalName, newName),
+    exeApplyProfile: (name) => call("exe_apply_profile", name),
+
     airacStatus: () => call("airac_status"),
     launchAll: (appStates, profileName) => call("launch_all", appStates, profileName),
 
