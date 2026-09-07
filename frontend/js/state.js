@@ -9,16 +9,22 @@ document.addEventListener("alpine:init", () => {
     language: "EN",
     config: {},
     strings: {},
+    apps: {},
 
     async init() {
       this.config = await Api.configGet();
       this.theme = this.config._theme || "system";
       this.applyTheme(this.theme);
+      this.apps = await Api.appsList();
 
       const languages = await I18n.loadLanguages();
       const requestedLang = this.config._language || "EN";
       const lang = languages.some((l) => l.code === requestedLang) ? requestedLang : "EN";
       await this.setLanguage(lang, /* persist */ false);
+    },
+
+    async refreshApps() {
+      this.apps = await Api.appsList();
     },
 
     t(key, ...args) {

@@ -5,9 +5,11 @@ method per button. Each method validates its own input, delegates to a plain
 Python module, and returns a JSON-serializable value - pywebview marshals the
 return value into the resolved JS Promise automatically.
 """
+import os
+
 import webview
 
-from . import apps_manager, config_manager
+from . import apps_manager, community_paths, config_manager
 
 
 class Api:
@@ -58,6 +60,26 @@ class Api:
     def apps_open_folder(self, path):
         apps_manager.open_folder(path)
         return {"ok": True}
+
+    # --- settings: community / disabled-holding paths ---
+    def settings_set_community_path(self, path):
+        self._config["_community_path"] = os.path.normpath(path)
+        config_manager.save_config(self._config)
+        return self._config
+
+    def settings_set_disabled_path(self, path):
+        path = os.path.normpath(path)
+        result = community_paths.validate_disabled_path(path, self._config.get("_community_path", ""))
+        if not result["ok"]:
+            return result
+        self._config["_disabled_holding_path"] = path
+        config_manager.save_config(self._config)
+        return {**result, "config": self._config}
+
+    def settings_reset_disabled_path(self):
+        self._config.pop("_disabled_holding_path", None)
+        config_manager.save_config(self._config)
+        return self._config
 
     # --- native dialogs ---
     def dialogs_browse_folder(self, initial_dir=""):

@@ -31,6 +31,10 @@ window.Api = (() => {
     appsReorder: (name, direction) => call("apps_reorder", name, direction),
     appsOpenFolder: (path) => call("apps_open_folder", path),
 
+    setCommunityPath: (path) => call("settings_set_community_path", path),
+    setDisabledPath: (path) => call("settings_set_disabled_path", path),
+    resetDisabledPath: () => call("settings_reset_disabled_path"),
+
     browseFolder: (initialDir) => call("dialogs_browse_folder", initialDir || ""),
     browseFile: (initialDir) => call("dialogs_browse_file", initialDir || ""),
   };

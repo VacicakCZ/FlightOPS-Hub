@@ -72,7 +72,90 @@
           </div>
         </div>
 
-        <p class="placeholder-note">Zbytek Nastavení (Community složka, doplňky) bude implementován v milníku M1.</p>
+        <div class="field-row">
+          <label x-text="$store.app.t('sim_label')"></label>
+          <div class="theme-choice-row">
+            <select @change="saveSimVersion($event.target.value)">
+              <option value="MSFS 2020" :selected="simVersion === 'MSFS 2020'">MSFS 2020</option>
+              <option value="MSFS 2024" :selected="simVersion === 'MSFS 2024'">MSFS 2024</option>
+            </select>
+            <select @change="saveSimPlatform($event.target.value)">
+              <option value="Steam" :selected="simPlatform === 'Steam'">Steam</option>
+              <option value="MS Store" :selected="simPlatform === 'MS Store'">MS Store</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label x-text="$store.app.t('post_launch_label')"></label>
+          <select @change="savePostLaunch($event.target.value)">
+            <option value="exit" :selected="postLaunch === 'exit'" x-text="$store.app.t('post_launch_exit')"></option>
+            <option value="stay_and_watch" :selected="postLaunch === 'stay_and_watch'" x-text="$store.app.t('post_launch_watch')"></option>
+          </select>
+        </div>
+
+        <hr />
+
+        <h3 x-text="$store.app.t('set_nav_title')"></h3>
+        <p class="hint" x-text="$store.app.t('set_nav_hint')"></p>
+        <div class="path-row">
+          <input type="text" readonly :value="communityPath" :placeholder="$store.app.t('set_nav_placeholder')" />
+          <button class="btn" @click="browseCommunity()" x-text="$store.app.t('btn_browse')"></button>
+        </div>
+
+        <h3 x-text="$store.app.t('disabled_path_title')"></h3>
+        <p class="hint" x-text="$store.app.t('disabled_path_hint')"></p>
+        <div class="path-row">
+          <input type="text" readonly :value="disabledPath" :placeholder="$store.app.t('disabled_path_placeholder')" />
+          <button class="btn" @click="browseDisabledPath()" x-text="$store.app.t('btn_browse')"></button>
+          <button class="btn" @click="resetDisabledPath()" x-text="$store.app.t('disabled_path_reset_btn')"></button>
+        </div>
+
+        <hr />
+
+        <h3 x-text="$store.app.t('set_add_title')"></h3>
+        <div class="field-row">
+          <input type="text" x-model="form.name" :placeholder="$store.app.t('add_name_placeholder')" />
+        </div>
+        <div class="path-row">
+          <input type="text" x-model="form.path" :placeholder="$store.app.t('add_path_placeholder')" />
+          <button class="btn" @click="browseAppPath()" x-text="$store.app.t('btn_browse')"></button>
+        </div>
+        <div class="field-row inline">
+          <label x-text="$store.app.t('mode_label')"></label>
+          <select x-model="form.launchMode">
+            <option value="immediate" x-text="$store.app.t('mode_immediate')"></option>
+            <option value="timer" x-text="$store.app.t('mode_timer')"></option>
+            <option value="smart" x-text="$store.app.t('mode_smart')"></option>
+          </select>
+          <template x-if="form.launchMode === 'timer'">
+            <span class="inline-delay">
+              <input type="number" min="1" x-model.number="form.delay" style="width:60px" />
+              <span x-text="$store.app.t('delay_label')"></span>
+            </span>
+          </template>
+        </div>
+        <div class="field-row inline">
+          <label><input type="checkbox" x-model="form.admin" /> <span x-text="$store.app.t('run_admin_label')"></span></label>
+        </div>
+        <p class="error-text" x-show="errorKey" x-text="$store.app.t(errorKey)"></p>
+        <button class="btn primary" @click="submitApp()" x-text="form.previousName ? $store.app.t('btn_save_edit') : $store.app.t('btn_add')"></button>
+
+        <h3 x-text="$store.app.t('set_manage_title')"></h3>
+        <div class="app-list">
+          <template x-for="[name, data] in appEntries" :key="name">
+            <div class="app-row">
+              <span class="app-row-label" x-text="appRowLabel(name, data)"></span>
+              <span class="app-row-actions">
+                <button class="btn" @click="moveApp(name, 'up')" title="up">▲</button>
+                <button class="btn" @click="moveApp(name, 'down')" title="down">▼</button>
+                <button class="btn" @click="openFolder(data.path)" title="folder">📁</button>
+                <button class="btn" @click="startEdit(name)" x-text="$store.app.t('btn_edit')"></button>
+                <button class="btn danger" @click="removeApp(name)" x-text="$store.app.t('btn_remove')"></button>
+              </span>
+            </div>
+          </template>
+        </div>
       </section>
     </div>
 
