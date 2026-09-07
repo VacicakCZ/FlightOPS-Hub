@@ -4,12 +4,17 @@ from PyInstaller.utils.hooks import collect_all
 datas = []
 binaries = []
 hiddenimports = []
-for pkg in ('customtkinter', 'SimConnect', 'pystray', 'PIL'):
+for pkg in ('webview', 'clr_loader', 'pythonnet', 'SimConnect', 'pystray', 'PIL'):
     tmp_ret = collect_all(pkg)
     datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
 # OIG3.ico se čte i za běhu (ikona okna, tray ikonka) - nejen jako ikona .exe souboru
 datas += [('OIG3.ico', '.')]
+
+# Celý frontend (HTML/CSS/JS/locales) musí jít do balíčku jako data - na
+# rozdíl od customtkinter, které si svoje UI zdroje táhlo samo přes
+# collect_all, tohle jsou naše vlastní soubory mimo Python balíčky.
+datas += [('frontend', 'frontend')]
 
 
 a = Analysis(

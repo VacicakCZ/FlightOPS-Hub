@@ -1,9 +1,23 @@
 ================================================================
                          FLIGHTOPS HUB
-            Advanced MSFS Application Manager (v1.5)
+            Advanced MSFS Application Manager (v2.0)
 ================================================================
 
 Thank you for downloading FlightOps Hub!
+
+WHAT'S NEW IN v2.0
+- Rebuilt UI on a modern web-based engine (same features as v1.5,
+  new look and feel).
+- NEW adjustable UI scale slider in Settings (70-150%) for high-DPI
+  screens or personal preference.
+- Aircraft (Beta) tab: you can now manually correct a package's
+  classification (Aircraft vs. Livery) and which aircraft a livery
+  belongs to, via the small gear icon next to each entry - useful
+  when a package is mislabeled or the automatic livery-to-aircraft
+  matching guesses wrong. Disabling an aircraft now also disables its
+  liveries automatically so none are left orphaned.
+- Aircraft rows show a small model tag (A320, 737-800, CRJ900, ...)
+  next to the name when recognized from the package title.
 
 1. WHAT IS IT?
 FlightOps Hub is a smart, portable launcher designed exclusively
@@ -41,7 +55,7 @@ to prevent double-launching MSFS.
 3. INSTALLATION
 FlightOps Hub is 100% portable. There is no installation required.
 - Simply extract the downloaded .zip archive to any folder on your PC.
-- Double-click "FlightOps_Hub.exe" to start the application.
+- Double-click "flightops_hub.exe" to start the application.
 
 4. HOW TO USE
 - Go to the "Settings" tab.
@@ -83,10 +97,24 @@ elevated privileges for you automatically.
 
 ================================================================
                          FLIGHTOPS HUB
-          Pokročilý správce doplňků pro MSFS (v1.5)
+          Pokročilý správce doplňků pro MSFS (v2.0)
 ================================================================
 
 Díky za stažení FlightOps Hubu!
+
+CO JE NOVÉHO VE v2.0
+- Přepracované UI na moderním webovém základu (stejné funkce jako
+  v1.5, nový vzhled).
+- NOVÝ posuvník velikosti UI v Nastavení (70-150 %) pro displeje
+  s vysokým rozlišením nebo podle osobní preference.
+- Záložka Letadla (Beta): nově jde ručně opravit klasifikaci balíčku
+  (Letadlo vs. Liverka) i to, ke kterému letadlu liverka patří -
+  přes ikonu ozubeného kolečka u každé položky. Hodí se, když je
+  balíček špatně označený nebo automatické párování liverky k letadlu
+  netrefí. Vypnutí letadla teď automaticky vypne i jeho liverky, aby
+  žádná nezůstala osiřelá.
+- U letadel se zobrazuje malý štítek s typem (A320, 737-800, CRJ900,
+  ...), pokud se ho podaří rozpoznat z názvu balíčku.
 
 1. O CO JDE?
 FlightOps Hub je chytrý, přenosný spouštěč vytvořený exkluzivně
@@ -124,7 +152,7 @@ brání dvojitému spuštění MSFS.
 3. INSTALACE
 FlightOps Hub je přenosný. Nevyžaduje žádnou instalaci.
 - Rozbal stažený .zip archiv do jakékoli složky v PC.
-- Spusť program dvojklikem na "FlightOps_Hub.exe".
+- Spusť program dvojklikem na "flightops_hub.exe".
 
 4. JAK TO POUŽÍVAT
 - Přejdi na záložku "Nastavení".
