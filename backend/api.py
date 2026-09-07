@@ -307,7 +307,7 @@ class Api:
         result = window.create_file_dialog(webview.FileDialog.FOLDER, directory=initial_dir or "")
         return result[0] if result else None
 
-    def dialogs_browse_file(self, initial_dir="", file_types=("Executables (*.exe)", "*.exe")):
+    def dialogs_browse_file(self, initial_dir="", file_types=("Executables (*.exe)",)):
         window = webview.windows[0]
         result = window.create_file_dialog(
             webview.FileDialog.OPEN, directory=initial_dir or "", file_types=file_types
