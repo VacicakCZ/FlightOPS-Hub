@@ -279,8 +279,6 @@ button.btn.danger {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  max-height: 220px;
-  overflow-y: auto;
   margin-top: 8px;
 }
 
@@ -326,8 +324,6 @@ button.btn.danger {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-height: 320px;
-  overflow-y: auto;
   margin-bottom: 20px;
 }
 
