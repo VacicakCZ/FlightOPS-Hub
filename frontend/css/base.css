@@ -670,12 +670,23 @@ button.btn.danger {
 /* Permanent ICAO label on each route leg - bold/bordered so it reads as a
    fixed map label rather than a transient hover tooltip. */
 .route-icao-label {
-  font-weight: 700;
   border-color: var(--accent);
+  text-align: center;
 }
 
 .route-icao-label::before {
   border-top-color: var(--accent);
+}
+
+.route-icao-code {
+  font-weight: 700;
+}
+
+.route-airport-name {
+  font-weight: 400;
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .map-popup {
@@ -685,6 +696,12 @@ button.btn.danger {
 
 .map-popup strong {
   display: block;
+  margin-bottom: 4px;
+}
+
+.map-popup-official-name {
+  font-size: 11px;
+  color: var(--text-muted);
   margin-bottom: 4px;
 }
 

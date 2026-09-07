@@ -320,9 +320,24 @@ document.addEventListener("alpine:init", () => {
           fillOpacity: 1,
           weight: 2,
         })
-          .bindTooltip(leg.icao, { permanent: true, direction: "top", offset: [0, -6], className: "route-icao-label" })
+          .bindTooltip(this.buildRouteLabel(leg), { permanent: true, direction: "top", offset: [0, -6], className: "route-icao-label" })
           .addTo(this._routeLayer);
       }
+    },
+
+    buildRouteLabel(leg) {
+      const el = document.createElement("div");
+      const code = document.createElement("div");
+      code.className = "route-icao-code";
+      code.textContent = leg.icao;
+      el.appendChild(code);
+      if (leg.airport_name) {
+        const name = document.createElement("div");
+        name.className = "route-airport-name";
+        name.textContent = leg.airport_name;
+        el.appendChild(name);
+      }
+      return el;
     },
 
     buildPopup(marker) {
@@ -333,6 +348,13 @@ document.addEventListener("alpine:init", () => {
       const title = document.createElement("strong");
       title.textContent = marker.display_name;
       el.appendChild(title);
+
+      if (marker.airport_name) {
+        const officialName = document.createElement("div");
+        officialName.className = "map-popup-official-name";
+        officialName.textContent = marker.airport_name;
+        el.appendChild(officialName);
+      }
 
       const button = document.createElement("button");
       button.className = "btn";

@@ -20,5 +20,6 @@ def build_markers(records):
             "enabled": record["enabled"],
             "lat": airport["lat"],
             "lon": airport["lon"],
+            "airport_name": airport["name"],
         })
     return markers
