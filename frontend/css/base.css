@@ -67,7 +67,12 @@ html, body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100vh;
+  /* 100% (not 100vh) on purpose: under the CSS `zoom` used by the UI-scale
+     slider, Chromium computes vh units and % heights against inconsistent
+     effective viewport sizes, so mixing them here made #app taller than its
+     own ancestors and broke internal scrolling. Keeping the whole html ->
+     body -> #app chain in % keeps them consistent at any zoom level. */
+  height: 100%;
 }
 
 .tab-bar {
