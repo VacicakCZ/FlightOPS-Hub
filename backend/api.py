@@ -13,6 +13,7 @@ import webview
 import scenery_data
 from . import (
     aircraft_overrides,
+    aircraft_type_hint,
     airac,
     apps_manager,
     community_paths,
@@ -224,6 +225,9 @@ class Api:
         type_overrides = self._config.get("_aircraft_type_overrides", {})
         parent_overrides = self._config.get("_aircraft_parent_overrides", {})
         aircraft, liveries = aircraft_overrides.apply_overrides(aircraft, liveries, type_overrides, parent_overrides)
+
+        for record in aircraft:
+            record["type_hint"] = aircraft_type_hint.extract_type_hint(record["display_name"])
 
         return {
             "aircraft": aircraft,

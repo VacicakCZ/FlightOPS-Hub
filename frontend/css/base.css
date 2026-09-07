@@ -512,6 +512,16 @@ button.btn.danger {
   color: var(--text-muted);
 }
 
+.type-tag {
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--tab-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 2px;
+}
+
 .warning-text {
   color: var(--warning);
   font-weight: 600;

@@ -255,8 +255,9 @@
                                 <div>
                                   <div class="addon-row-line">
                                     <label class="app-checkbox-row">
-                                      <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
+                                      <input type="checkbox" :checked="isEnabled(record)" @change="onToggleAircraft(record)" />
                                       <span x-text="record.display_name"></span>
+                                      <span class="type-tag" x-show="record.type_hint" x-text="record.type_hint"></span>
                                     </label>
                                     <button class="btn icon-btn" @click="toggleOverrideEditor(record.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>
                                   </div>
@@ -277,7 +278,7 @@
                                     <div class="livery-row">
                                       <div class="addon-row-line">
                                         <label class="app-checkbox-row">
-                                          <input type="checkbox" :checked="isEnabled(livery)" @change="onToggle(livery)" />
+                                          <input type="checkbox" :checked="isEnabled(livery)" @change="onToggleLivery(livery)" />
                                           <span x-text="livery.display_name"></span>
                                         </label>
                                         <button class="btn icon-btn" @click="toggleOverrideEditor(livery.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>
@@ -327,7 +328,7 @@
                                 <div>
                                   <div class="addon-row-line">
                                     <label class="app-checkbox-row">
-                                      <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
+                                      <input type="checkbox" :checked="isEnabled(record)" @change="onToggleLivery(record)" />
                                       <span x-text="record.display_name"></span>
                                     </label>
                                     <button class="btn icon-btn" @click="toggleOverrideEditor(record.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>

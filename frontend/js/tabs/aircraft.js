@@ -136,7 +136,21 @@ document.addEventListener("alpine:init", () => {
       return override === undefined ? record.enabled : override;
     },
 
-    onToggle(record) {
+    onToggleAircraft(record) {
+      const newValue = !this.isEnabled(record);
+      this.pending[record.folder_name] = newValue;
+      if (!newValue) {
+        // An aircraft going offline shouldn't leave its liveries enabled
+        // and orphaned in Community. Deliberately one-directional: turning
+        // the aircraft back on does NOT force its liveries back on too,
+        // since you usually only want some of them active again.
+        for (const livery of this.liveriesFor(record.folder_name)) {
+          this.pending[livery.folder_name] = false;
+        }
+      }
+    },
+
+    onToggleLivery(record) {
       this.pending[record.folder_name] = !this.isEnabled(record);
     },
 
