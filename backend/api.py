@@ -20,6 +20,7 @@ from . import (
     config_manager,
     exe_xml_manager,
     launch_orchestrator,
+    scenery_map,
     scenery_simbrief_match,
     simbrief_client,
 )
@@ -228,6 +229,12 @@ class Api:
 
     def scenery_apply(self, desired_states):
         return self._run_addon_apply("scenery", desired_states)
+
+    def scenery_map_data(self):
+        scan = self.scenery_scan()
+        if scan["no_community"]:
+            return {"markers": [], "no_community": True}
+        return {"markers": scenery_map.build_markers(scan["records"]), "no_community": False}
 
     # --- aircraft/liveries (shares scenery's Community folder + busy flag) ---
     def aircraft_scan(self):

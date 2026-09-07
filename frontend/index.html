@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>FlightOps Hub</title>
+  <link rel="stylesheet" href="vendor/leaflet.css" />
   <link rel="stylesheet" href="css/base.css" />
 </head>
 <body>
@@ -127,9 +128,11 @@
               <button class="btn" :disabled="applying" @click="setAll(false)" x-text="$store.app.t('scenery_select_all_off')"></button>
               <button class="btn" :disabled="applying" @click="refresh()" x-text="$store.app.t('scenery_refresh_btn')"></button>
               <button class="btn primary" :disabled="applying" @click="apply()" x-text="$store.app.t('scenery_apply_btn')"></button>
+              <button class="btn" :disabled="applying" @click="mapView ? showListView() : showMapView()"
+                      x-text="mapView ? $store.app.t('scenery_view_list_btn') : $store.app.t('scenery_view_map_btn')"></button>
             </div>
 
-            <div class="simbrief-panel">
+            <div class="simbrief-panel" x-show="!mapView">
               <button class="btn" :disabled="!simbriefUsernameSet || simbriefChecking || applying"
                       @click="checkSimbrief()"
                       x-text="simbriefChecking ? $store.app.t('simbrief_checking') : $store.app.t('simbrief_check_btn')"></button>
@@ -159,7 +162,12 @@
               <p class="placeholder-note">&mdash;</p>
             </template>
 
-            <div class="scenery-tree" :class="{ 'is-busy': applying }">
+            <div class="scenery-map-view" x-show="mapView">
+              <p class="hint" x-text="$store.app.t('scenery_map_hint', mapMarkers.length, allRecords.length)"></p>
+              <div class="scenery-map-container" x-ref="mapContainer"></div>
+            </div>
+
+            <div class="scenery-tree" x-show="!mapView" :class="{ 'is-busy': applying }">
               <template x-for="continentKey in visibleContinents" :key="continentKey">
                 <div class="scenery-continent">
                   <div class="scenery-group-header">
@@ -533,6 +541,7 @@
     </div>
   </div>
 
+  <script src="vendor/leaflet.js"></script>
   <script src="js/events.js"></script>
   <script src="js/api.js"></script>
   <script src="js/i18n.js"></script>

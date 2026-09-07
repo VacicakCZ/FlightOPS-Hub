@@ -15,6 +15,10 @@ document.addEventListener("alpine:init", () => {
     simbriefChecking: false,
     simbriefError: null,
     simbriefLegs: [],
+    mapView: false,
+    mapMarkers: [],
+    _map: null,
+    _markersLayer: null,
 
     async init() {
       await window.AppReady;
@@ -28,7 +32,13 @@ document.addEventListener("alpine:init", () => {
       // only after the app is already open. Without this, the tab would be
       // stuck showing whatever it saw at startup (usually "no community
       // folder set") forever.
-      FlightOpsEvents.on("config_changed", () => this.load());
+      FlightOpsEvents.on("config_changed", async () => {
+        await this.load();
+        if (this.mapView) {
+          await this.loadMapData();
+          this.renderMap();
+        }
+      });
     },
 
     async load() {
@@ -115,6 +125,10 @@ document.addEventListener("alpine:init", () => {
       this.pending = {};
       this.statusText = "";
       await this.load();
+      if (this.mapView) {
+        await this.loadMapData();
+        this.renderMap();
+      }
     },
 
     async apply() {
@@ -157,6 +171,75 @@ document.addEventListener("alpine:init", () => {
       await this.load();
       this.statusText = status;
       await this.refreshSimbriefStatuses();
+      if (this.mapView) {
+        await this.loadMapData();
+        this.renderMap();
+      }
+    },
+
+    // --- map view: same records, plotted by ICAO instead of listed by
+    // continent/country. Sceneries with no recognizable ICAO code (freeware
+    // landmarks, mesh/POI packs, ...) simply have nothing to plot and are
+    // left out - scenery_map_hint below the map says how many that is. ---
+    async showMapView() {
+      this.mapView = true;
+      await this.loadMapData();
+      this.$nextTick(() => this.renderMap());
+    },
+
+    showListView() {
+      this.mapView = false;
+    },
+
+    async loadMapData() {
+      const result = await Api.sceneryMapData();
+      this.mapMarkers = result.markers;
+    },
+
+    renderMap() {
+      if (!this._map) {
+        this._map = L.map(this.$refs.mapContainer).setView([30, 10], 2);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 18,
+          attribution: "&copy; OpenStreetMap contributors",
+        }).addTo(this._map);
+        this._markersLayer = L.layerGroup().addTo(this._map);
+      }
+      // The container has zero size while the tab (or the list view inside
+      // it) was hidden, so Leaflet needs an explicit nudge once it's
+      // actually visible again, or tiles render into a collapsed box.
+      this._map.invalidateSize();
+      this._markersLayer.clearLayers();
+      for (const marker of this.mapMarkers) {
+        const icon = L.divIcon({
+          className: "scenery-map-marker " + (marker.enabled ? "marker-on" : "marker-off"),
+          iconSize: [14, 14],
+        });
+        L.marker([marker.lat, marker.lon], { icon })
+          .addTo(this._markersLayer)
+          .bindPopup(() => this.buildPopup(marker));
+      }
+    },
+
+    buildPopup(marker) {
+      const app = this.$store.app;
+      const el = document.createElement("div");
+      el.className = "map-popup";
+
+      const title = document.createElement("strong");
+      title.textContent = marker.display_name;
+      el.appendChild(title);
+
+      const button = document.createElement("button");
+      button.className = "btn";
+      button.textContent = marker.enabled ? app.t("scenery_map_disable_btn") : app.t("simbrief_enable_btn");
+      button.addEventListener("click", () => {
+        this._map.closePopup();
+        this.quickToggle(marker.folder_name, !marker.enabled);
+      });
+      el.appendChild(button);
+
+      return el;
     },
 
     // --- SimBrief flight-plan check: suggests enabling installed-but-
@@ -191,7 +274,11 @@ document.addEventListener("alpine:init", () => {
     // pending (if the user had unrelated toggles queued up, this Apply
     // still carries them along) rather than discarding them.
     quickEnable(folderName) {
-      this.pending[folderName] = true;
+      this.quickToggle(folderName, true);
+    },
+
+    quickToggle(folderName, enabled) {
+      this.pending[folderName] = enabled;
       this.apply();
     },
   }));

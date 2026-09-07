@@ -49,6 +49,7 @@ window.Api = (() => {
     sceneryScan: () => call("scenery_scan"),
     sceneryIsBusy: () => call("scenery_is_busy"),
     sceneryApply: (desiredStates) => call("scenery_apply", desiredStates),
+    sceneryMapData: () => call("scenery_map_data"),
 
     simbriefCheck: () => call("simbrief_check"),
 

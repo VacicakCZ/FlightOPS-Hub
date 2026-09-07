@@ -16,6 +16,10 @@ datas += [('OIG3.ico', '.')]
 # collect_all, tohle jsou naše vlastní soubory mimo Python balíčky.
 datas += [('frontend', 'frontend')]
 
+# ICAO -> souradnice pro mapu scenerii (M7), generovano offline skriptem
+# scripts/build_airports_json.py - viz jeho docstring.
+datas += [('data', 'data')]
+
 
 a = Analysis(
     ['flightops_hub.pyw'],

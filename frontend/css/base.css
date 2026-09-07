@@ -552,6 +552,53 @@ button.btn.danger {
 .simbrief-status.status-disabled { color: var(--warning); }
 .simbrief-status.status-not_installed { color: var(--danger); }
 
+.scenery-map-view {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scenery-map-container {
+  height: 360px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  background: var(--tab-bg);
+}
+
+/* Leaflet's own CSS sizes tiles/panes off this pane, so it must fill the
+   container rather than default to its intrinsic (zero) size. */
+.scenery-map-container .leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: var(--tab-bg);
+  font: inherit;
+}
+
+.scenery-map-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+.scenery-map-marker.marker-on { background: var(--success); }
+.scenery-map-marker.marker-off { background: var(--text-muted); }
+
+.map-popup {
+  font-size: 12px;
+  min-width: 140px;
+}
+
+.map-popup strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.map-popup .btn {
+  margin-top: 4px;
+}
+
 .type-tag {
   font-size: 10px;
   color: var(--text-muted);
