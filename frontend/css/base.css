@@ -388,6 +388,52 @@ button.btn.danger {
   margin-bottom: 8px;
 }
 
+/* Deliberately styled unlike the plain .btn toolbar above it (pill shape,
+   accent fill on the active side) so the list/map switch reads as a
+   distinct view selector at a glance, not just another action button. */
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: var(--tab-bg);
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+.view-toggle-btn:not(:first-child) {
+  border-left: 1px solid var(--panel-border);
+}
+
+.view-toggle-btn:not(.active):hover {
+  background: var(--panel-border);
+}
+
+.view-toggle-btn.active {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.view-toggle-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.view-toggle-icon {
+  font-size: 13px;
+}
+
 .progress-track {
   height: 6px;
   border-radius: 3px;

@@ -128,8 +128,17 @@
               <button class="btn" :disabled="applying" @click="setAll(false)" x-text="$store.app.t('scenery_select_all_off')"></button>
               <button class="btn" :disabled="applying" @click="refresh()" x-text="$store.app.t('scenery_refresh_btn')"></button>
               <button class="btn primary" :disabled="applying" @click="apply()" x-text="$store.app.t('scenery_apply_btn')"></button>
-              <button class="btn" :disabled="applying" @click="mapView ? showListView() : showMapView()"
-                      x-text="mapView ? $store.app.t('scenery_view_list_btn') : $store.app.t('scenery_view_map_btn')"></button>
+            </div>
+
+            <div class="view-toggle">
+              <button class="view-toggle-btn" :class="{ active: !mapView }" :disabled="applying" @click="showListView()">
+                <span class="view-toggle-icon">☰</span>
+                <span x-text="$store.app.t('scenery_view_list_btn')"></span>
+              </button>
+              <button class="view-toggle-btn" :class="{ active: mapView }" :disabled="applying" @click="showMapView()">
+                <span class="view-toggle-icon">🗺</span>
+                <span x-text="$store.app.t('scenery_view_map_btn')"></span>
+              </button>
             </div>
 
             <div class="simbrief-panel">
