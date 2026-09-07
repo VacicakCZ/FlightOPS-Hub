@@ -31,6 +31,22 @@ document.addEventListener("alpine:init", () => {
       return template;
     },
 
+    // Splits "Main text (parenthetical)" into its two parts, so tab labels
+    // can render the parenthetical on its own (smaller) second line instead
+    // of being squeezed/truncated on one line.
+    splitParen(text) {
+      const match = text.trim().match(/^(.*?)\s*(\(.*\))\s*$/);
+      return match ? { main: match[1], paren: match[2] } : { main: text.trim(), paren: "" };
+    },
+
+    tMain(key, ...args) {
+      return this.splitParen(this.t(key, ...args)).main;
+    },
+
+    tParen(key, ...args) {
+      return this.splitParen(this.t(key, ...args)).paren;
+    },
+
     setTab(tab) {
       this.activeTab = tab;
     },
