@@ -12,6 +12,9 @@ document.addEventListener("alpine:init", () => {
     statusText: "",
     progressFraction: 0,
     _lastDesired: {},
+    simbriefChecking: false,
+    simbriefError: null,
+    simbriefLegs: [],
 
     async init() {
       await window.AppReady;
@@ -146,6 +149,43 @@ document.addEventListener("alpine:init", () => {
       this.pending = {};
       await this.load();
       this.statusText = status;
+      await this.refreshSimbriefStatuses();
+    },
+
+    // --- SimBrief flight-plan check: suggests enabling installed-but-
+    // disabled sceneries for the planned origin/destination/alternate ---
+    get simbriefUsernameSet() {
+      return !!(this.$store.app.config._simbrief_username || "").trim();
+    },
+
+    async checkSimbrief() {
+      this.simbriefChecking = true;
+      this.simbriefError = null;
+      const result = await Api.simbriefCheck();
+      this.simbriefChecking = false;
+      if (!result.ok) {
+        this.simbriefError = result.error;
+        this.simbriefLegs = [];
+        return;
+      }
+      this.simbriefLegs = result.legs;
+    },
+
+    // After an Apply (whether triggered from the main tree or from a
+    // SimBrief quick-enable), refresh any already-shown legs in place so
+    // their status reflects reality instead of going stale.
+    async refreshSimbriefStatuses() {
+      if (!this.simbriefLegs.length) return;
+      await this.checkSimbrief();
+    },
+
+    // "Zapnout": applies immediately instead of just queueing a pending
+    // change, per explicit request - merges into whatever is already
+    // pending (if the user had unrelated toggles queued up, this Apply
+    // still carries them along) rather than discarding them.
+    quickEnable(folderName) {
+      this.pending[folderName] = true;
+      this.apply();
     },
   }));
 });

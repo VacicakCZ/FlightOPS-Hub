@@ -34,6 +34,14 @@ document.addEventListener("alpine:init", () => {
       return this.$store.app.config._post_launch_behavior || "exit";
     },
 
+    get simbriefUsername() {
+      return this.$store.app.config._simbrief_username || "";
+    },
+
+    async saveSimbriefUsername(value) {
+      this.$store.app.config = await Api.configSet({ _simbrief_username: value.trim() });
+    },
+
     get appEntries() {
       return Object.entries(this.$store.app.apps);
     },

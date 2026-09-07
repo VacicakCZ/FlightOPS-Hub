@@ -129,6 +129,27 @@
               <button class="btn primary" :disabled="applying" @click="apply()" x-text="$store.app.t('scenery_apply_btn')"></button>
             </div>
 
+            <div class="simbrief-panel">
+              <button class="btn" :disabled="!simbriefUsernameSet || simbriefChecking || applying"
+                      @click="checkSimbrief()"
+                      x-text="simbriefChecking ? $store.app.t('simbrief_checking') : $store.app.t('simbrief_check_btn')"></button>
+              <p class="hint" x-show="!simbriefUsernameSet" x-text="$store.app.t('simbrief_no_username')"></p>
+              <p class="error-text" x-show="simbriefError" x-text="$store.app.t(simbriefError)"></p>
+
+              <template x-if="simbriefLegs.length">
+                <div class="simbrief-legs">
+                  <template x-for="leg in simbriefLegs" :key="leg.role">
+                    <div class="simbrief-leg">
+                      <span class="simbrief-role" x-text="$store.app.t('simbrief_role_' + leg.role)"></span>
+                      <span class="simbrief-icao" x-text="leg.icao"></span>
+                      <span class="simbrief-status" :class="'status-' + leg.status" x-text="$store.app.t('simbrief_status_' + leg.status)"></span>
+                      <button class="btn" x-show="leg.status === 'disabled'" :disabled="applying" @click="quickEnable(leg.folder_name)" x-text="$store.app.t('simbrief_enable_btn')"></button>
+                    </div>
+                  </template>
+                </div>
+              </template>
+            </div>
+
             <p class="hint" x-show="statusText" x-text="statusText"></p>
             <div class="progress-track" x-show="applying">
               <div class="progress-fill" :style="`width: ${progressFraction * 100}%`"></div>
@@ -441,6 +462,12 @@
           <input type="text" readonly :value="disabledPath" :placeholder="$store.app.t('disabled_path_placeholder')" />
           <button class="btn" @click="browseDisabledPath()" x-text="$store.app.t('btn_browse')"></button>
           <button class="btn" @click="resetDisabledPath()" x-text="$store.app.t('disabled_path_reset_btn')"></button>
+        </div>
+
+        <h3 x-text="$store.app.t('simbrief_username_label')"></h3>
+        <p class="hint" x-text="$store.app.t('simbrief_username_hint')"></p>
+        <div class="field-row">
+          <input type="text" :value="simbriefUsername" @change="saveSimbriefUsername($event.target.value)" placeholder="Navigraph Alias / SimBrief username" />
         </div>
 
         <hr />

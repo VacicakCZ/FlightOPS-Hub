@@ -1,4 +1,5 @@
 pywebview
+requests
 SimConnect
 pystray
 Pillow

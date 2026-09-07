@@ -512,6 +512,46 @@ button.btn.danger {
   color: var(--text-muted);
 }
 
+.simbrief-panel {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.simbrief-legs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.simbrief-leg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.simbrief-role {
+  color: var(--text-muted);
+  min-width: 60px;
+}
+
+.simbrief-icao {
+  font-weight: 600;
+  min-width: 40px;
+}
+
+.simbrief-status {
+  flex: 1;
+}
+
+.simbrief-status.status-enabled { color: var(--success); }
+.simbrief-status.status-disabled { color: var(--warning); }
+.simbrief-status.status-not_installed { color: var(--danger); }
+
 .type-tag {
   font-size: 10px;
   color: var(--text-muted);

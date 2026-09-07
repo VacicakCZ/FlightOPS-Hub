@@ -20,6 +20,8 @@ from . import (
     config_manager,
     exe_xml_manager,
     launch_orchestrator,
+    scenery_simbrief_match,
+    simbrief_client,
 )
 from .events import bus
 from .i18n import translate
@@ -210,6 +212,19 @@ class Api:
 
     def scenery_is_busy(self):
         return self._addon_apply_active
+
+    def simbrief_check(self):
+        username = self._config.get("_simbrief_username", "")
+        ofp = simbrief_client.fetch_latest_ofp(username)
+        if not ofp["ok"]:
+            return ofp
+
+        scan = self.scenery_scan()
+        if scan["no_community"]:
+            return {"ok": False, "error": "scenery_no_community"}
+
+        legs = [("origin", ofp["origin"]), ("destination", ofp["destination"]), ("alternate", ofp["alternate"])]
+        return {"ok": True, "legs": scenery_simbrief_match.match_flight_plan(scan["records"], legs)}
 
     def scenery_apply(self, desired_states):
         return self._run_addon_apply("scenery", desired_states)

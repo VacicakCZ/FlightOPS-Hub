@@ -50,6 +50,8 @@ window.Api = (() => {
     sceneryIsBusy: () => call("scenery_is_busy"),
     sceneryApply: (desiredStates) => call("scenery_apply", desiredStates),
 
+    simbriefCheck: () => call("simbrief_check"),
+
     aircraftScan: () => call("aircraft_scan"),
     aircraftIsBusy: () => call("aircraft_is_busy"),
     aircraftApply: (desiredStates) => call("aircraft_apply", desiredStates),
