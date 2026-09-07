@@ -121,6 +121,7 @@ html, body {
 
 .tab-panels {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   background: var(--panel);
   border-top: 1px solid var(--panel-border);

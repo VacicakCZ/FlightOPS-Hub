@@ -95,7 +95,11 @@ def load_config():
     data = {}
     if os.path.exists(CONFIG_FILE):
         try:
-            with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            # utf-8-sig transparently strips a BOM if present (e.g. a user
+            # re-saved this file from an editor that adds one) and behaves
+            # exactly like plain utf-8 otherwise - either way beats silently
+            # falling back to an empty config over one stray BOM byte.
+            with open(CONFIG_FILE, "r", encoding="utf-8-sig") as f:
                 data = json.load(f)
         except Exception:
             data = {}
