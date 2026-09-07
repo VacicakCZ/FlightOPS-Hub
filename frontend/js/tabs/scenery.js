@@ -19,6 +19,9 @@ document.addEventListener("alpine:init", () => {
     mapMarkers: [],
     _map: null,
     _markersLayer: null,
+    _routeLayer: null,
+    _lightTiles: null,
+    _darkTiles: null,
 
     async init() {
       await window.AppReady;
@@ -39,6 +42,12 @@ document.addEventListener("alpine:init", () => {
           this.renderMap();
         }
       });
+
+      // Theme can change (Settings, or the OS-level setting while on
+      // "system") while the map already exists - swap its tile layer to
+      // match instead of leaving a bright map in a dark UI.
+      this.$watch("$store.app.theme", () => this.updateMapTheme());
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => this.updateMapTheme());
     },
 
     async load() {
@@ -204,11 +213,13 @@ document.addEventListener("alpine:init", () => {
           attribution: "&copy; OpenStreetMap contributors",
         }).addTo(this._map);
         this._markersLayer = L.layerGroup().addTo(this._map);
+        this._routeLayer = L.layerGroup().addTo(this._map);
       }
       // The container has zero size while the tab (or the list view inside
       // it) was hidden, so Leaflet needs an explicit nudge once it's
       // actually visible again, or tiles render into a collapsed box.
       this._map.invalidateSize();
+      this.updateMapTheme();
       this._markersLayer.clearLayers();
       for (const marker of this.mapMarkers) {
         const icon = L.divIcon({
@@ -218,6 +229,57 @@ document.addEventListener("alpine:init", () => {
         L.marker([marker.lat, marker.lon], { icon })
           .addTo(this._markersLayer)
           .bindPopup(() => this.buildPopup(marker));
+      }
+      this.renderRoute();
+    },
+
+    cssVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    },
+
+    isDarkMode() {
+      const explicit = document.documentElement.getAttribute("data-theme");
+      if (explicit === "dark") return true;
+      if (explicit === "light") return false;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    },
+
+    // No dark tile source is used (free no-key dark basemaps aren't reliably
+    // available - CartoDB's now requires an API key) - instead the single
+    // OSM tile pane gets a CSS invert filter in dark mode. Scoped to
+    // .leaflet-tile-pane only, so markers/popups/controls (styled
+    // separately in base.css) aren't affected.
+    updateMapTheme() {
+      if (!this.$refs.mapContainer) return;
+      this.$refs.mapContainer.classList.toggle("map-dark", this.isDarkMode());
+    },
+
+    // Draws the SimBrief route (origin -> destination -> alternate) on top
+    // of the scenery markers, using coordinates the backend already looked
+    // up per leg - independent of whether that airport has scenery
+    // installed at all, so an alternate with no scenery still shows up.
+    renderRoute() {
+      if (!this._routeLayer) return;
+      this._routeLayer.clearLayers();
+      const legsWithCoords = this.simbriefLegs.filter((leg) => leg.lat != null && leg.lon != null);
+      if (legsWithCoords.length < 2) return;
+
+      const accent = this.cssVar("--accent") || "#2f6fed";
+      L.polyline(
+        legsWithCoords.map((leg) => [leg.lat, leg.lon]),
+        { color: accent, weight: 2, dashArray: "6 6" }
+      ).addTo(this._routeLayer);
+
+      for (const leg of legsWithCoords) {
+        L.circleMarker([leg.lat, leg.lon], {
+          radius: 6,
+          color: accent,
+          fillColor: accent,
+          fillOpacity: 1,
+          weight: 2,
+        })
+          .bindTooltip(`${this.$store.app.t("simbrief_role_" + leg.role)} ${leg.icao}`)
+          .addTo(this._routeLayer);
       }
     },
 
@@ -256,9 +318,11 @@ document.addEventListener("alpine:init", () => {
       if (!result.ok) {
         this.simbriefError = result.error;
         this.simbriefLegs = [];
+        this.renderRoute();
         return;
       }
       this.simbriefLegs = result.legs;
+      this.renderRoute();
     },
 
     // After an Apply (whether triggered from the main tree or from a

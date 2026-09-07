@@ -132,7 +132,7 @@
                       x-text="mapView ? $store.app.t('scenery_view_list_btn') : $store.app.t('scenery_view_map_btn')"></button>
             </div>
 
-            <div class="simbrief-panel" x-show="!mapView">
+            <div class="simbrief-panel">
               <button class="btn" :disabled="!simbriefUsernameSet || simbriefChecking || applying"
                       @click="checkSimbrief()"
                       x-text="simbriefChecking ? $store.app.t('simbrief_checking') : $store.app.t('simbrief_check_btn')"></button>

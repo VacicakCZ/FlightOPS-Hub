@@ -16,6 +16,7 @@ from . import (
     aircraft_type_hint,
     airac,
     apps_manager,
+    airports_data,
     community_paths,
     config_manager,
     exe_xml_manager,
@@ -225,7 +226,15 @@ class Api:
             return {"ok": False, "error": "scenery_no_community"}
 
         legs = [("origin", ofp["origin"]), ("destination", ofp["destination"]), ("alternate", ofp["alternate"])]
-        return {"ok": True, "legs": scenery_simbrief_match.match_flight_plan(scan["records"], legs)}
+        matched_legs = scenery_simbrief_match.match_flight_plan(scan["records"], legs)
+        # Coordinates for the map's route line - looked up independently of
+        # the scenery match, since a leg (e.g. an alternate with no scenery
+        # installed) should still be plottable on the route.
+        for leg in matched_legs:
+            airport = airports_data.lookup(leg["icao"])
+            leg["lat"] = airport["lat"] if airport else None
+            leg["lon"] = airport["lon"] if airport else None
+        return {"ok": True, "legs": matched_legs}
 
     def scenery_apply(self, desired_states):
         return self._run_addon_apply("scenery", desired_states)

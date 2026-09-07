@@ -585,6 +585,32 @@ button.btn.danger {
 .scenery-map-marker.marker-on { background: var(--success); }
 .scenery-map-marker.marker-off { background: var(--text-muted); }
 
+/* Dark mode: no free no-key dark tile source is reliably available
+   (CartoDB's now requires an API key), so the single OSM tile pane gets
+   the standard CSS "fake dark map" invert filter instead - scoped to just
+   the tile pane so it doesn't wash out the markers/popups drawn on top.
+   scenery.js (updateMapTheme) toggles this class using the same effective
+   dark-mode check the rest of the map styling below keys off of. */
+.scenery-map-container.map-dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+}
+
+/* Leaflet's own controls/popups are hardcoded white/black in leaflet.css -
+   need a manual override to match the app theme instead of sitting as
+   bright white boxes on a dark map. */
+.scenery-map-container.map-dark .leaflet-bar a,
+.scenery-map-container.map-dark .leaflet-control-attribution,
+.scenery-map-container.map-dark .leaflet-popup-content-wrapper,
+.scenery-map-container.map-dark .leaflet-popup-tip,
+.scenery-map-container.map-dark .leaflet-tooltip {
+  background: var(--panel);
+  color: var(--text);
+}
+
+.scenery-map-container.map-dark .leaflet-bar a:hover {
+  background: var(--tab-bg);
+}
+
 .map-popup {
   font-size: 12px;
   min-width: 140px;
