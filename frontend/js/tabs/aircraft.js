@@ -21,6 +21,10 @@ document.addEventListener("alpine:init", () => {
 
       FlightOpsEvents.on("aircraft_apply_progress", (payload) => this.onProgress(payload));
       FlightOpsEvents.on("aircraft_apply_done", (payload) => this.onDone(payload));
+      // See the identical comment in tabs/scenery.js - this tab mounts at
+      // startup too, so it needs to re-scan when the Community/disabled
+      // path is set or changed afterward in Settings.
+      FlightOpsEvents.on("config_changed", () => this.load());
     },
 
     async load() {

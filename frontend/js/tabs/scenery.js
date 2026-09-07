@@ -22,6 +22,13 @@ document.addEventListener("alpine:init", () => {
 
       FlightOpsEvents.on("scenery_apply_progress", (payload) => this.onProgress(payload));
       FlightOpsEvents.on("scenery_apply_done", (payload) => this.onDone(payload));
+      // Community/disabled-holding path can change after this tab already
+      // mounted (every tab mounts at startup regardless of which is visible)
+      // - most commonly a first-time user who sets the Community folder
+      // only after the app is already open. Without this, the tab would be
+      // stuck showing whatever it saw at startup (usually "no community
+      // folder set") forever.
+      FlightOpsEvents.on("config_changed", () => this.load());
     },
 
     async load() {

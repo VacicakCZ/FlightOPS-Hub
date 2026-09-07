@@ -50,6 +50,7 @@ document.addEventListener("alpine:init", () => {
       const path = await Api.browseFolder(this.communityPath);
       if (!path) return;
       this.$store.app.config = await Api.setCommunityPath(path);
+      FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 
     async browseDisabledPath() {
@@ -64,18 +65,22 @@ document.addEventListener("alpine:init", () => {
         await Modal.alertMsg(this.$store.app.t("disabled_path_title"), this.$store.app.t("disabled_path_cross_drive_warning"));
       }
       this.$store.app.config = result.config;
+      FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 
     async resetDisabledPath() {
       this.$store.app.config = await Api.resetDisabledPath();
+      FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 
     async saveSimVersion(version) {
       this.$store.app.config = await Api.configSet({ _sim_version: version });
+      FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 
     async saveSimPlatform(platform) {
       this.$store.app.config = await Api.configSet({ _sim_platform: platform });
+      FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 
     async savePostLaunch(key) {

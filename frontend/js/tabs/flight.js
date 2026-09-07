@@ -20,6 +20,13 @@ document.addEventListener("alpine:init", () => {
       if (lastProfile && this.profiles[lastProfile]) {
         this.applyProfileSelection(lastProfile);
       }
+
+      // AIRAC status depends on the Community folder - re-check if it gets
+      // set/changed in Settings after this tab already mounted (every tab
+      // mounts at startup regardless of which one is visible).
+      FlightOpsEvents.on("config_changed", async () => {
+        this.airac = await Api.airacStatus();
+      });
     },
 
     get appNames() {

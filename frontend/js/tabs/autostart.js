@@ -12,6 +12,11 @@ document.addEventListener("alpine:init", () => {
       await window.AppReady;
       this.profiles = await Api.profilesList("exe");
       await this.loadAddons();
+      // The exe.xml path depends on _sim_version/_sim_platform - if those
+      // are set/changed in Settings after this tab already mounted (every
+      // tab mounts at startup), re-resolve and reload without needing a
+      // manual switch away and back.
+      FlightOpsEvents.on("config_changed", () => this.loadAddons());
     },
 
     async loadAddons() {
