@@ -214,7 +214,10 @@
                               <template x-for="record in country.items" :key="record.folder_name">
                                 <label class="app-checkbox-row">
                                   <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
-                                  <span x-text="record.display_name"></span>
+                                  <span class="scenery-item-text">
+                                    <span x-text="record.display_name"></span>
+                                    <span class="scenery-airport-name" x-show="record.airport_name" x-text="record.airport_name"></span>
+                                  </span>
                                 </label>
                               </template>
                             </div>

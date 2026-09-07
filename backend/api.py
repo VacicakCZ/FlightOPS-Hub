@@ -210,6 +210,7 @@ class Api:
             return {"records": [], "no_community": True}
         disabled_locations = self._resolve_disabled_locations(community_path)
         records = scenery_data.scan_scenery_packages(community_path, disabled_locations)
+        scenery_map.attach_airport_names(records)
         return {"records": records, "no_community": False}
 
     def scenery_is_busy(self):

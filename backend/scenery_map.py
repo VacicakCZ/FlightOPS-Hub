@@ -23,3 +23,14 @@ def build_markers(records):
             "airport_name": airport["name"],
         })
     return markers
+
+
+def attach_airport_names(records):
+    """Adds an airport_name field (None if unresolvable) to each record in
+    place, for the plain list view - same lookup as build_markers, minus the
+    lat/lon it doesn't need there."""
+    for record in records:
+        icao = icao_from_display_name(record["display_name"])
+        airport = airports_data.lookup(icao) if icao else None
+        record["airport_name"] = airport["name"] if airport else None
+    return records

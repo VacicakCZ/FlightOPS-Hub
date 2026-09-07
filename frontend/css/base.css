@@ -347,6 +347,26 @@ button.btn.danger {
   border-radius: 6px;
 }
 
+.scenery-item-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.scenery-item-text > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scenery-airport-name {
+  font-size: 11px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .version-footer {
   text-align: center;
   color: var(--text-muted);
