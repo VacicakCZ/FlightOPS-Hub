@@ -471,6 +471,47 @@ button.btn.danger {
   opacity: 0.9;
 }
 
+.addon-row-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.addon-row-line .app-checkbox-row {
+  flex: 1;
+  min-width: 0;
+}
+
+.icon-btn {
+  flex-shrink: 0;
+  padding: 2px 7px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.override-editor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 10px;
+  margin: 2px 0 6px 0;
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+}
+
+.override-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+}
+
+.override-field label {
+  color: var(--text-muted);
+}
+
 .warning-text {
   color: var(--warning);
   font-weight: 600;

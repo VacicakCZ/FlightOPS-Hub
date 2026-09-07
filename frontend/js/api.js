@@ -53,6 +53,8 @@ window.Api = (() => {
     aircraftScan: () => call("aircraft_scan"),
     aircraftIsBusy: () => call("aircraft_is_busy"),
     aircraftApply: (desiredStates) => call("aircraft_apply", desiredStates),
+    aircraftSetTypeOverride: (folderName, typeValue) => call("aircraft_set_type_override", folderName, typeValue),
+    aircraftSetParentOverride: (folderName, parentFolderName) => call("aircraft_set_parent_override", folderName, parentFolderName),
 
     airacStatus: () => call("airac_status"),
     launchAll: (appStates, profileName) => call("launch_all", appStates, profileName),

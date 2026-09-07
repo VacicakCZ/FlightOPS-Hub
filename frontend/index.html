@@ -253,15 +253,58 @@
                             <div class="scenery-leaves">
                               <template x-for="record in sortedByName(grouped.byDeveloper[developer].aircraft)" :key="record.folder_name">
                                 <div>
-                                  <label class="app-checkbox-row">
-                                    <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
-                                    <span x-text="record.display_name"></span>
-                                  </label>
-                                  <template x-for="livery in liveriesFor(record.folder_name)" :key="livery.folder_name">
-                                    <label class="app-checkbox-row livery-row">
-                                      <input type="checkbox" :checked="isEnabled(livery)" @change="onToggle(livery)" />
-                                      <span x-text="livery.display_name"></span>
+                                  <div class="addon-row-line">
+                                    <label class="app-checkbox-row">
+                                      <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
+                                      <span x-text="record.display_name"></span>
                                     </label>
+                                    <button class="btn icon-btn" @click="toggleOverrideEditor(record.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>
+                                  </div>
+                                  <template x-if="isOverrideOpen(record.folder_name)">
+                                    <div class="override-editor">
+                                      <div class="override-field">
+                                        <label x-text="$store.app.t('aircraft_override_type_label')"></label>
+                                        <select @change="setTypeOverride(record, $event.target.value)">
+                                          <option value="auto" :selected="effectiveTypeOverride(record.folder_name) === 'auto'" x-text="$store.app.t('aircraft_override_type_auto')"></option>
+                                          <option value="aircraft" :selected="effectiveTypeOverride(record.folder_name) === 'aircraft'" x-text="$store.app.t('aircraft_override_type_aircraft')"></option>
+                                          <option value="livery" :selected="effectiveTypeOverride(record.folder_name) === 'livery'" x-text="$store.app.t('aircraft_override_type_livery')"></option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </template>
+
+                                  <template x-for="livery in liveriesFor(record.folder_name)" :key="livery.folder_name">
+                                    <div class="livery-row">
+                                      <div class="addon-row-line">
+                                        <label class="app-checkbox-row">
+                                          <input type="checkbox" :checked="isEnabled(livery)" @change="onToggle(livery)" />
+                                          <span x-text="livery.display_name"></span>
+                                        </label>
+                                        <button class="btn icon-btn" @click="toggleOverrideEditor(livery.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>
+                                      </div>
+                                      <template x-if="isOverrideOpen(livery.folder_name)">
+                                        <div class="override-editor">
+                                          <div class="override-field">
+                                            <label x-text="$store.app.t('aircraft_override_type_label')"></label>
+                                            <select @change="setTypeOverride(livery, $event.target.value)">
+                                              <option value="auto" :selected="effectiveTypeOverride(livery.folder_name) === 'auto'" x-text="$store.app.t('aircraft_override_type_auto')"></option>
+                                              <option value="aircraft" :selected="effectiveTypeOverride(livery.folder_name) === 'aircraft'" x-text="$store.app.t('aircraft_override_type_aircraft')"></option>
+                                              <option value="livery" :selected="effectiveTypeOverride(livery.folder_name) === 'livery'" x-text="$store.app.t('aircraft_override_type_livery')"></option>
+                                            </select>
+                                          </div>
+                                          <div class="override-field">
+                                            <label x-text="$store.app.t('aircraft_override_parent_label')"></label>
+                                            <select @change="setParentOverride(livery, $event.target.value)">
+                                              <option value="auto" :selected="effectiveParentOverride(livery.folder_name) === 'auto'" x-text="$store.app.t('aircraft_override_parent_auto')"></option>
+                                              <option value="" :selected="effectiveParentOverride(livery.folder_name) === ''" x-text="$store.app.t('aircraft_override_parent_none')"></option>
+                                              <template x-for="opt in sortedByName(aircraftRecords)" :key="opt.folder_name">
+                                                <option :value="opt.folder_name" :selected="effectiveParentOverride(livery.folder_name) === opt.folder_name" x-text="opt.display_name"></option>
+                                              </template>
+                                            </select>
+                                          </div>
+                                        </div>
+                                      </template>
+                                    </div>
                                   </template>
                                 </div>
                               </template>
@@ -281,10 +324,37 @@
                           <template x-if="expandedSections[developer + '::liveries']">
                             <div class="scenery-leaves">
                               <template x-for="record in sortedByName(grouped.byDeveloper[developer].unassignedLiveries)" :key="record.folder_name">
-                                <label class="app-checkbox-row">
-                                  <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
-                                  <span x-text="record.display_name"></span>
-                                </label>
+                                <div>
+                                  <div class="addon-row-line">
+                                    <label class="app-checkbox-row">
+                                      <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
+                                      <span x-text="record.display_name"></span>
+                                    </label>
+                                    <button class="btn icon-btn" @click="toggleOverrideEditor(record.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>
+                                  </div>
+                                  <template x-if="isOverrideOpen(record.folder_name)">
+                                    <div class="override-editor">
+                                      <div class="override-field">
+                                        <label x-text="$store.app.t('aircraft_override_type_label')"></label>
+                                        <select @change="setTypeOverride(record, $event.target.value)">
+                                          <option value="auto" :selected="effectiveTypeOverride(record.folder_name) === 'auto'" x-text="$store.app.t('aircraft_override_type_auto')"></option>
+                                          <option value="aircraft" :selected="effectiveTypeOverride(record.folder_name) === 'aircraft'" x-text="$store.app.t('aircraft_override_type_aircraft')"></option>
+                                          <option value="livery" :selected="effectiveTypeOverride(record.folder_name) === 'livery'" x-text="$store.app.t('aircraft_override_type_livery')"></option>
+                                        </select>
+                                      </div>
+                                      <div class="override-field">
+                                        <label x-text="$store.app.t('aircraft_override_parent_label')"></label>
+                                        <select @change="setParentOverride(record, $event.target.value)">
+                                          <option value="auto" :selected="effectiveParentOverride(record.folder_name) === 'auto'" x-text="$store.app.t('aircraft_override_parent_auto')"></option>
+                                          <option value="" :selected="effectiveParentOverride(record.folder_name) === ''" x-text="$store.app.t('aircraft_override_parent_none')"></option>
+                                          <template x-for="opt in sortedByName(aircraftRecords)" :key="opt.folder_name">
+                                            <option :value="opt.folder_name" :selected="effectiveParentOverride(record.folder_name) === opt.folder_name" x-text="opt.display_name"></option>
+                                          </template>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </template>
+                                </div>
                               </template>
                             </div>
                           </template>

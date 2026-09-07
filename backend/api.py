@@ -11,7 +11,15 @@ import threading
 import webview
 
 import scenery_data
-from . import airac, apps_manager, community_paths, config_manager, exe_xml_manager, launch_orchestrator
+from . import (
+    aircraft_overrides,
+    airac,
+    apps_manager,
+    community_paths,
+    config_manager,
+    exe_xml_manager,
+    launch_orchestrator,
+)
 from .events import bus
 from .i18n import translate
 from .version import APP_VERSION
@@ -212,10 +220,44 @@ class Api:
             return {"aircraft": [], "liveries": [], "no_community": True}
         disabled_locations = self._resolve_disabled_locations(community_path)
         aircraft, liveries = scenery_data.scan_aircraft_and_liveries(community_path, disabled_locations)
-        return {"aircraft": aircraft, "liveries": liveries, "no_community": False}
+
+        type_overrides = self._config.get("_aircraft_type_overrides", {})
+        parent_overrides = self._config.get("_aircraft_parent_overrides", {})
+        aircraft, liveries = aircraft_overrides.apply_overrides(aircraft, liveries, type_overrides, parent_overrides)
+
+        return {
+            "aircraft": aircraft,
+            "liveries": liveries,
+            "no_community": False,
+            "type_overrides": type_overrides,
+            "parent_overrides": parent_overrides,
+        }
 
     def aircraft_is_busy(self):
         return self._addon_apply_active
+
+    def aircraft_set_type_override(self, folder_name, type_value):
+        """type_value: "aircraft" | "livery" | None (None clears the
+        override, reverting to whatever the package's own manifest says)."""
+        overrides = self._config.setdefault("_aircraft_type_overrides", {})
+        if type_value is None:
+            overrides.pop(folder_name, None)
+        else:
+            overrides[folder_name] = type_value
+        config_manager.save_config(self._config)
+        return self.aircraft_scan()
+
+    def aircraft_set_parent_override(self, folder_name, parent_folder_name):
+        """parent_folder_name: a folder_name to force that parent, "" to force
+        "unassigned", or None to clear the override (revert to the
+        base_container heuristic)."""
+        overrides = self._config.setdefault("_aircraft_parent_overrides", {})
+        if parent_folder_name is None:
+            overrides.pop(folder_name, None)
+        else:
+            overrides[folder_name] = parent_folder_name
+        config_manager.save_config(self._config)
+        return self.aircraft_scan()
 
     def aircraft_apply(self, desired_states):
         return self._run_addon_apply("aircraft", desired_states)

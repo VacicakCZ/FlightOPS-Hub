@@ -2,11 +2,14 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("aircraftTab", () => ({
     aircraftRecords: [],
     liveryRecords: [],
+    typeOverrides: {},
+    parentOverrides: {},
     noCommunity: false,
     dataLoaded: false,
     pending: {},
     expandedDevelopers: {},
     expandedSections: {},
+    overrideEditorOpen: {},
     applying: false,
     statusText: "",
     progressFraction: 0,
@@ -29,11 +32,44 @@ document.addEventListener("alpine:init", () => {
         this.statusText = this.$store.app.t("addon_apply_busy");
         return;
       }
-      const result = await Api.aircraftScan();
+      this._applyScanResult(await Api.aircraftScan());
+      this.dataLoaded = true;
+    },
+
+    _applyScanResult(result) {
       this.aircraftRecords = result.aircraft;
       this.liveryRecords = result.liveries;
       this.noCommunity = result.no_community;
-      this.dataLoaded = true;
+      this.typeOverrides = result.type_overrides || {};
+      this.parentOverrides = result.parent_overrides || {};
+    },
+
+    // --- manual classification overrides (auto-detection is a heuristic
+    // and can be wrong: a payware "livery" manifested as AIRCRAFT, or a
+    // livery whose base_container doesn't resolve to the right parent) ---
+    isOverrideOpen(folderName) {
+      return !!this.overrideEditorOpen[folderName];
+    },
+
+    toggleOverrideEditor(folderName) {
+      this.overrideEditorOpen[folderName] = !this.overrideEditorOpen[folderName];
+    },
+
+    effectiveTypeOverride(folderName) {
+      return this.typeOverrides[folderName] || "auto";
+    },
+
+    effectiveParentOverride(folderName) {
+      const value = this.parentOverrides[folderName];
+      return value === undefined ? "auto" : value; // "" is a real value (force-unassigned), keep it
+    },
+
+    async setTypeOverride(record, value) {
+      this._applyScanResult(await Api.aircraftSetTypeOverride(record.folder_name, value === "auto" ? null : value));
+    },
+
+    async setParentOverride(record, value) {
+      this._applyScanResult(await Api.aircraftSetParentOverride(record.folder_name, value === "auto" ? null : value));
     },
 
     get allRecords() {
