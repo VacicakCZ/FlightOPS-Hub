@@ -305,3 +305,45 @@ button.btn.danger {
   padding: 4px 8px;
   font-size: 11px;
 }
+
+.airac-status {
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+  margin: 4px 0 14px 0;
+}
+
+.airac-status.airac-ok { color: var(--success); }
+.airac-status.airac-old { color: var(--danger); }
+.airac-status.airac-unknown { color: var(--text-muted); }
+
+.app-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 320px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.app-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.app-checkbox-row:hover {
+  background: var(--tab-bg);
+  border-radius: 6px;
+}
+
+.btn-launch {
+  display: block;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px;
+}

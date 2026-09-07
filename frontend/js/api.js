@@ -35,6 +35,13 @@ window.Api = (() => {
     setDisabledPath: (path) => call("settings_set_disabled_path", path),
     resetDisabledPath: () => call("settings_reset_disabled_path"),
 
+    profilesList: (kind) => call("profiles_list", kind),
+    profilesSave: (kind, name, members) => call("profiles_save", kind, name, members),
+    profilesDelete: (kind, name) => call("profiles_delete", kind, name),
+
+    airacStatus: () => call("airac_status"),
+    launchAll: (appStates, profileName) => call("launch_all", appStates, profileName),
+
     browseFolder: (initialDir) => call("dialogs_browse_folder", initialDir || ""),
     browseFile: (initialDir) => call("dialogs_browse_file", initialDir || ""),
   };

@@ -9,13 +9,15 @@ import os
 
 import webview
 
-from . import apps_manager, community_paths, config_manager
+from . import airac, apps_manager, community_paths, config_manager, launch_orchestrator
+from .i18n import translate
 
 
 class Api:
     def __init__(self):
         self._config = config_manager.load_config()
         self._apps = apps_manager.load_apps()
+        self._session = None  # the in-flight LaunchSession, if any
 
     # --- config ---
     def config_get(self):
@@ -80,6 +82,55 @@ class Api:
         self._config.pop("_disabled_holding_path", None)
         config_manager.save_config(self._config)
         return self._config
+
+    # --- profiles (kind: "flight" for the Flight tab, "exe" for exe.xml profiles in M3) ---
+    def profiles_list(self, kind):
+        return self._config.get(config_manager.PROFILE_STORES[kind], {})
+
+    def profiles_save(self, kind, name, members):
+        store_key = config_manager.PROFILE_STORES[kind]
+        self._config.setdefault(store_key, {})[name] = members
+        self._config[config_manager.LAST_PROFILE_KEYS[kind]] = name
+        config_manager.save_config(self._config)
+        return {"profiles": self._config[store_key], "last": name}
+
+    def profiles_delete(self, kind, name):
+        store_key = config_manager.PROFILE_STORES[kind]
+        self._config.get(store_key, {}).pop(name, None)
+        self._config[config_manager.LAST_PROFILE_KEYS[kind]] = None
+        config_manager.save_config(self._config)
+        return {"profiles": self._config.get(store_key, {}), "last": None}
+
+    # --- Navigraph AIRAC status ---
+    def airac_status(self):
+        return {
+            "current": airac.get_current_airac(),
+            "installed": airac.get_installed_airac(self._config.get("_community_path", "")),
+        }
+
+    # --- launch pipeline ---
+    def launch_all(self, app_states, profile_name):
+        """app_states: {app_name: bool} for every configured app (mirrors the
+        old per-checkbox on/off persistence, including explicitly-unchecked apps)."""
+        for name, checked in app_states.items():
+            self._config[name] = "on" if checked else "off"
+        self._config["_last_profile"] = profile_name
+        config_manager.save_config(self._config)
+
+        selected = [name for name, checked in app_states.items() if checked]
+        lang = self._config.get("_language", "EN")
+
+        self._session = launch_orchestrator.LaunchSession(
+            webview.windows[0], lambda key: translate(lang, key)
+        )
+        self._session.start(
+            apps=self._apps,
+            selected_names=selected,
+            sim_version=self._config.get("_sim_version", "MSFS 2024"),
+            sim_platform=self._config.get("_sim_platform", "Steam"),
+            post_launch_behavior=self._config.get("_post_launch_behavior", "exit"),
+        )
+        return {"ok": True}
 
     # --- native dialogs ---
     def dialogs_browse_folder(self, initial_dir=""):

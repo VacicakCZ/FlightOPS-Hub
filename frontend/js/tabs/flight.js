@@ -1,0 +1,90 @@
+document.addEventListener("alpine:init", () => {
+  Alpine.data("flightTab", () => ({
+    checked: {},
+    profiles: {},
+    profileName: null,
+    airac: { current: "", installed: "" },
+    updateJustSaved: false,
+    launching: false,
+
+    async init() {
+      await window.AppReady;
+      const cfg = this.$store.app.config;
+      for (const name of Object.keys(this.$store.app.apps)) {
+        this.checked[name] = cfg[name] === "on";
+      }
+      this.profiles = await Api.profilesList("flight");
+      this.airac = await Api.airacStatus();
+
+      const lastProfile = cfg._last_profile;
+      if (lastProfile && this.profiles[lastProfile]) {
+        this.applyProfileSelection(lastProfile);
+      }
+    },
+
+    get appNames() {
+      return Object.keys(this.$store.app.apps);
+    },
+
+    get profileNames() {
+      return Object.keys(this.profiles);
+    },
+
+    get airacStatusClass() {
+      if (!this.airac.installed) return "airac-unknown";
+      return this.airac.installed === this.airac.current ? "airac-ok" : "airac-old";
+    },
+
+    get airacStatusText() {
+      const app = this.$store.app;
+      if (!this.airac.installed) return app.t("nav_not_found", this.airac.current);
+      if (this.airac.installed === this.airac.current) return app.t("nav_ok", this.airac.installed);
+      return app.t("nav_old", this.airac.installed, this.airac.current);
+    },
+
+    applyProfileSelection(name) {
+      const members = this.profiles[name] || [];
+      for (const appName of this.appNames) {
+        this.checked[appName] = members.includes(appName);
+      }
+    },
+
+    onProfileChange(name) {
+      this.profileName = name || null;
+      if (this.profileName) this.applyProfileSelection(this.profileName);
+    },
+
+    activeAppNames() {
+      return this.appNames.filter((name) => this.checked[name]);
+    },
+
+    async updateProfile() {
+      if (!this.profileName) return;
+      const result = await Api.profilesSave("flight", this.profileName, this.activeAppNames());
+      this.profiles = result.profiles;
+      this.updateJustSaved = true;
+      setTimeout(() => (this.updateJustSaved = false), 1000);
+    },
+
+    async saveProfileAs() {
+      const name = await Modal.promptText(this.$store.app.t("profile_prompt_title"), this.$store.app.t("profile_prompt_text"));
+      if (!name || !name.trim()) return;
+      const result = await Api.profilesSave("flight", name.trim(), this.activeAppNames());
+      this.profiles = result.profiles;
+      this.profileName = name.trim();
+    },
+
+    async deleteProfile() {
+      if (!this.profileName) return;
+      const result = await Api.profilesDelete("flight", this.profileName);
+      this.profiles = result.profiles;
+      this.profileName = null;
+    },
+
+    async launchAll() {
+      if (this.launching) return;
+      this.launching = true;
+      await Api.launchAll(this.checked, this.profileName);
+    },
+  }));
+});

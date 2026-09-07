@@ -21,6 +21,11 @@ _DEFAULT_HEIGHT = 860
 
 _GEOMETRY_RE = re.compile(r"^(\d+)x(\d+)(?:\+(-?\d+)\+(-?\d+))?$")
 
+# Profile stores keyed by "kind" (flight-app profiles vs. exe.xml profiles) -
+# single source of truth shared by the migration below and Api.profiles_*.
+PROFILE_STORES = {"flight": "_profiles", "exe": "_exe_profiles"}
+LAST_PROFILE_KEYS = {"flight": "_last_profile", "exe": "_last_exe_profile"}
+
 
 def _canonical_theme(raw):
     if raw in _LEGACY_DARK_LABELS:
@@ -61,6 +66,19 @@ def _clamp_window_position(data):
         data.pop("_window_y", None)
 
 
+def _sanitize_last_profile(data, kind):
+    """The old app stored the *translated* "Default" label as the sentinel
+    for "no profile selected" (e.g. "_last_profile": "Vychozi"), which breaks
+    the moment the UI language changes. Self-heal on every load: if the
+    stored value isn't an actual profile name, treat it as "no profile"
+    (None) instead of hardcoding any particular language's default label."""
+    last_key = LAST_PROFILE_KEYS[kind]
+    store_key = PROFILE_STORES[kind]
+    last = data.get(last_key)
+    if last is not None and last not in data.get(store_key, {}):
+        data[last_key] = None
+
+
 def migrate_config(data):
     version = data.get("_config_version", 0)
     if version < 1:
@@ -68,6 +86,8 @@ def migrate_config(data):
         data["_theme"] = _canonical_theme(data.get("_theme", "system"))
         data["_config_version"] = 1
     _clamp_window_position(data)
+    _sanitize_last_profile(data, "flight")
+    _sanitize_last_profile(data, "exe")
     return data
 
 
