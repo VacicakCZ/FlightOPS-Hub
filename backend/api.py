@@ -6,10 +6,13 @@ Python module, and returns a JSON-serializable value - pywebview marshals the
 return value into the resolved JS Promise automatically.
 """
 import os
+import threading
 
 import webview
 
+import scenery_data
 from . import airac, apps_manager, community_paths, config_manager, exe_xml_manager, launch_orchestrator
+from .events import bus
 from .i18n import translate
 from .version import APP_VERSION
 
@@ -19,6 +22,7 @@ class Api:
         self._config = config_manager.load_config()
         self._apps = apps_manager.load_apps()
         self._session = None  # the in-flight LaunchSession, if any
+        self._addon_apply_active = False  # shared busy flag: scenery (M4) and aircraft (M5) share the Community folder
 
     def app_version(self):
         return APP_VERSION
@@ -179,6 +183,54 @@ class Api:
             sim_platform=self._config.get("_sim_platform", "Steam"),
             post_launch_behavior=self._config.get("_post_launch_behavior", "exit"),
         )
+        return {"ok": True}
+
+    # --- scenery (Community folder addon enable/disable) ---
+    def _resolve_disabled_locations(self, community_path):
+        return scenery_data.resolve_disabled_locations(
+            community_path, self._config.get("_disabled_holding_path", "")
+        )
+
+    def scenery_scan(self):
+        community_path = self._config.get("_community_path", "")
+        if not community_path or not os.path.isdir(community_path):
+            return {"records": [], "no_community": True}
+        disabled_locations = self._resolve_disabled_locations(community_path)
+        records = scenery_data.scan_scenery_packages(community_path, disabled_locations)
+        return {"records": records, "no_community": False}
+
+    def scenery_is_busy(self):
+        return self._addon_apply_active
+
+    def scenery_apply(self, desired_states):
+        if self._addon_apply_active:
+            return {"ok": False, "error": "busy"}
+
+        community_path = self._config.get("_community_path", "")
+        if not community_path or not os.path.isdir(community_path):
+            return {"ok": False, "error": "no_community"}
+
+        self._addon_apply_active = True
+        disabled_locations = self._resolve_disabled_locations(community_path)
+
+        def on_progress(idx, total, name, copied, total_bytes):
+            bus.emit("scenery_apply_progress", {
+                "idx": idx, "total": total, "name": name, "copied": copied, "total_bytes": total_bytes,
+            })
+
+        def worker():
+            try:
+                raw_results = scenery_data.apply_package_changes(
+                    community_path, disabled_locations, desired_states, progress_callback=on_progress
+                )
+            except Exception as e:
+                raw_results = [("?", False, str(e))]
+            finally:
+                self._addon_apply_active = False
+            results = [{"folder_name": n, "ok": ok, "error": err} for n, ok, err in raw_results]
+            bus.emit("scenery_apply_done", {"results": results})
+
+        threading.Thread(target=worker, daemon=True).start()
         return {"ok": True}
 
     # --- native dialogs ---

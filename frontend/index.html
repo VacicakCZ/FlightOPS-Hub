@@ -103,9 +103,83 @@
         </template>
       </section>
 
-      <section x-show="$store.app.activeTab === 'scenery'">
+      <section x-show="$store.app.activeTab === 'scenery'" x-data="sceneryTab">
         <h2 x-text="$store.app.t('tab_scenery').trim()"></h2>
-        <p class="placeholder-note">Bude implementováno v milníku M4.</p>
+
+        <template x-if="noCommunity">
+          <p class="placeholder-note" x-text="$store.app.t('scenery_no_community')"></p>
+        </template>
+
+        <template x-if="!noCommunity">
+          <div>
+            <div class="toolbar">
+              <button class="btn" :disabled="applying" @click="setAll(true)" x-text="$store.app.t('scenery_select_all_on')"></button>
+              <button class="btn" :disabled="applying" @click="setAll(false)" x-text="$store.app.t('scenery_select_all_off')"></button>
+              <button class="btn" :disabled="applying" @click="refresh()" x-text="$store.app.t('scenery_refresh_btn')"></button>
+              <button class="btn primary" :disabled="applying" @click="apply()" x-text="$store.app.t('scenery_apply_btn')"></button>
+            </div>
+
+            <p class="hint" x-show="statusText" x-text="statusText"></p>
+            <div class="progress-track" x-show="applying">
+              <div class="progress-fill" :style="`width: ${progressFraction * 100}%`"></div>
+            </div>
+
+            <template x-if="allRecords.length === 0">
+              <p class="placeholder-note">&mdash;</p>
+            </template>
+
+            <div class="scenery-tree" :class="{ 'is-busy': applying }">
+              <template x-for="continentKey in visibleContinents" :key="continentKey">
+                <div class="scenery-continent">
+                  <div class="scenery-group-header">
+                    <span class="group-swatch" :class="groupClass(byContinent[continentKey])"
+                          :title="$store.app.t('scenery_group_toggle_tt')"
+                          @click="setGroup(byContinent[continentKey], !groupState(byContinent[continentKey]).allOn)">
+                      <span x-show="groupState(byContinent[continentKey]).allOn">&#10003;</span>
+                    </span>
+                    <button class="scenery-toggle-btn" @click="toggleContinent(continentKey)">
+                      <span x-text="expandedContinents[continentKey] ? '▼' : '▶'"></span>
+                      <span x-text="$store.app.t('continent_' + continentKey)"></span>
+                      <span class="hint" x-text="`(${groupState(byContinent[continentKey]).enabled}/${byContinent[continentKey].length})`"></span>
+                    </button>
+                  </div>
+
+                  <template x-if="expandedContinents[continentKey]">
+                    <div class="scenery-countries">
+                      <template x-for="country in countriesFor(byContinent[continentKey])" :key="continentKey + '::' + country.name">
+                        <div class="scenery-country">
+                          <div class="scenery-group-header">
+                            <span class="group-swatch" :class="groupClass(country.items)"
+                                  :title="$store.app.t('scenery_group_toggle_tt')"
+                                  @click="setGroup(country.items, !groupState(country.items).allOn)">
+                              <span x-show="groupState(country.items).allOn">&#10003;</span>
+                            </span>
+                            <button class="scenery-toggle-btn country" @click="toggleCountry(continentKey + '::' + country.name)">
+                              <span x-text="expandedCountries[continentKey + '::' + country.name] ? '▼' : '▶'"></span>
+                              <span x-text="country.name"></span>
+                              <span class="hint" x-text="`(${groupState(country.items).enabled}/${country.items.length})`"></span>
+                            </button>
+                          </div>
+
+                          <template x-if="expandedCountries[continentKey + '::' + country.name]">
+                            <div class="scenery-leaves">
+                              <template x-for="record in country.items" :key="record.folder_name">
+                                <label class="app-checkbox-row">
+                                  <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
+                                  <span x-text="record.display_name"></span>
+                                </label>
+                              </template>
+                            </div>
+                          </template>
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
       </section>
 
       <section x-show="$store.app.activeTab === 'aircraft'">
@@ -256,6 +330,7 @@
   <script src="js/state.js"></script>
   <script src="js/tabs/flight.js"></script>
   <script src="js/tabs/autostart.js"></script>
+  <script src="js/tabs/scenery.js"></script>
   <script src="js/tabs/settings.js"></script>
   <script src="vendor/alpine.min.js" defer></script>
 </body>

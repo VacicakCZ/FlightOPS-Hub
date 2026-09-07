@@ -46,6 +46,10 @@ window.Api = (() => {
     exeRename: (uniqueKey, originalName, newName) => call("exe_rename", uniqueKey, originalName, newName),
     exeApplyProfile: (name) => call("exe_apply_profile", name),
 
+    sceneryScan: () => call("scenery_scan"),
+    sceneryIsBusy: () => call("scenery_is_busy"),
+    sceneryApply: (desiredStates) => call("scenery_apply", desiredStates),
+
     airacStatus: () => call("airac_status"),
     launchAll: (appStates, profileName) => call("launch_all", appStates, profileName),
 
