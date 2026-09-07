@@ -254,24 +254,39 @@ document.addEventListener("alpine:init", () => {
       this.$refs.mapContainer.classList.toggle("map-dark", this.isDarkMode());
     },
 
-    // Draws the SimBrief route (origin -> destination -> alternate) on top
-    // of the scenery markers, using coordinates the backend already looked
-    // up per leg - independent of whether that airport has scenery
-    // installed at all, so an alternate with no scenery still shows up.
+    // Draws the SimBrief route on top of the scenery markers, using
+    // coordinates the backend already looked up per leg - independent of
+    // whether that airport has scenery installed at all, so an alternate
+    // with no scenery still shows up. Main route (origin -> destination) is
+    // a solid, bold line; the diversion to the alternate (off destination)
+    // stays dashed to visually distinguish "the flight" from "the backup".
     renderRoute() {
       if (!this._routeLayer) return;
       this._routeLayer.clearLayers();
-      const legsWithCoords = this.simbriefLegs.filter((leg) => leg.lat != null && leg.lon != null);
-      if (legsWithCoords.length < 2) return;
+      const byRole = {};
+      for (const leg of this.simbriefLegs) {
+        if (leg.lat != null && leg.lon != null) byRole[leg.role] = leg;
+      }
 
       const accent = this.cssVar("--accent") || "#2f6fed";
-      L.polyline(
-        legsWithCoords.map((leg) => [leg.lat, leg.lon]),
-        { color: accent, weight: 2, dashArray: "6 6" }
-      ).addTo(this._routeLayer);
+      const point = (leg) => [leg.lat, leg.lon];
 
-      for (const leg of legsWithCoords) {
-        L.circleMarker([leg.lat, leg.lon], {
+      if (byRole.origin && byRole.destination) {
+        L.polyline([point(byRole.origin), point(byRole.destination)], {
+          color: accent,
+          weight: 4,
+        }).addTo(this._routeLayer);
+      }
+      if (byRole.destination && byRole.alternate) {
+        L.polyline([point(byRole.destination), point(byRole.alternate)], {
+          color: accent,
+          weight: 2,
+          dashArray: "6 6",
+        }).addTo(this._routeLayer);
+      }
+
+      for (const leg of Object.values(byRole)) {
+        L.circleMarker(point(leg), {
           radius: 6,
           color: accent,
           fillColor: accent,
