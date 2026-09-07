@@ -90,5 +90,6 @@
   "tray_watch_status": "正在监视模拟器退出...",
   "tt_add": "添加新配置",
   "tt_delete": "删除选定的配置",
-  "tt_update": "更新选定的配置"
+  "tt_update": "更新选定的配置",
+  "ui_scale_label": "界面缩放:"
 }

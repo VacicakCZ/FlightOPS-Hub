@@ -144,6 +144,11 @@ h2 {
   color: var(--text-muted);
 }
 
+input[type="range"] {
+  accent-color: var(--accent);
+  width: 100%;
+}
+
 select, input[type="text"], input[type="number"] {
   background: var(--input-bg);
   border: 1px solid var(--panel-border);

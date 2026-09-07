@@ -90,5 +90,6 @@
   "tray_watch_status": "Watching for sim exit...",
   "tt_add": "Add new profile",
   "tt_delete": "Delete selected profile",
-  "tt_update": "Update selected profile"
+  "tt_update": "Update selected profile",
+  "ui_scale_label": "UI scale:"
 }

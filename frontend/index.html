@@ -98,6 +98,19 @@
         </div>
 
         <div class="field-row">
+          <label x-text="`${$store.app.t('ui_scale_label')} ${$store.app.uiScale}%`"></label>
+          <input
+            type="range"
+            min="70"
+            max="150"
+            step="5"
+            :value="$store.app.uiScale"
+            @input="$store.app.previewUiScale(Number($event.target.value))"
+            @change="$store.app.setUiScale(Number($event.target.value))"
+          />
+        </div>
+
+        <div class="field-row">
           <label x-text="$store.app.t('sim_label')"></label>
           <div class="theme-choice-row">
             <select @change="saveSimVersion($event.target.value)">

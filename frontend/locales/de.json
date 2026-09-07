@@ -90,5 +90,6 @@
   "tray_watch_status": "Überwacht Simulator-Ende...",
   "tt_add": "Neues Profil hinzufügen",
   "tt_delete": "Ausgewähltes Profil löschen",
-  "tt_update": "Ausgewähltes Profil aktualisieren"
+  "tt_update": "Ausgewähltes Profil aktualisieren",
+  "ui_scale_label": "UI-Größe:"
 }

@@ -10,11 +10,14 @@ document.addEventListener("alpine:init", () => {
     config: {},
     strings: {},
     apps: {},
+    uiScale: 100,
 
     async init() {
       this.config = await Api.configGet();
       this.theme = this.config._theme || "system";
       this.applyTheme(this.theme);
+      this.uiScale = this.config._ui_scale || 100;
+      this.applyUiScale(this.uiScale);
       this.apps = await Api.appsList();
 
       const languages = await I18n.loadLanguages();
@@ -70,6 +73,20 @@ document.addEventListener("alpine:init", () => {
       this.theme = theme;
       this.applyTheme(theme);
       this.config = await Api.configSet({ _theme: theme });
+    },
+
+    applyUiScale(pct) {
+      document.documentElement.style.zoom = pct / 100;
+    },
+
+    previewUiScale(pct) {
+      this.uiScale = pct;
+      this.applyUiScale(pct);
+    },
+
+    async setUiScale(pct) {
+      this.previewUiScale(pct);
+      this.config = await Api.configSet({ _ui_scale: pct });
     },
 
     async setLanguage(lang, persist = true) {

@@ -90,5 +90,6 @@
   "tray_watch_status": "Hlídám běh simulátoru...",
   "tt_add": "Přidat nový profil",
   "tt_delete": "Smazat vybraný profil",
-  "tt_update": "Aktualizovat vybraný profil"
+  "tt_update": "Aktualizovat vybraný profil",
+  "ui_scale_label": "Velikost UI:"
 }

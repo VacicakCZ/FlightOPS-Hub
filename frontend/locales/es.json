@@ -90,5 +90,6 @@
   "tray_watch_status": "Vigilando el cierre del simulador...",
   "tt_add": "Añadir nuevo perfil",
   "tt_delete": "Eliminar perfil seleccionado",
-  "tt_update": "Actualizar perfil seleccionado"
+  "tt_update": "Actualizar perfil seleccionado",
+  "ui_scale_label": "Tamaño de la interfaz:"
 }
