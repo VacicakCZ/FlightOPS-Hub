@@ -313,13 +313,13 @@ document.addEventListener("alpine:init", () => {
       }
 
       for (const leg of Object.values(byRole)) {
-        L.circleMarker(point(leg), {
-          radius: 6,
-          color: accent,
-          fillColor: accent,
-          fillOpacity: 1,
-          weight: 2,
-        })
+        // A divIcon L.marker, not L.circleMarker - Leaflet's SVG vector
+        // layers (circleMarker/polyline) only redraw at zoomend, so a
+        // tooltip bound to one visually freezes mid-zoom and jumps at the
+        // end. Icon markers get repositioned every animation frame, so
+        // their bound tooltip tracks the zoom smoothly instead.
+        const icon = L.divIcon({ className: "route-point-marker", iconSize: [14, 14], iconAnchor: [7, 7] });
+        L.marker(point(leg), { icon })
           .bindTooltip(leg.icao, { permanent: true, direction: "top", offset: [0, -6], className: "route-icao-label" })
           .addTo(this._routeLayer);
       }

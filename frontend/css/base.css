@@ -651,6 +651,15 @@ button.btn.danger {
 .scenery-map-marker.marker-on { background: var(--success); }
 .scenery-map-marker.marker-off { background: var(--text-muted); }
 
+.route-point-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
 /* Dark mode: no free no-key dark tile source is reliably available
    (CartoDB's now requires an API key), so the single OSM tile pane gets
    the standard CSS "fake dark map" invert filter instead - scoped to just
