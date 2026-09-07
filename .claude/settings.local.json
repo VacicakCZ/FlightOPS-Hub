@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(py -m py_compile \"f:\\\\FlightOps Hub\\\\V 2.0\\\\flightops_hub.pyw\")"
+    ]
+  }
+}

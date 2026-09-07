@@ -1,0 +1,4 @@
+customtkinter
+SimConnect
+pystray
+Pillow
