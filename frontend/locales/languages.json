@@ -1,0 +1,22 @@
+[
+  {
+    "code": "CZ",
+    "label": "Čeština"
+  },
+  {
+    "code": "EN",
+    "label": "English"
+  },
+  {
+    "code": "DE",
+    "label": "Deutsch"
+  },
+  {
+    "code": "ES",
+    "label": "Español"
+  },
+  {
+    "code": "CN",
+    "label": "中文"
+  }
+]

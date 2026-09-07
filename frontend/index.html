@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FlightOps Hub</title>
+  <link rel="stylesheet" href="css/base.css" />
+</head>
+<body>
+  <div id="app" x-data x-init="$store.app.init()">
+    <nav class="tab-bar">
+      <button :class="{ active: $store.app.activeTab === 'flight' }" @click="$store.app.setTab('flight')" x-text="$store.app.t('tab_let').trim()"></button>
+      <button :class="{ active: $store.app.activeTab === 'autostart' }" @click="$store.app.setTab('autostart')" x-text="$store.app.t('tab_exe').trim()"></button>
+      <button :class="{ active: $store.app.activeTab === 'scenery' }" @click="$store.app.setTab('scenery')" x-text="$store.app.t('tab_scenery').trim()"></button>
+      <button :class="{ active: $store.app.activeTab === 'aircraft' }" @click="$store.app.setTab('aircraft')" x-text="$store.app.t('tab_aircraft').trim()"></button>
+      <button :class="{ active: $store.app.activeTab === 'settings' }" @click="$store.app.setTab('settings')" x-text="$store.app.t('tab_set').trim()"></button>
+    </nav>
+
+    <div class="tab-panels">
+      <section x-show="$store.app.activeTab === 'flight'">
+        <h2 x-text="$store.app.t('tab_let').trim()"></h2>
+        <p class="placeholder-note">Bude implementováno v milníku M2.</p>
+      </section>
+
+      <section x-show="$store.app.activeTab === 'autostart'">
+        <h2 x-text="$store.app.t('tab_exe').trim()"></h2>
+        <p class="placeholder-note">Bude implementováno v milníku M3.</p>
+      </section>
+
+      <section x-show="$store.app.activeTab === 'scenery'">
+        <h2 x-text="$store.app.t('tab_scenery').trim()"></h2>
+        <p class="placeholder-note">Bude implementováno v milníku M4.</p>
+      </section>
+
+      <section x-show="$store.app.activeTab === 'aircraft'">
+        <h2 x-text="$store.app.t('tab_aircraft').trim()"></h2>
+        <p class="placeholder-note">Bude implementováno v milníku M5.</p>
+      </section>
+
+      <section x-show="$store.app.activeTab === 'settings'" x-data="settingsTab">
+        <h2 x-text="$store.app.t('tab_set').trim()"></h2>
+
+        <div class="field-row">
+          <label x-text="$store.app.t('lang_label')"></label>
+          <select @change="$store.app.setLanguage($event.target.value)">
+            <template x-for="lang in languages" :key="lang.code">
+              <option :value="lang.code" :selected="lang.code === $store.app.language" x-text="lang.label"></option>
+            </template>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <label x-text="$store.app.t('theme_label')"></label>
+          <div class="theme-choice-row">
+            <button class="btn" :class="{ active: $store.app.theme === 'dark' }" @click="$store.app.setTheme('dark')" x-text="$store.app.t('theme_dark')"></button>
+            <button class="btn" :class="{ active: $store.app.theme === 'light' }" @click="$store.app.setTheme('light')" x-text="$store.app.t('theme_light')"></button>
+            <button class="btn" :class="{ active: $store.app.theme === 'system' }" @click="$store.app.setTheme('system')" x-text="$store.app.t('theme_system')"></button>
+          </div>
+        </div>
+
+        <p class="placeholder-note">Zbytek Nastavení (Community složka, doplňky) bude implementován v milníku M1.</p>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" x-show="$store.modal.visible" x-cloak>
+      <div class="modal-box">
+        <h3 x-text="$store.modal.title"></h3>
+        <p x-text="$store.modal.message"></p>
+        <input type="text" x-show="$store.modal.kind === 'prompt'" x-model="$store.modal.value" @keydown.enter="$store.modal.confirm()" />
+        <div class="actions">
+          <button class="btn" x-show="$store.modal.kind !== 'alert'" @click="$store.modal.cancel()">Zrušit</button>
+          <button class="btn primary" @click="$store.modal.confirm()">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/events.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/tabs/settings.js"></script>
+  <script src="vendor/alpine.min.js" defer></script>
+</body>
+</html>
