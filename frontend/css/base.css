@@ -737,6 +737,12 @@ button.btn.danger {
   opacity: 0.9;
 }
 
+.nested-livery-toggle {
+  margin-left: 20px;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
 .addon-row-line {
   display: flex;
   align-items: center;

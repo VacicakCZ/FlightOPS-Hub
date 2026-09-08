@@ -4,6 +4,7 @@
   "addon_apply_busy": "正在移动文件 - 请等待完成后再试。",
   "aircraft_experimental_notice": "⚠️ 实验性功能 - 这是新功能，启用/禁用飞机后请仔细检查结果。",
   "aircraft_grouping_hint": "按开发商分组（从包名推断），而非「制造商」字段——插件对该字段的填写并不一致。能可靠匹配到具体飞机的涂装会显示在该飞机下方，其余的保留在开发商下的「未关联」部分。",
+  "aircraft_liveries_toggle": "涂装",
   "aircraft_other_developer": "其他 / 未知开发商",
   "aircraft_override_btn": "编辑分类",
   "aircraft_override_parent_auto": "自动",

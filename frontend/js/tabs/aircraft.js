@@ -9,6 +9,7 @@ document.addEventListener("alpine:init", () => {
     pending: {},
     expandedDevelopers: {},
     expandedSections: {},
+    expandedLiveries: {},
     overrideEditorOpen: {},
     applying: false,
     statusText: "",
@@ -35,6 +36,7 @@ document.addEventListener("alpine:init", () => {
         } else {
           this.expandedDevelopers = {};
           this.expandedSections = {};
+          this.expandedLiveries = {};
         }
       });
     },
@@ -137,7 +139,23 @@ document.addEventListener("alpine:init", () => {
         const groups = this.grouped.byDeveloper[developer];
         if (groups.aircraft.length) this.expandedSections[developer + "::aircraft"] = true;
         if (groups.unassignedLiveries.length) this.expandedSections[developer + "::liveries"] = true;
+        // Also open each visible aircraft's own nested livery list, or a
+        // livery-only match (parent shown just for context) would stay
+        // hidden behind the per-aircraft collapse toggle.
+        for (const aircraft of groups.aircraft) {
+          if (this.liveriesFor(aircraft.folder_name).length) {
+            this.expandedLiveries[aircraft.folder_name] = true;
+          }
+        }
       }
+    },
+
+    // --- per-aircraft nested livery list collapse (kept separate from
+    // expandedDevelopers/expandedSections, in its own dict keyed by
+    // folder_name, so re-scanning after an override change - which does
+    // not touch this state - never collapses a tree the user has open) ---
+    toggleLiveries(folderName) {
+      this.expandedLiveries[folderName] = !this.expandedLiveries[folderName];
     },
 
     // {developer: {aircraft: [...], unassignedLiveries: [...]}} plus a

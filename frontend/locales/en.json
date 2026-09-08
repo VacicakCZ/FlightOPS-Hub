@@ -4,6 +4,7 @@
   "addon_apply_busy": "A file move is in progress - please wait for it to finish.",
   "aircraft_experimental_notice": "⚠️ Experimental feature - it's new, please double-check the result after enabling/disabling aircraft.",
   "aircraft_grouping_hint": "Grouped by developer (derived from the package name), not the \"manufacturer\" field - add-ons fill that in inconsistently. Liveries reliably matched to a specific aircraft are shown nested under it; the rest stay in the \"unassigned\" section under the developer.",
+  "aircraft_liveries_toggle": "Liveries",
   "aircraft_other_developer": "Other / Unknown developer",
   "aircraft_override_btn": "Edit classification",
   "aircraft_override_parent_auto": "Automatic",

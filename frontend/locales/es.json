@@ -4,6 +4,7 @@
   "addon_apply_busy": "Se está moviendo archivos - espera a que termine.",
   "aircraft_experimental_notice": "⚠️ Función experimental - es nueva, por favor comprueba el resultado tras activar/desactivar aeronaves.",
   "aircraft_grouping_hint": "Agrupado por desarrollador (deducido del nombre del paquete), no por el campo \"fabricante\" - los addons lo rellenan de forma inconsistente. Las libreas emparejadas de forma fiable con una aeronave concreta se muestran debajo de ella; el resto queda en la sección \"sin asignar\" bajo el desarrollador.",
+  "aircraft_liveries_toggle": "Libreas",
   "aircraft_other_developer": "Otros / Desarrollador desconocido",
   "aircraft_override_btn": "Editar clasificación",
   "aircraft_override_parent_auto": "Automático",
