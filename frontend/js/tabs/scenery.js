@@ -20,8 +20,7 @@ document.addEventListener("alpine:init", () => {
     _map: null,
     _markersLayer: null,
     _routeLayer: null,
-    _lightTiles: null,
-    _darkTiles: null,
+    searchQuery: "",
 
     async init() {
       await window.AppReady;
@@ -48,6 +47,10 @@ document.addEventListener("alpine:init", () => {
       // match instead of leaving a bright map in a dark UI.
       this.$watch("$store.app.theme", () => this.updateMapTheme());
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => this.updateMapTheme());
+
+      // Auto-expand whatever the search currently matches, so results are
+      // visible without also having to manually click through the tree.
+      this.$watch("searchQuery", () => this.expandSearchMatches());
     },
 
     async load() {
@@ -68,6 +71,7 @@ document.addEventListener("alpine:init", () => {
     get byContinent() {
       const map = {};
       for (const r of this.allRecords) {
+        if (!this.matchesSearch(r)) continue;
         (map[r.continent] ??= []).push(r);
       }
       return map;
@@ -75,6 +79,29 @@ document.addEventListener("alpine:init", () => {
 
     get visibleContinents() {
       return this.continentOrder.filter((c) => this.byContinent[c] && this.byContinent[c].length);
+    },
+
+    // Matches ICAO/name (via display_name, which already embeds the code),
+    // the official airport name, or the country - so "prague", "lkpr" and
+    // "czech" all find the same entry.
+    matchesSearch(record) {
+      const q = this.searchQuery.trim().toLowerCase();
+      if (!q) return true;
+      return (
+        (record.display_name || "").toLowerCase().includes(q) ||
+        (record.airport_name || "").toLowerCase().includes(q) ||
+        (record.country || "").toLowerCase().includes(q)
+      );
+    },
+
+    expandSearchMatches() {
+      if (!this.searchQuery.trim()) return;
+      for (const continentKey of this.visibleContinents) {
+        this.expandedContinents[continentKey] = true;
+        for (const country of this.countriesFor(this.byContinent[continentKey])) {
+          this.expandedCountries[continentKey + "::" + country.name] = true;
+        }
+      }
     },
 
     countriesFor(items) {

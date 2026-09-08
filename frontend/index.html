@@ -176,6 +176,16 @@
               <div class="scenery-map-container" x-ref="mapContainer"></div>
             </div>
 
+            <div class="scenery-search" x-show="!mapView">
+              <input type="text" class="scenery-search-input" x-model="searchQuery"
+                     :placeholder="$store.app.t('scenery_search_placeholder')" />
+              <button class="btn icon-btn" x-show="searchQuery" @click="searchQuery = ''"
+                      :title="$store.app.t('scenery_search_clear')">✕</button>
+            </div>
+
+            <p class="placeholder-note" x-show="!mapView && searchQuery.trim() && visibleContinents.length === 0"
+               x-text="$store.app.t('scenery_search_no_results')"></p>
+
             <div class="scenery-tree" x-show="!mapView" :class="{ 'is-busy': applying }">
               <template x-for="continentKey in visibleContinents" :key="continentKey">
                 <div class="scenery-continent">

@@ -454,6 +454,18 @@ button.btn.danger {
   font-size: 13px;
 }
 
+.scenery-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.scenery-search-input {
+  flex: 1;
+  min-width: 0;
+}
+
 .progress-track {
   height: 6px;
   border-radius: 3px;
