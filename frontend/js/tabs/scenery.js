@@ -378,6 +378,14 @@ document.addEventListener("alpine:init", () => {
         el.appendChild(officialName);
       }
 
+      if (marker.gsx_installed) {
+        const gsxTag = document.createElement("span");
+        gsxTag.className = "gsx-tag";
+        gsxTag.textContent = "GSX";
+        gsxTag.title = app.t("scenery_gsx_installed_tt");
+        el.appendChild(gsxTag);
+      }
+
       const button = document.createElement("button");
       button.className = "btn";
       button.textContent = marker.enabled ? app.t("scenery_map_disable_btn") : app.t("simbrief_enable_btn");

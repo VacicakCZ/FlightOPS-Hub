@@ -225,7 +225,10 @@
                                 <label class="app-checkbox-row">
                                   <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
                                   <span class="scenery-item-text">
-                                    <span x-text="record.display_name"></span>
+                                    <span class="scenery-name-row">
+                                      <span class="scenery-name-truncate" x-text="record.display_name"></span>
+                                      <span class="gsx-tag" x-show="record.gsx_installed" :title="$store.app.t('scenery_gsx_installed_tt')">GSX</span>
+                                    </span>
                                     <span class="scenery-airport-name" x-show="record.airport_name" x-text="record.airport_name"></span>
                                   </span>
                                 </label>
@@ -498,6 +501,14 @@
         <p class="hint" x-text="$store.app.t('simbrief_username_hint')"></p>
         <div class="field-row">
           <input type="text" :value="simbriefUsername" @change="saveSimbriefUsername($event.target.value)" placeholder="Navigraph Alias / SimBrief username" />
+        </div>
+
+        <h3 x-text="$store.app.t('gsx_path_title')"></h3>
+        <p class="hint" x-text="$store.app.t('gsx_path_hint')"></p>
+        <div class="path-row">
+          <input type="text" readonly :value="gsxPath" :placeholder="$store.app.t('gsx_path_placeholder')" />
+          <button class="btn" @click="browseGsxPath()" x-text="$store.app.t('btn_browse')"></button>
+          <button class="btn" @click="resetGsxPath()" x-text="$store.app.t('gsx_path_reset_btn')"></button>
         </div>
 
         <hr />

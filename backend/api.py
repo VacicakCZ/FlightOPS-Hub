@@ -20,6 +20,7 @@ from . import (
     community_paths,
     config_manager,
     exe_xml_manager,
+    gsx_profiles,
     launch_orchestrator,
     scenery_map,
     scenery_simbrief_match,
@@ -41,13 +42,24 @@ class Api:
         return APP_VERSION
 
     # --- config ---
+    def _config_snapshot(self):
+        # _gsx_profiles_path_effective is computed fresh each call (never
+        # persisted under that key) so Settings can always show the actual
+        # path being scanned - the default virtuali install location unless
+        # the user overrode it. Every method that hands the config back to
+        # the frontend should return this, not self._config directly, or
+        # that field would vanish after any unrelated config_set() call.
+        result = dict(self._config)
+        result["_gsx_profiles_path_effective"] = self._gsx_path()
+        return result
+
     def config_get(self):
-        return self._config
+        return self._config_snapshot()
 
     def config_set(self, patch):
         self._config.update(patch)
         config_manager.save_config(self._config)
-        return self._config
+        return self._config_snapshot()
 
     # --- apps (external addons) ---
     def apps_list(self):
@@ -88,7 +100,7 @@ class Api:
     def settings_set_community_path(self, path):
         self._config["_community_path"] = os.path.normpath(path)
         config_manager.save_config(self._config)
-        return self._config
+        return self._config_snapshot()
 
     def settings_set_disabled_path(self, path):
         path = os.path.normpath(path)
@@ -97,12 +109,26 @@ class Api:
             return result
         self._config["_disabled_holding_path"] = path
         config_manager.save_config(self._config)
-        return {**result, "config": self._config}
+        return {**result, "config": self._config_snapshot()}
 
     def settings_reset_disabled_path(self):
         self._config.pop("_disabled_holding_path", None)
         config_manager.save_config(self._config)
-        return self._config
+        return self._config_snapshot()
+
+    # --- settings: GSX (virtuali) profile folder, for the scenery-tab GSX badge ---
+    def _gsx_path(self):
+        return self._config.get("_gsx_profiles_path") or gsx_profiles.default_gsx_path()
+
+    def settings_set_gsx_path(self, path):
+        self._config["_gsx_profiles_path"] = os.path.normpath(path)
+        config_manager.save_config(self._config)
+        return self._config_snapshot()
+
+    def settings_reset_gsx_path(self):
+        self._config.pop("_gsx_profiles_path", None)
+        config_manager.save_config(self._config)
+        return self._config_snapshot()
 
     # --- profiles (kind: "flight" for the Flight tab, "exe" for exe.xml profiles in M3) ---
     def profiles_list(self, kind):
@@ -211,6 +237,7 @@ class Api:
         disabled_locations = self._resolve_disabled_locations(community_path)
         records = scenery_data.scan_scenery_packages(community_path, disabled_locations)
         scenery_map.attach_airport_names(records)
+        gsx_profiles.attach_gsx_status(records, self._gsx_path())
         return {"records": records, "no_community": False}
 
     def scenery_is_busy(self):

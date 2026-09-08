@@ -353,10 +353,18 @@ button.btn.danger {
   min-width: 0;
 }
 
-.scenery-item-text > span:first-child {
+.scenery-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.scenery-name-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 
 .scenery-airport-name {
@@ -365,6 +373,16 @@ button.btn.danger {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.gsx-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-text);
+  background: var(--accent);
+  border-radius: 4px;
+  padding: 1px 5px;
 }
 
 .version-footer {

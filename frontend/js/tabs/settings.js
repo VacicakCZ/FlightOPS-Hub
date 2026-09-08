@@ -22,6 +22,10 @@ document.addEventListener("alpine:init", () => {
       return this.$store.app.config._disabled_holding_path || "";
     },
 
+    get gsxPath() {
+      return this.$store.app.config._gsx_profiles_path_effective || "";
+    },
+
     get simVersion() {
       return this.$store.app.config._sim_version || "MSFS 2024";
     },
@@ -70,6 +74,18 @@ document.addEventListener("alpine:init", () => {
 
     async resetDisabledPath() {
       this.$store.app.config = await Api.resetDisabledPath();
+      FlightOpsEvents.dispatch({ type: "config_changed" });
+    },
+
+    async browseGsxPath() {
+      const path = await Api.browseFolder(this.gsxPath);
+      if (!path) return;
+      this.$store.app.config = await Api.setGsxPath(path);
+      FlightOpsEvents.dispatch({ type: "config_changed" });
+    },
+
+    async resetGsxPath() {
+      this.$store.app.config = await Api.resetGsxPath();
       FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 
