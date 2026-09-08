@@ -104,14 +104,8 @@
         </template>
       </section>
 
-      <section id="scenery-drop-zone" x-show="$store.app.activeTab === 'scenery'" x-data="sceneryTab"
-               :class="{ 'drop-active': dragActive }"
-               @dragenter.prevent="dragActive = true"
-               @dragover.prevent="dragActive = true"
-               @dragleave.prevent="dragActive = false"
-               @drop.prevent="dragActive = false">
+      <section x-show="$store.app.activeTab === 'scenery'" x-data="sceneryTab">
         <h2 x-text="$store.app.t('tab_scenery').trim()"></h2>
-        <p class="hint gsx-drop-hint" x-text="$store.app.t('gsx_drop_hint')"></p>
 
         <template x-if="applying && !dataLoaded">
           <div>

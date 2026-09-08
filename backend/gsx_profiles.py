@@ -16,7 +16,6 @@ community-made GSX profile by an unrelated author (e.g. "lfbo-snekye.ini"
 for a Flightbeam airport) correctly comes back unmatched."""
 import os
 import re
-import zipfile
 
 from .scenery_simbrief_match import icao_from_display_name
 
@@ -88,32 +87,3 @@ def attach_gsx_status(records, gsx_path):
             continue
         record["gsx_status"] = _status_for(dev_key, profiles.get(icao, []))
     return records
-
-
-def install_zip(zip_path, gsx_path):
-    """Extracts a downloaded GSX profile .zip straight into the GSX folder
-    (creating it if this is the very first profile ever installed there).
-    Returns True/False; the only failure modes are a corrupt/non-zip file
-    or a zip whose entries try to escape gsx_path (zip-slip) - both just
-    get skipped rather than raising, since this runs from a background
-    drag-and-drop event handler with nothing to show a traceback to."""
-    if not gsx_path:
-        return False
-    try:
-        os.makedirs(gsx_path, exist_ok=True)
-        with zipfile.ZipFile(zip_path) as zf:
-            root = os.path.normpath(gsx_path)
-            for member in zf.namelist():
-                dest = os.path.normpath(os.path.join(gsx_path, member))
-                if dest != root and not dest.startswith(root + os.sep):
-                    return False
-            zf.extractall(gsx_path)
-    except (zipfile.BadZipFile, OSError):
-        return False
-    return True
-
-
-def install_zips(zip_paths, gsx_path):
-    """Installs each dropped zip, returning {installed, failed} counts."""
-    installed = sum(1 for path in zip_paths if install_zip(path, gsx_path))
-    return {"installed": installed, "failed": len(zip_paths) - installed}

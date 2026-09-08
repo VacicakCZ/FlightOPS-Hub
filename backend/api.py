@@ -21,6 +21,7 @@ from . import (
     config_manager,
     exe_xml_manager,
     gsx_profiles,
+    gsx_watcher,
     launch_orchestrator,
     scenery_map,
     scenery_simbrief_match,
@@ -143,19 +144,14 @@ class Api:
         except OSError:
             return {"ok": False}
 
-    def gsx_install_dropped_zips(self, paths):
-        # Called from backend/gsx_drop.py's native drop handler (a
-        # background thread, not the js_api bridge - dropped-file full
-        # paths only exist on the Python side of pywebview's DOM event
-        # API). Still routes through EventBus like everything else that
-        # needs to reach the frontend from a background thread.
-        zip_paths = [p for p in paths if p.lower().endswith(".zip")]
-        if not zip_paths:
-            return
-        result = gsx_profiles.install_zips(zip_paths, self._gsx_path())
-        bus.emit("gsx_zip_installed", result)
-        if result["installed"]:
-            bus.emit("config_changed")
+    def start_gsx_watcher(self):
+        # Called once from flightops_hub.pyw after the window/EventBus are
+        # ready. Reuses config_changed (already listened for by the Scenery
+        # tab) rather than a dedicated event - a GSX folder change should
+        # trigger exactly the same full reload/re-check a Community-path
+        # change does.
+        self._gsx_watcher = gsx_watcher.GsxFolderWatcher(self._gsx_path, lambda: bus.emit("config_changed"))
+        self._gsx_watcher.start()
 
     # --- profiles (kind: "flight" for the Flight tab, "exe" for exe.xml profiles in M3) ---
     def profiles_list(self, kind):
