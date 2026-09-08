@@ -94,11 +94,16 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* flex-start, not center: tabs without a tab-sub line (2 rows) vs with
+     one (3 rows) would otherwise vertically center to different heights,
+     making the icon/label "stair-step" up and down between tabs. Starting
+     everything from the same top padding keeps icon+label at an identical
+     position on every tab regardless of whether a sub-label follows. */
+  justify-content: flex-start;
   gap: 3px;
   min-width: 0;
   min-height: 52px;
-  padding: 7px 3px;
+  padding: 9px 3px 7px;
   border: 1px solid var(--panel-border);
   border-bottom: 3px solid transparent;
   background: var(--tab-bg);
