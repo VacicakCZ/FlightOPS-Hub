@@ -22,6 +22,8 @@ The first time you open FlightOps Hub, a welcome panel walks you through the one
 
 GSX folder and SimBrief username are optional at this stage — you can always set them later in **Settings**. Click **✓ Done** once you're happy to close the panel; it won't reappear.
 
+You'll also notice a few small files appear next to `flightops_hub.exe`: `msfs_apps.json` (your addon list), `msfs_launcher_config.json` (your settings), and `flightops_hub.log` (a runtime log - see **Diagnostics** under Settings below). Keep them next to the exe when you update to a new version and your setup carries over automatically.
+
 ---
 
 ## Tabs

@@ -73,9 +73,10 @@
 
 FlightOps Hub is **100% portable** - no installer, no admin rights needed.
 
-1. Download the latest release `.zip` from [Releases](https://github.com/VacicakCZ/FlightOPS-Hub/releases) or [flightsim.to](https://flightsim.to/addon/114794/flightops-hub).
-2. Extract the archive anywhere on your PC.
-3. Run `flightops_hub.exe`.
+1. Download `flightops_hub.exe` from [Releases](https://github.com/VacicakCZ/FlightOPS-Hub/releases) or [flightsim.to](https://flightsim.to/addon/114794/flightops-hub) and put it in a folder of your choice.
+2. Run it.
+
+A few small files appear next to the exe the first time you run it - `msfs_apps.json` (your addon list), `msfs_launcher_config.json` (your settings), and `flightops_hub.log` (a runtime log, useful for [diagnostics](docs/MANUAL.md#frequently-asked-questions)). Keep them next to the exe and your setup carries over between updates.
 
 > **Note on UAC (Administrator rights):** You do **not** need to run FlightOps Hub itself as administrator. Individual add-ons that require elevated rights can be flagged with "Run as Administrator (UAC)" per-entry in Settings.
 
