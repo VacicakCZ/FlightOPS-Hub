@@ -36,7 +36,7 @@
       </button>
     </nav>
 
-    <button type="button" class="global-update-banner" x-show="$store.app.updateInfo" x-cloak @click="$store.app.setTab('settings')"
+    <button type="button" class="global-update-banner" x-show="$store.app.updateInfo" x-cloak @click="$store.app.goToUpdate()"
             x-text="$store.app.t('update_available_banner', $store.app.updateInfo ? $store.app.updateInfo.version : '')"></button>
 
     <div class="tab-panels">

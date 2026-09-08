@@ -69,6 +69,18 @@ document.addEventListener("alpine:init", () => {
       Api.openUpdatePage();
     },
 
+    // The update notice lives at the bottom of the Settings tab, below the
+    // whole config form - just switching tabs left the user to scroll down
+    // and find it themselves. This expands it and scrolls it into view in
+    // one click, same as the banner already promises.
+    goToUpdate() {
+      this.setTab("settings");
+      this.updateNotesOpen = true;
+      setTimeout(() => {
+        document.querySelector(".update-notice-wrap")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 50);
+    },
+
     async downloadUpdate() {
       if (!this.updateInfo || !this.updateInfo.download_url || this.updateDownloading) return;
       this.updateDownloading = true;
