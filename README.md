@@ -3,6 +3,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/v/release/VacicakCZ/FlightOPS-Hub?style=for-the-badge&color=007acc" alt="Latest Release" />
   <img src="https://img.shields.io/github/downloads/VacicakCZ/FlightOPS-Hub/total?style=for-the-badge&color=28a745" alt="Total Downloads" />
+  <img src="https://img.shields.io/github/actions/workflow/status/VacicakCZ/FlightOPS-Hub/tests.yml?style=for-the-badge&label=tests" alt="Tests" />
   <img src="https://img.shields.io/badge/MSFS-2020%20%7C%202024-blue?style=for-the-badge" alt="MSFS Support" />
   <img src="https://img.shields.io/badge/UI-pywebview%20%2B%20HTML%2FJS-orange?style=for-the-badge" alt="Tech Stack" />
   <img src="https://img.shields.io/github/license/VacicakCZ/FlightOPS-Hub?style=for-the-badge" alt="License" />
@@ -19,7 +20,7 @@
 
 ---
 
-## 🌟 Key Features in v2.0
+## 🌟 Key Features
 
 ### ✈️ Flight & Smart Launch
 * **Smart Launch (SimConnect):** Detects when you actually spawn in the cockpit using live `SimConnect` data and launches delayed add-ons (like FSLTL or REX Atmos) at the right moment - not just after a fixed timer.
@@ -29,16 +30,20 @@
 
 ### 🗺️ Interactive Scenery & SimBrief Integration
 * **Interactive World Map (Leaflet):** Every installed Community scenery plotted by ICAO code. Enable or disable a scenery right from its map marker.
-* **SimBrief Route Validation:** Load your latest SimBrief flight plan and check origin/destination/alternate against your installed sceneries - enable whatever's missing with one click, and see the route drawn on the map.
+* **SimBrief Route Validation:** Load your latest SimBrief flight plan and check origin/destination/alternate against your installed sceneries - enable whatever's missing with one click, see the route drawn on the map, and get a quick summary (planned aircraft, flight time, when the plan was generated) to confirm you're looking at the right one.
 * **GSX (virtuali) Profile Detection:** Each scenery shows whether a matching GSX profile is installed, color-coded:
   * 🟢 **Green:** profile installed, looks like the same developer as the scenery.
   * 🟠 **Orange:** profile installed, developer unconfirmed.
   * 🔴 **Red:** no profile found - click to search flightsim.to directly.
 * **Search** across sceneries (ICAO, name, or country) to jump straight to a specific airport.
+* **Community Folder Health Check:** Catches misplaced installs (a manifest nested one folder level too deep - a common zip-extraction mistake MSFS silently ignores) and duplicate installs (the same package under two or more different folder names). Read-only - nothing is ever moved or deleted automatically.
+* **Disk Usage:** See exactly how much space your Community and disabled-add-ons folders are using, broken down by package.
 
 ### 🛩️ Aircraft & Liveries (Beta)
-* **Smart Grouping:** Toggle aircraft and liveries on/off safely (moves folders in/out of Community - nothing is ever deleted). Liveries are automatically nested under their matching aircraft and developer.
-* **Manual Classification Overrides:** Search, and manually re-assign an aircraft/livery if the automatic detection gets it wrong.
+* **Smart Grouping:** Toggle aircraft and liveries on/off safely (moves folders in/out of Community - nothing is ever deleted). Liveries are automatically nested under their matching aircraft and developer, collapsible per aircraft.
+* **Real Developer Names:** A curated lookup resolves cryptic folder prefixes (`fnx`, `tfdidesign`, ...) to real studio names (Fenix Simulations, TFDi Design, ...) instead of guessing.
+* **Reliable Livery Detection:** Cross-checks a package's actual `aircraft.cfg` wiring - not just its self-reported manifest type - to catch registration/repaint packs that mislabel themselves as standalone aircraft. Ambiguous cases get a dismissible suggestion instead of an automatic change.
+* **Manual Classification Overrides:** Manually re-assign an aircraft/livery (and its parent) if the automatic detection still gets it wrong.
 
 ### ⚙️ AutoStart (`exe.xml`) & System Tools
 * **Safe XML Management:** Enable/disable MSFS's own internal AutoStart add-ons, with custom display names that don't touch the underlying XML tags. Includes a search box for long add-on lists.
@@ -46,9 +51,13 @@
 * **AIRAC Cycle Validation:** Shows whether your installed Navigraph AIRAC cycle is current.
 * **Configurable paths:** Community folder, GSX profiles folder, and the `exe.xml` location itself can all be overridden in Settings if auto-detection ever picks the wrong one.
 
-### 🌍 Languages & Updates
+### 🔧 Settings, Backups & Diagnostics
+* **Backup & Restore:** Export your flight profiles, aircraft classification overrides, and addon list to one portable file - useful before reinstalling or moving to a new PC.
+* **Diagnostics Export:** Bundles your app version, OS info, settings, and a recent activity log into one text file, ready to attach to a GitHub issue.
+* **One-Click Updates:** Checks GitHub Releases on startup and shows a subtle in-app notice - never a popup. Downloading the update goes straight to your Downloads folder, ready to swap in for the running copy (with a confirmation if a file is already there).
+
+### 🌍 Languages
 * Interface available in **English, Czech, German, Spanish, and Chinese** (Czech and English are hand-written; the rest are AI-translated and flagged as such in-app).
-* Checks GitHub Releases on startup and shows a subtle in-app notice - never a popup - when a newer version is available, with the changelog right there to read.
 
 ---
 
@@ -103,11 +112,13 @@ If you want to run the project from source or contribute:
 
 ## 🧪 Tests
 
-Pure-logic backend modules (config migration, GSX detection, scenery scanning, version comparison, ...) have a pytest suite:
+Pure-logic backend modules (config migration, aircraft/scenery classification, GSX detection, SimBrief parsing, backup/diagnostics bundling, version comparison, ...) have a pytest suite, plus a script that checks all 5 locale files stay in sync:
 ```bash
 pip install -r requirements-dev.txt
 pytest
+python scripts/check_locales.py
 ```
+Both run automatically on every push and pull request via GitHub Actions (`.github/workflows/tests.yml`).
 
 ---
 
