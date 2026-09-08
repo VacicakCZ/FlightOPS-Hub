@@ -65,6 +65,17 @@ class Api:
         except OSError:
             return {"ok": False}
 
+    def open_release_page(self):
+        """Opens the GitHub release page for the exact version currently
+        running (not just the generic releases list) - built from
+        APP_VERSION server-side, same "never take an arbitrary URL from
+        the frontend" pattern as open_gsx_search."""
+        try:
+            os.startfile(f"{update_check.REPO_RELEASES_URL}/tag/{APP_VERSION}")
+            return {"ok": True}
+        except OSError:
+            return {"ok": False}
+
     def _update_download_dest_path(self):
         return os.path.join(win_native.downloads_folder(), update_check.RELEASE_ASSET_NAME)
 

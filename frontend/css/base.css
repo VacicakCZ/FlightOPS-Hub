@@ -489,10 +489,21 @@ button.btn.danger {
 }
 
 .version-footer {
+  display: block;
+  width: 100%;
   text-align: center;
   color: var(--text-muted);
   font-size: 11px;
   margin-top: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.version-footer:hover {
+  text-decoration: underline;
+  color: var(--text);
 }
 
 .update-notice-wrap {

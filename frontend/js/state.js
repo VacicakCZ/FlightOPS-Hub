@@ -69,6 +69,10 @@ document.addEventListener("alpine:init", () => {
       Api.openUpdatePage();
     },
 
+    openReleasePage() {
+      Api.openReleasePage();
+    },
+
     // The update notice lives at the bottom of the Settings tab, below the
     // whole config form - just switching tabs left the user to scroll down
     // and find it themselves. This expands it and scrolls it into view in

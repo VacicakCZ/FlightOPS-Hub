@@ -14,8 +14,9 @@ import requests
 
 from .version import APP_VERSION
 
+REPO_RELEASES_URL = "https://github.com/VacicakCZ/FlightOPS-Hub/releases"
 RELEASES_LATEST_URL = "https://api.github.com/repos/VacicakCZ/FlightOPS-Hub/releases/latest"
-UPDATE_PAGE_URL = "https://github.com/VacicakCZ/FlightOPS-Hub/releases/latest"
+UPDATE_PAGE_URL = f"{REPO_RELEASES_URL}/latest"
 RELEASE_ASSET_NAME = "flightops_hub.exe"  # matches release-build.yml's upload step exactly
 _TIMEOUT_S = 6
 _DOWNLOAD_TIMEOUT_S = 30

@@ -193,5 +193,6 @@
   "update_open_btn": "Auf GitHub öffnen",
   "update_overwrite_confirm_message": "Im Downloads-Ordner existiert bereits eine Datei namens flightops_hub.exe. Mit der neuen Version überschreiben?",
   "update_overwrite_confirm_title": "Vorhandene Datei überschreiben?",
-  "usage_close": "Schließen"
+  "usage_close": "Schließen",
+  "version_footer_tt": "Release-Notes dieser Version auf GitHub öffnen"
 }

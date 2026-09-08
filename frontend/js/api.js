@@ -25,6 +25,7 @@ window.Api = (() => {
     appVersion: () => call("app_version"),
     checkForUpdate: () => call("check_for_update"),
     openUpdatePage: () => call("open_update_page"),
+    openReleasePage: () => call("open_release_page"),
     downloadUpdate: (downloadUrl) => call("download_update", downloadUrl),
     updateDownloadTargetExists: () => call("update_download_target_exists"),
 

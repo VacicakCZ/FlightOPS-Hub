@@ -782,7 +782,9 @@
         <button class="btn" @click="exportDiagnostics()" x-text="$store.app.t('diagnostics_export_btn')"></button>
         <p class="hint" x-show="diagnosticsExportMessage" x-text="diagnosticsExportMessage"></p>
 
-        <p class="version-footer" x-text="`FlightOps Hub ${$store.app.version}`"></p>
+        <button type="button" class="version-footer" @click="$store.app.openReleasePage()"
+                :title="$store.app.t('version_footer_tt')"
+                x-text="`FlightOps Hub ${$store.app.version}`"></button>
 
         <div class="update-notice-wrap" x-show="$store.app.updateInfo" x-cloak>
           <button type="button" class="update-notice-toggle" @click="$store.app.updateNotesOpen = !$store.app.updateNotesOpen">
