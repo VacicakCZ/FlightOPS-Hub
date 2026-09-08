@@ -18,6 +18,7 @@ from . import (
     apps_manager,
     airports_data,
     community_detect,
+    community_diagnostics,
     community_paths,
     config_manager,
     exe_xml_manager,
@@ -214,6 +215,21 @@ class Api:
             return {"ok": False}
         primary_disabled = self._resolve_disabled_locations(community_path)[0]
         return self._start_folder_usage_scan(primary_disabled, "disabled_usage_done")
+
+    def scan_community_diagnostics(self):
+        """Structural sanity check of the Community folder - misplaced
+        (one-level-too-deep) manifests and duplicate installs across
+        Community and all known disabled-holding locations. Just manifest.json
+        reads (no byte counting), so unlike the disk-usage scans above this
+        runs synchronously on explicit user request."""
+        community_path = self._config.get("_community_path", "")
+        if not community_path or not os.path.isdir(community_path):
+            return {"no_community": True, "misplaced": [], "duplicates": []}
+
+        disabled_locations = self._resolve_disabled_locations(community_path)
+        misplaced = community_diagnostics.find_misplaced_packages(community_path)
+        duplicates = community_diagnostics.find_duplicate_packages([community_path] + disabled_locations)
+        return {"no_community": False, "misplaced": misplaced, "duplicates": duplicates}
 
     # --- settings: GSX (virtuali) profile folder, for the scenery-tab GSX badge ---
     def _gsx_path(self):

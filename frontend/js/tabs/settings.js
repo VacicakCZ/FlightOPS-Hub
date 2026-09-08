@@ -14,6 +14,8 @@ document.addEventListener("alpine:init", () => {
     folderUsage: { community: null, disabled: null },
     folderUsageScanning: { community: false, disabled: false },
     detectedCommunityPath: null,
+    diagnostics: null,
+    diagnosticsScanning: false,
 
     async init() {
       await window.AppReady;
@@ -150,6 +152,24 @@ document.addEventListener("alpine:init", () => {
 
     closeUsage(kind) {
       this.folderUsage[kind] = null;
+    },
+
+    async scanCommunityDiagnostics() {
+      this.diagnostics = null;
+      this.diagnosticsScanning = true;
+      try {
+        this.diagnostics = await Api.scanCommunityDiagnostics();
+      } finally {
+        this.diagnosticsScanning = false;
+      }
+    },
+
+    closeDiagnostics() {
+      this.diagnostics = null;
+    },
+
+    get diagnosticsHasIssues() {
+      return !!this.diagnostics && (this.diagnostics.misplaced.length > 0 || this.diagnostics.duplicates.length > 0);
     },
 
     topPackages(kind) {

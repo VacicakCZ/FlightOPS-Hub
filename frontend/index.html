@@ -643,6 +643,39 @@
           </template>
         </div>
 
+        <button type="button" class="btn" :disabled="!communityPath || diagnosticsScanning"
+                @click="scanCommunityDiagnostics()"
+                x-text="diagnosticsScanning ? $store.app.t('folder_usage_scanning') : $store.app.t('diagnostics_btn')"></button>
+
+        <div class="community-usage" x-show="diagnostics" x-cloak>
+          <div class="community-usage-head">
+            <p class="hint" x-text="diagnosticsHasIssues ? $store.app.t('diagnostics_issues_found') : $store.app.t('diagnostics_none_found')"></p>
+            <button type="button" class="btn icon-btn" @click="closeDiagnostics()" :title="$store.app.t('usage_close')">✕</button>
+          </div>
+
+          <template x-if="diagnostics && diagnostics.misplaced.length > 0">
+            <div>
+              <p class="hint" x-text="$store.app.t('diagnostics_misplaced_hint')"></p>
+              <template x-for="item in (diagnostics ? diagnostics.misplaced : [])" :key="item.folder_name">
+                <div class="community-usage-row">
+                  <span class="community-usage-name" x-text="item.folder_name + ' / ' + item.nested_folder"></span>
+                </div>
+              </template>
+            </div>
+          </template>
+
+          <template x-if="diagnostics && diagnostics.duplicates.length > 0">
+            <div>
+              <p class="hint" x-text="$store.app.t('diagnostics_duplicates_hint')"></p>
+              <template x-for="item in (diagnostics ? diagnostics.duplicates : [])" :key="item.title">
+                <div class="community-usage-row">
+                  <span class="community-usage-name" x-text="item.title + ': ' + item.folders.join(', ')"></span>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+
         <h3 x-text="$store.app.t('simbrief_username_label')"></h3>
         <p class="hint" x-text="$store.app.t('simbrief_username_hint')"></p>
         <div class="field-row">
