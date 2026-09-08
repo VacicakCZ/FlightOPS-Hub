@@ -178,5 +178,7 @@
   "update_download_error": "Download failed: {}",
   "update_downloading": "Downloading...",
   "update_open_btn": "Open on GitHub",
+  "update_overwrite_confirm_message": "A file named flightops_hub.exe already exists in your Downloads folder. Overwrite it with the new version?",
+  "update_overwrite_confirm_title": "Overwrite existing file?",
   "usage_close": "Close"
 }

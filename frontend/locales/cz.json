@@ -178,5 +178,7 @@
   "update_download_error": "Stažení selhalo: {}",
   "update_downloading": "Stahuji...",
   "update_open_btn": "Otevřít na GitHubu",
+  "update_overwrite_confirm_message": "Ve složce Downloads už soubor flightops_hub.exe existuje. Přepsat ho novou verzí?",
+  "update_overwrite_confirm_title": "Přepsat existující soubor?",
   "usage_close": "Zavřít"
 }

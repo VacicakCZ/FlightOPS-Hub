@@ -58,10 +58,25 @@ class Api:
         except OSError:
             return {"ok": False}
 
-    def download_update(self, download_url, version):
+    def _update_download_dest_path(self):
+        return os.path.join(win_native.downloads_folder(), update_check.RELEASE_ASSET_NAME)
+
+    def update_download_target_exists(self):
+        """Named exactly like the app's own exe (see download_update below)
+        so a Downloads folder that already has a file there - a previous
+        download, or the user's actual installed copy if that's where they
+        keep it - needs a confirmation before it gets silently overwritten."""
+        return os.path.isfile(self._update_download_dest_path())
+
+    def download_update(self, download_url):
         """Kicks off a background download of the new release exe straight
         into the user's Downloads folder, so grabbing an update is one click
-        instead of finding the right asset on the GitHub release page.
+        instead of finding the right asset on the GitHub release page. Named
+        exactly like the app's own exe (not stamped with a version) so it's
+        a plain drag-and-drop-to-replace over the installed copy - no manual
+        rename needed first. The frontend is expected to have already
+        confirmed with the user via update_download_target_exists() if
+        something is already sitting at that path.
         Progress arrives via update_download_progress, completion via
         update_download_done - once it succeeds, Explorer opens with the
         new exe highlighted so it's obvious where it landed."""
@@ -71,8 +86,7 @@ class Api:
             return {"ok": False, "error": "no_download_url"}
 
         self._update_download_active = True
-        safe_version = "".join(c for c in version if c.isalnum() or c in ".-_") or "latest"
-        dest_path = os.path.join(win_native.downloads_folder(), f"flightops_hub_{safe_version}.exe")
+        dest_path = self._update_download_dest_path()
 
         def on_progress(downloaded, total):
             bus.emit("update_download_progress", {"downloaded": downloaded, "total": total})

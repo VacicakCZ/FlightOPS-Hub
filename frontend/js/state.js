@@ -83,10 +83,19 @@ document.addEventListener("alpine:init", () => {
 
     async downloadUpdate() {
       if (!this.updateInfo || !this.updateInfo.download_url || this.updateDownloading) return;
+
+      if (await Api.updateDownloadTargetExists()) {
+        const proceed = await Modal.confirmDialog(
+          this.t("update_overwrite_confirm_title"),
+          this.t("update_overwrite_confirm_message")
+        );
+        if (!proceed) return;
+      }
+
       this.updateDownloading = true;
       this.updateDownloadError = null;
       this.updateDownloadProgress = null;
-      const result = await Api.downloadUpdate(this.updateInfo.download_url, this.updateInfo.version);
+      const result = await Api.downloadUpdate(this.updateInfo.download_url);
       if (!result.ok) {
         this.updateDownloading = false;
         this.updateDownloadError = result.error;

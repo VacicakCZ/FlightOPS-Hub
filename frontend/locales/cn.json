@@ -178,5 +178,7 @@
   "update_download_error": "下载失败：{}",
   "update_downloading": "正在下载...",
   "update_open_btn": "在 GitHub 上查看",
+  "update_overwrite_confirm_message": "下载文件夹中已存在名为 flightops_hub.exe 的文件，要用新版本覆盖它吗？",
+  "update_overwrite_confirm_title": "覆盖现有文件？",
   "usage_close": "关闭"
 }
