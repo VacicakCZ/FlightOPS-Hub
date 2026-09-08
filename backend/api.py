@@ -143,6 +143,20 @@ class Api:
         except OSError:
             return {"ok": False}
 
+    def gsx_install_dropped_zips(self, paths):
+        # Called from backend/gsx_drop.py's native drop handler (a
+        # background thread, not the js_api bridge - dropped-file full
+        # paths only exist on the Python side of pywebview's DOM event
+        # API). Still routes through EventBus like everything else that
+        # needs to reach the frontend from a background thread.
+        zip_paths = [p for p in paths if p.lower().endswith(".zip")]
+        if not zip_paths:
+            return
+        result = gsx_profiles.install_zips(zip_paths, self._gsx_path())
+        bus.emit("gsx_zip_installed", result)
+        if result["installed"]:
+            bus.emit("config_changed")
+
     # --- profiles (kind: "flight" for the Flight tab, "exe" for exe.xml profiles in M3) ---
     def profiles_list(self, kind):
         return self._config.get(config_manager.PROFILE_STORES[kind], {})

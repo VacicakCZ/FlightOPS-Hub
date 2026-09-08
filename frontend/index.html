@@ -104,8 +104,14 @@
         </template>
       </section>
 
-      <section x-show="$store.app.activeTab === 'scenery'" x-data="sceneryTab">
+      <section id="scenery-drop-zone" x-show="$store.app.activeTab === 'scenery'" x-data="sceneryTab"
+               :class="{ 'drop-active': dragActive }"
+               @dragenter.prevent="dragActive = true"
+               @dragover.prevent="dragActive = true"
+               @dragleave.prevent="dragActive = false"
+               @drop.prevent="dragActive = false">
         <h2 x-text="$store.app.t('tab_scenery').trim()"></h2>
+        <p class="hint gsx-drop-hint" x-text="$store.app.t('gsx_drop_hint')"></p>
 
         <template x-if="applying && !dataLoaded">
           <div>
@@ -158,7 +164,7 @@
                       <span class="gsx-tag gsx-match" x-show="leg.gsx_status === 'installed_match'"
                             :title="$store.app.t('scenery_gsx_match_tt')">GSX</span>
                       <span class="gsx-tag gsx-unmatched" x-show="leg.gsx_status === 'installed_unmatched'"
-                            :title="$store.app.t('scenery_gsx_unmatched_tt')">GSX<span class="gsx-warn">!</span></span>
+                            :title="$store.app.t('scenery_gsx_unmatched_tt')">GSX</span>
                       <button type="button" class="gsx-tag gsx-missing" x-show="leg.gsx_status === 'missing'"
                               @click.stop.prevent="openGsxSearch(leg.icao)"
                               :title="$store.app.t('scenery_gsx_missing_tt')">GSX</button>
@@ -238,7 +244,7 @@
                                       <span class="gsx-tag gsx-match" x-show="record.gsx_status === 'installed_match'"
                                             :title="$store.app.t('scenery_gsx_match_tt')">GSX</span>
                                       <span class="gsx-tag gsx-unmatched" x-show="record.gsx_status === 'installed_unmatched'"
-                                            :title="$store.app.t('scenery_gsx_unmatched_tt')">GSX<span class="gsx-warn">!</span></span>
+                                            :title="$store.app.t('scenery_gsx_unmatched_tt')">GSX</span>
                                       <button type="button" class="gsx-tag gsx-missing" x-show="record.gsx_status === 'missing'"
                                               @click.stop.prevent="openGsxSearch(record.icao)"
                                               :title="$store.app.t('scenery_gsx_missing_tt')">GSX</button>

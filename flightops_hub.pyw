@@ -3,7 +3,7 @@ import traceback
 
 import webview
 
-from backend import config_manager, paths, win_native
+from backend import config_manager, gsx_drop, paths, win_native
 from backend.api import Api
 from backend.events import bus
 from backend.version import APP_VERSION
@@ -89,6 +89,7 @@ def main():
         )
         window.events.closing += lambda: _on_closing(window, config)
         bus.bind(window)
+        gsx_drop.setup(window, api)
 
         webview.start(icon=paths.resource_path("OIG3.ico"))
     except Exception:

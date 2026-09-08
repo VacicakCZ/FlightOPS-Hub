@@ -21,6 +21,7 @@ document.addEventListener("alpine:init", () => {
     _markersLayer: null,
     _routeLayer: null,
     searchQuery: "",
+    dragActive: false,
 
     async init() {
       await window.AppReady;
@@ -40,6 +41,19 @@ document.addEventListener("alpine:init", () => {
           await this.loadMapData();
           this.renderMap();
         }
+      });
+
+      // A .zip dropped onto this tab (backend/gsx_drop.py) was just
+      // extracted into the GSX folder - config_changed (emitted right
+      // alongside this) already triggers the reload above, this is just
+      // the confirmation message.
+      FlightOpsEvents.on("gsx_zip_installed", ({ installed, failed }) => {
+        this.statusText = failed
+          ? this.$store.app.t("gsx_drop_result_mixed", installed, failed)
+          : this.$store.app.t("gsx_drop_result_ok", installed);
+        setTimeout(() => {
+          this.statusText = "";
+        }, 5000);
       });
 
       // Theme can change (Settings, or the OS-level setting while on
@@ -417,11 +431,7 @@ document.addEventListener("alpine:init", () => {
         const tag = document.createElement("span");
         tag.className = "gsx-tag gsx-unmatched";
         tag.title = app.t("scenery_gsx_unmatched_tt");
-        tag.appendChild(document.createTextNode("GSX"));
-        const warn = document.createElement("span");
-        warn.className = "gsx-warn";
-        warn.textContent = "!";
-        tag.appendChild(warn);
+        tag.textContent = "GSX";
         return tag;
       }
       // "missing" - clickable, opens a flightsim.to GSX Pro search for this ICAO
