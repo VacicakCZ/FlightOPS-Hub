@@ -634,6 +634,21 @@ button.btn.danger {
   color: var(--text-muted);
 }
 
+.gsx-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 10px;
+}
+
+.gsx-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
 .simbrief-panel {
   margin-bottom: 10px;
   padding: 8px 10px;

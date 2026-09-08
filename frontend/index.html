@@ -141,6 +141,12 @@
               </button>
             </div>
 
+            <div class="gsx-legend">
+              <span class="gsx-legend-item"><span class="gsx-tag gsx-match">GSX</span> <span x-text="$store.app.t('gsx_legend_match')"></span></span>
+              <span class="gsx-legend-item"><span class="gsx-tag gsx-unmatched">GSX</span> <span x-text="$store.app.t('gsx_legend_unmatched')"></span></span>
+              <span class="gsx-legend-item"><span class="gsx-tag gsx-missing">GSX</span> <span x-text="$store.app.t('gsx_legend_missing')"></span></span>
+            </div>
+
             <div class="simbrief-panel">
               <button class="btn" :disabled="!simbriefUsernameSet || simbriefChecking || applying"
                       @click="checkSimbrief()"
