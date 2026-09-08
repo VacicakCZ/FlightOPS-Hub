@@ -9,6 +9,7 @@ document.addEventListener("alpine:init", () => {
     language: "EN",
     config: {},
     strings: {},
+    languages: [],
     apps: {},
     uiScale: 100,
     version: "",
@@ -22,9 +23,15 @@ document.addEventListener("alpine:init", () => {
       this.applyUiScale(this.uiScale);
       this.apps = await Api.appsList();
 
-      const languages = await I18n.loadLanguages();
+      // Stored on the reactive store (not read from I18n.getLanguages()
+      // directly in the template) for the same reason `strings` lives
+      // here: I18n.loadLanguages() populates a plain module-level array,
+      // which Alpine's x-for has no way to know changed once the fetch
+      // resolves - it would render zero <option>s forever, since the
+      // first (synchronous) mount pass runs before this await settles.
+      this.languages = await I18n.loadLanguages();
       const requestedLang = this.config._language || "EN";
-      const lang = languages.some((l) => l.code === requestedLang) ? requestedLang : "EN";
+      const lang = this.languages.some((l) => l.code === requestedLang) ? requestedLang : "EN";
       await this.setLanguage(lang, /* persist */ false);
     },
 

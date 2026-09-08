@@ -28,14 +28,8 @@ def _show_already_running_message():
     win_native.message_box("FlightOps Hub", text)
 
 
-def _on_closing(window, config):
-    config.update({
-        "_window_width": window.width,
-        "_window_height": window.height,
-        "_window_x": window.x,
-        "_window_y": window.y,
-    })
-    config_manager.save_config(config)
+def _on_closing(window, api):
+    api.save_window_geometry(window.width, window.height, window.x, window.y)
 
 
 _STARTUP_FAILURE_MESSAGES = {
@@ -87,7 +81,7 @@ def main():
             resizable=True,
             min_size=(420, 600),
         )
-        window.events.closing += lambda: _on_closing(window, config)
+        window.events.closing += lambda: _on_closing(window, api)
         bus.bind(window)
         api.start_gsx_watcher()
 

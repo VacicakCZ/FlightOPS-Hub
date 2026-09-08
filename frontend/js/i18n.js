@@ -1,25 +1,28 @@
 // Fetches locales/languages.json and locales/<lang>.json. Holds no reactive
-// state itself - the Alpine store (state.js) owns the "current strings" so
-// that x-text bindings using $store.app.t(...) actually re-render on
-// language change (Alpine only tracks reads through its own reactive
-// proxies, not plain module-level variables).
+// state itself - the Alpine store (state.js) owns both "current strings"
+// and "languages" so that x-text/x-for bindings driven by $store.app
+// actually re-render once these async loads resolve (Alpine only tracks
+// reads through its own reactive proxies, not plain module-level
+// variables - a plain-array version of this exact "languages" list once
+// caused the Settings language <select> to permanently render zero
+// <option>s, since its x-for ran once before the fetch had resolved).
 window.I18n = (() => {
-  let languages = [];
-  const cache = {};
+  let languagesCache = null;
+  const stringsCache = {};
 
   async function loadLanguages() {
-    if (languages.length) return languages;
+    if (languagesCache) return languagesCache;
     const res = await fetch("locales/languages.json");
-    languages = await res.json();
-    return languages;
+    languagesCache = await res.json();
+    return languagesCache;
   }
 
   async function loadStrings(lang) {
-    if (cache[lang]) return cache[lang];
+    if (stringsCache[lang]) return stringsCache[lang];
     const res = await fetch(`locales/${lang.toLowerCase()}.json`);
-    cache[lang] = await res.json();
-    return cache[lang];
+    stringsCache[lang] = await res.json();
+    return stringsCache[lang];
   }
 
-  return { loadLanguages, loadStrings, getLanguages: () => languages };
+  return { loadLanguages, loadStrings };
 })();

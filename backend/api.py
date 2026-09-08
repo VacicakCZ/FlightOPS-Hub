@@ -144,6 +144,17 @@ class Api:
         except OSError:
             return {"ok": False}
 
+    def save_window_geometry(self, width, height, x, y):
+        # Called directly with the live window's own dimensions (not a
+        # config_get()/config_set() round trip) from flightops_hub.pyw on
+        # close - that snapshot dict includes the computed-not-persisted
+        # _gsx_profiles_path_effective field (see _config_snapshot), and an
+        # earlier version of this that saved a captured snapshot dict
+        # instead of self._config baked that field permanently into the
+        # real config file on every close.
+        self._config.update({"_window_width": width, "_window_height": height, "_window_x": x, "_window_y": y})
+        config_manager.save_config(self._config)
+
     def open_gsx_folder(self):
         path = self._gsx_path()
         if not path:

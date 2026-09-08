@@ -11,7 +11,7 @@ document.addEventListener("alpine:init", () => {
     errorKey: "",
 
     get languages() {
-      return I18n.getLanguages();
+      return this.$store.app.languages;
     },
 
     get communityPath() {
