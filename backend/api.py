@@ -67,6 +67,7 @@ class Api:
         # that field would vanish after any unrelated config_set() call.
         result = dict(self._config)
         result["_gsx_profiles_path_effective"] = self._gsx_path()
+        result["_exe_xml_path_effective"] = self._current_exe_xml_path()
         return result
 
     def config_get(self):
@@ -208,10 +209,22 @@ class Api:
 
     # --- exe.xml (MSFS AutoStart) ---
     def _current_exe_xml_path(self):
+        override = self._config.get("_exe_xml_path_override")
+        if override:
+            return override
         return exe_xml_manager.get_exe_xml_path(
             self._config.get("_sim_version", "MSFS 2024"),
             self._config.get("_sim_platform", "Steam"),
         )
+
+    def settings_set_exe_xml_path(self, path):
+        self._update_config({"_exe_xml_path_override": os.path.normpath(path)})
+        return self._config_snapshot()
+
+    def settings_reset_exe_xml_path(self):
+        self._config.pop("_exe_xml_path_override", None)
+        self._save_config()
+        return self._config_snapshot()
 
     def exe_list(self):
         xml_path = self._current_exe_xml_path()

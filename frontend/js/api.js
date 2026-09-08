@@ -49,6 +49,8 @@ window.Api = (() => {
     exeToggle: (uniqueKey, enabled) => call("exe_toggle", uniqueKey, enabled),
     exeRename: (uniqueKey, originalName, newName) => call("exe_rename", uniqueKey, originalName, newName),
     exeApplyProfile: (name) => call("exe_apply_profile", name),
+    setExeXmlPath: (path) => call("settings_set_exe_xml_path", path),
+    resetExeXmlPath: () => call("settings_reset_exe_xml_path"),
 
     sceneryScan: () => call("scenery_scan"),
     sceneryIsBusy: () => call("scenery_is_busy"),
@@ -67,6 +69,12 @@ window.Api = (() => {
     launchAll: (appStates, profileName) => call("launch_all", appStates, profileName),
 
     browseFolder: (initialDir) => call("dialogs_browse_folder", initialDir || ""),
-    browseFile: (initialDir) => call("dialogs_browse_file", initialDir || ""),
+    // fileTypes lets a caller override the default "Executables (*.exe)"
+    // filter (e.g. for picking exe.xml itself) - omitted entirely rather
+    // than passed as null/undefined when not given, so the Python side's
+    // own default still applies.
+    browseFile: (initialDir, fileTypes) => (
+      fileTypes ? call("dialogs_browse_file", initialDir || "", fileTypes) : call("dialogs_browse_file", initialDir || "")
+    ),
   };
 })();

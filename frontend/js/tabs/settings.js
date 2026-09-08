@@ -26,6 +26,10 @@ document.addEventListener("alpine:init", () => {
       return this.$store.app.config._gsx_profiles_path_effective || "";
     },
 
+    get exeXmlPath() {
+      return this.$store.app.config._exe_xml_path_effective || "";
+    },
+
     get simVersion() {
       return this.$store.app.config._sim_version || "MSFS 2024";
     },
@@ -86,6 +90,26 @@ document.addEventListener("alpine:init", () => {
 
     async resetGsxPath() {
       this.$store.app.config = await Api.resetGsxPath();
+      FlightOpsEvents.dispatch({ type: "config_changed" });
+    },
+
+    // exe.xml path is picked directly (not a folder) - initial_dir needs
+    // its containing folder, or the native dialog would be pointed at a
+    // nonexistent "folder" (the full file path).
+    _dirname(path) {
+      const idx = path.lastIndexOf("\\");
+      return idx >= 0 ? path.slice(0, idx) : "";
+    },
+
+    async browseExeXmlPath() {
+      const path = await Api.browseFile(this._dirname(this.exeXmlPath), ["XML files (*.xml)"]);
+      if (!path) return;
+      this.$store.app.config = await Api.setExeXmlPath(path);
+      FlightOpsEvents.dispatch({ type: "config_changed" });
+    },
+
+    async resetExeXmlPath() {
+      this.$store.app.config = await Api.resetExeXmlPath();
       FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 

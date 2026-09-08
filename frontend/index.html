@@ -513,6 +513,14 @@
           </div>
         </div>
 
+        <h3 x-text="$store.app.t('exe_xml_path_title')"></h3>
+        <p class="hint" x-text="$store.app.t('exe_xml_path_hint')"></p>
+        <div class="path-row">
+          <input type="text" readonly :value="exeXmlPath" :placeholder="$store.app.t('exe_xml_path_placeholder')" />
+          <button class="btn" @click="browseExeXmlPath()" x-text="$store.app.t('btn_browse')"></button>
+          <button class="btn" @click="resetExeXmlPath()" x-text="$store.app.t('exe_xml_path_reset_btn')"></button>
+        </div>
+
         <div class="field-row">
           <label x-text="$store.app.t('post_launch_label')"></label>
           <select @change="savePostLaunch($event.target.value)">
