@@ -5,6 +5,7 @@ text building only; the Api layer handles the file dialog, OS info lookup,
 and log reading (see app_logging.read_recent_lines).
 """
 import json
+import re
 import time
 
 from .version import APP_VERSION
@@ -17,8 +18,24 @@ from .version import APP_VERSION
 # needed to diagnose a bug - whether it's set at all is enough signal.
 _REDACTED_KEYS = {"_simbrief_username"}
 
+# Windows profile paths (C:\Users\<name>\...) show up all over the place
+# here - the Community/disabled/GSX/exe.xml paths in the config, and any
+# log line that happens to mention a file path (e.g. "Update download
+# finished: C:\Users\<name>\Downloads\..."). Rather than track down every
+# individual field/log line that could contain one, this blanket-redacts
+# the account name segment wherever it appears in the final report text,
+# keeping the rest of the path intact since that part is actually useful
+# for diagnosis. \\+ (not \\) since backslashes come through doubled once
+# the config has gone through json.dumps (a raw log line has single
+# backslashes, a JSON-serialized path has "\\\\" per separator).
+_WINDOWS_USER_PATH_RE = re.compile(r'([A-Za-z]:\\+Users\\+)([^\\"\r\n]+)')
 
-def _redact(config):
+
+def _redact_windows_username(text):
+    return _WINDOWS_USER_PATH_RE.sub(lambda m: m.group(1) + "<user>", text)
+
+
+def _redact_config(config):
     redacted = dict(config)
     for key in _REDACTED_KEYS:
         if redacted.get(key):
@@ -33,12 +50,12 @@ def build_report(config, os_info, log_tail):
         f"OS: {os_info}",
         "",
         "--- Config ---",
-        json.dumps(_redact(config), indent=2, ensure_ascii=False, sort_keys=True),
+        json.dumps(_redact_config(config), indent=2, ensure_ascii=False, sort_keys=True),
         "",
         "--- Recent log ---",
         log_tail or "(no log file yet)",
     ]
-    return "\n".join(lines)
+    return _redact_windows_username("\n".join(lines))
 
 
 def default_filename():
