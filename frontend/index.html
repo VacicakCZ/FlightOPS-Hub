@@ -456,6 +456,7 @@
               <option :value="lang.code" :selected="lang.code === $store.app.language" x-text="lang.label"></option>
             </template>
           </select>
+          <p class="hint" x-show="$store.app.language !== 'CZ' && $store.app.language !== 'EN'" x-text="$store.app.t('lang_ai_notice')"></p>
         </div>
 
         <div class="field-row">
