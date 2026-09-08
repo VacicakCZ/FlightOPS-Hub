@@ -52,6 +52,25 @@ def test_prettify_dev_key_capitalizes_first_letter_only():
     assert scenery_data._prettify_dev_key("") == ""
 
 
+# --- _looks_like_a_livery_by_name (weak text-only "suggestion" signal,
+# separate from the reliable base_container-based reclassification) ---
+
+def test_looks_like_a_livery_by_name_matches_livery_word():
+    assert scenery_data._looks_like_a_livery_by_name("livery-c750-N750XC-2024", "Cessna Citation X | N750XC") is True
+
+
+def test_looks_like_a_livery_by_name_matches_us_n_number():
+    assert scenery_data._looks_like_a_livery_by_name("some-pack", "N707RA Repaint") is True
+
+
+def test_looks_like_a_livery_by_name_matches_icao_style_registration():
+    assert scenery_data._looks_like_a_livery_by_name("headwind-a330neo-Lufthansa D-AIKL", "Airbus A330-900") is True
+
+
+def test_looks_like_a_livery_by_name_false_for_normal_aircraft_name():
+    assert scenery_data._looks_like_a_livery_by_name("fnx-aircraft-319-321", "Fenix Airbus A319 & A321") is False
+
+
 # --- resolve_disabled_locations ---
 
 def test_resolve_disabled_locations_creates_default_sibling_folder(tmp_path):
@@ -354,3 +373,53 @@ def test_livery_declared_package_is_unaffected_by_reclassification_check(tmp_pat
 
     assert [r["folder_name"] for r in aircraft] == ["pmdg-aircraft-77w"]
     assert liveries[0]["parent_aircraft"] == "pmdg-aircraft-77w"
+
+
+def test_self_contained_aircraft_that_looks_like_a_repaint_is_flagged_suspected_livery(tmp_path):
+    # No external base_container here (self-contained package, e.g. a
+    # payware repaint bundling a full copy) so it stays classified AIRCRAFT -
+    # but its name matches the weak text heuristic, so it should carry the
+    # suggestion flag for the UI to surface (never auto-reclassified by it).
+    community = tmp_path / "Community"
+    community.mkdir()
+    _make_aircraft_package(
+        community, "livery-c750-N750XC-2024", "Cessna Citation X | N750XC", content_type="AIRCRAFT",
+        simobjects={"livery-c750-N750XC-2024": None},
+    )
+
+    aircraft, _ = scenery_data.scan_aircraft_and_liveries(str(community), [])
+
+    assert aircraft[0]["suspected_livery"] is True
+
+
+def test_normal_aircraft_package_is_not_flagged_suspected_livery(tmp_path):
+    community = tmp_path / "Community"
+    community.mkdir()
+    _make_aircraft_package(
+        community, "pmdg-aircraft-77w", "PMDG 777-300ER", content_type="AIRCRAFT",
+        simobjects={"PMDG 777-300ER": None},
+    )
+
+    aircraft, _ = scenery_data.scan_aircraft_and_liveries(str(community), [])
+
+    assert aircraft[0]["suspected_livery"] is False
+
+
+def test_reclassified_livery_does_not_carry_the_suspected_livery_flag(tmp_path):
+    # Once a package is reclassified to LIVERY by the reliable
+    # base_container check, the weak name-based flag is irrelevant - it
+    # only applies to records that end up AIRCRAFT.
+    community = tmp_path / "Community"
+    community.mkdir()
+    _make_aircraft_package(
+        community, "base-aircraft-320", "Base Airbus A320", content_type="AIRCRAFT",
+        simobjects={"Base_A320": None},
+    )
+    _make_aircraft_package(
+        community, "livery-a320-fake-reg", "A320 Fake Registration", content_type="AIRCRAFT",
+        simobjects={"livery-a320-fake-reg": "Base_A320"},
+    )
+
+    _, liveries = scenery_data.scan_aircraft_and_liveries(str(community), [])
+
+    assert liveries[0]["suspected_livery"] is False

@@ -84,6 +84,19 @@ document.addEventListener("alpine:init", () => {
       this._applyScanResult(await Api.aircraftSetTypeOverride(record.folder_name, value === "auto" ? null : value));
     },
 
+    // --- "suspected_livery" hint (see scenery_data.py) - a weak, name-only
+    // signal shown for AIRCRAFT-declared packages that look like a
+    // registration/repaint pack. Never applied automatically - the user
+    // approves it (same effect as the manual "Livery" override), opens the
+    // full manual editor instead, or dismisses it outright. ---
+    async approveLiverySuggestion(record) {
+      await this.setTypeOverride(record, "livery");
+    },
+
+    async dismissLiverySuggestion(record) {
+      this._applyScanResult(await Api.aircraftDismissLiverySuggestion(record.folder_name));
+    },
+
     async setParentOverride(record, value) {
       this._applyScanResult(await Api.aircraftSetParentOverride(record.folder_name, value === "auto" ? null : value));
     },

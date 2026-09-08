@@ -8,15 +8,19 @@ scenery_data.py itself (which stays unmodified).
 """
 
 
-def apply_overrides(aircraft, liveries, type_overrides, parent_overrides):
+def apply_overrides(aircraft, liveries, type_overrides, parent_overrides, dismissed_suggestions=None):
     """type_overrides: {folder_name: "aircraft"|"livery"} - reclassifies a
     package regardless of what its own manifest said.
     parent_overrides: {folder_name: parent_folder_name} where "" means
     "explicitly unassigned" and an absent key means "use the heuristic
     (base_container) result".
+    dismissed_suggestions: folder_names the user has dismissed the
+    "suspected_livery" hint for (see scenery_data.py) - stops the hint from
+    showing again without forcing any actual reclassification.
 
     Returns (aircraft, liveries) - new lists, inputs are not mutated.
     """
+    dismissed_suggestions = dismissed_suggestions or set()
     combined = {r["folder_name"]: r for r in aircraft + liveries}
     original_aircraft_folders = {r["folder_name"] for r in aircraft}
 
@@ -36,6 +40,11 @@ def apply_overrides(aircraft, liveries, type_overrides, parent_overrides):
         record = dict(record)
         if is_aircraft(folder_name):
             record.pop("parent_aircraft", None)
+            # Once the user has made any explicit decision about this
+            # package (an override either way, or an explicit dismissal),
+            # the suggestion has done its job - stop nagging about it.
+            if folder_name in type_overrides or folder_name in dismissed_suggestions:
+                record["suspected_livery"] = False
             result_aircraft.append(record)
         else:
             if folder_name in parent_overrides:

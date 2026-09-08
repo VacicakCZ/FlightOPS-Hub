@@ -564,6 +564,27 @@ def _is_actually_a_livery(pkg_path):
     return False
 
 
+# Registration/tail-number-shaped token, e.g. "D-AIKL", "B-6113", "N707RA" -
+# common in repaint pack names, but this is just a text pattern (unlike
+# _is_actually_a_livery's filesystem fact) and can be wrong in either
+# direction, so it is only ever used to *suggest* a fix for the user to
+# confirm, never to reclassify automatically.
+_REGISTRATION_RE = re.compile(r'\b([A-Z]{1,2}-[A-Z0-9]{3,5}|N\d{1,5}[A-Z]{0,2})\b')
+
+
+def _looks_like_a_livery_by_name(folder_name, display_name):
+    """Weak, text-only signal for an AIRCRAFT-declared package that survived
+    _is_actually_a_livery (i.e. is a genuinely self-contained package with no
+    external base_container - common for payware repaints that bundle a full
+    copy instead of a real base_container livery) but still looks like a
+    registration/repaint pack by name. Only meant to flag a suggestion in the
+    UI, never to auto-reclassify."""
+    combined = f"{folder_name} {display_name}"
+    if re.search(r'\bliver(y|ies)\b', combined, re.IGNORECASE):
+        return True
+    return bool(_REGISTRATION_RE.search(combined))
+
+
 def scan_aircraft_and_liveries(community_path, disabled_paths):
     """Vrati (aircraft, liveries) - dva seznamy zaznamu
     {folder_name, display_name, developer, enabled}, seskupitelne podle
@@ -587,6 +608,14 @@ def scan_aircraft_and_liveries(community_path, disabled_paths):
     prekvalifikuje se na LIVERY - tomuhle se addon nemuze "priblbnout" tak
     snadno jako manifestu, protoze bez spravneho base_container by v MSFS
     vubec nefungoval.
+
+    Zbyle AIRCRAFT zaznamy (samostatne baliky bez externiho base_container -
+    typicky payware repainty distribuovane jako plna kopie) navic nesou
+    "suspected_livery" - slaby, jen textovy signal (nazev pripominajici
+    registraci/liverku, viz _looks_like_a_livery_by_name). Na rozdil od
+    base_container faktu vyse se timhle NIC automaticky neprekvalifikuje -
+    je to jen navrh pro uzivatele, at si to ve UI potvrdi, rucne nastavi
+    jinak, nebo ignoruje.
 
     Stejny princip jako scan_scenery_packages - poloha na disku = stav.
 
@@ -638,6 +667,7 @@ def scan_aircraft_and_liveries(community_path, disabled_paths):
                 "dev_key": dev_key,
                 "enabled": enabled,
                 "parent_aircraft": None,
+                "suspected_livery": content_type == "AIRCRAFT" and _looks_like_a_livery_by_name(entry.name, display_name),
                 "_current_path": entry.path,
             }
             target = aircraft_by_name if content_type == "AIRCRAFT" else livery_by_name

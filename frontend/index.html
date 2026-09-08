@@ -412,9 +412,22 @@
                                       <input type="checkbox" :checked="isEnabled(record)" @change="onToggleAircraft(record)" />
                                       <span x-text="record.display_name"></span>
                                       <span class="type-tag" x-show="record.type_hint" x-text="record.type_hint"></span>
+                                      <span class="suspect-badge" x-show="record.suspected_livery" title="⚠️">⚠️</span>
                                     </label>
                                     <button class="btn icon-btn" @click="toggleOverrideEditor(record.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>
                                   </div>
+
+                                  <template x-if="record.suspected_livery">
+                                    <div class="livery-suggestion">
+                                      <span x-text="$store.app.t('aircraft_suspected_livery_hint')"></span>
+                                      <div class="livery-suggestion-actions">
+                                        <button class="btn" @click="approveLiverySuggestion(record)" x-text="$store.app.t('aircraft_suspected_livery_approve')"></button>
+                                        <button class="btn" @click="toggleOverrideEditor(record.folder_name)" x-text="$store.app.t('aircraft_suspected_livery_manual')"></button>
+                                        <button class="btn icon-btn" @click="dismissLiverySuggestion(record)" :title="$store.app.t('aircraft_suspected_livery_ignore')">✕</button>
+                                      </div>
+                                    </div>
+                                  </template>
+
                                   <template x-if="isOverrideOpen(record.folder_name)">
                                     <div class="override-editor">
                                       <div class="override-field">

@@ -73,6 +73,7 @@ window.Api = (() => {
     aircraftApply: (desiredStates) => call("aircraft_apply", desiredStates),
     aircraftSetTypeOverride: (folderName, typeValue) => call("aircraft_set_type_override", folderName, typeValue),
     aircraftSetParentOverride: (folderName, parentFolderName) => call("aircraft_set_parent_override", folderName, parentFolderName),
+    aircraftDismissLiverySuggestion: (folderName) => call("aircraft_dismiss_livery_suggestion", folderName),
 
     airacStatus: () => call("airac_status"),
     launchPrecheck: (appStates) => call("launch_precheck", appStates),

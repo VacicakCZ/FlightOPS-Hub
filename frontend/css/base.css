@@ -778,6 +778,29 @@ button.btn.danger {
   color: var(--text-muted);
 }
 
+.suspect-badge {
+  cursor: default;
+}
+
+.livery-suggestion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin: 2px 0 6px 0;
+  background: var(--bg);
+  border: 1px solid var(--warning);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.livery-suggestion-actions {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
 .gsx-legend {
   display: flex;
   flex-wrap: wrap;

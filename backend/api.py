@@ -491,7 +491,10 @@ class Api:
 
         type_overrides = self._config.get("_aircraft_type_overrides", {})
         parent_overrides = self._config.get("_aircraft_parent_overrides", {})
-        aircraft, liveries = aircraft_overrides.apply_overrides(aircraft, liveries, type_overrides, parent_overrides)
+        dismissed = set(self._config.get("_aircraft_livery_suggestions_dismissed", []))
+        aircraft, liveries = aircraft_overrides.apply_overrides(
+            aircraft, liveries, type_overrides, parent_overrides, dismissed
+        )
 
         for record in aircraft:
             record["type_hint"] = aircraft_type_hint.extract_type_hint(record["display_name"])
@@ -527,6 +530,16 @@ class Api:
             overrides.pop(folder_name, None)
         else:
             overrides[folder_name] = parent_folder_name
+        self._save_config()
+        return self.aircraft_scan()
+
+    def aircraft_dismiss_livery_suggestion(self, folder_name):
+        """User clicked 'ignore' on the suspected_livery hint (see
+        scenery_data.py) - remembers not to show it again for this folder,
+        without touching its actual classification."""
+        dismissed = self._config.setdefault("_aircraft_livery_suggestions_dismissed", [])
+        if folder_name not in dismissed:
+            dismissed.append(folder_name)
         self._save_config()
         return self.aircraft_scan()
 
