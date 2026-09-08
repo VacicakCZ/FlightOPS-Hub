@@ -95,10 +95,10 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
-  min-height: 46px;
-  padding: 6px 3px;
+  min-height: 52px;
+  padding: 7px 3px;
   border: 1px solid var(--panel-border);
   border-bottom: 3px solid transparent;
   background: var(--tab-bg);
@@ -114,7 +114,22 @@ html, body {
   color: var(--text);
 }
 
+.tab-bar button .tab-icon {
+  font-size: 15px;
+  line-height: 1;
+  /* Muted on inactive tabs (like the label text) so it doesn't outshine
+     the active indicator; opacity 1 below on .active restores full color. */
+  opacity: 0.75;
+}
+
+.tab-bar button.active .tab-icon {
+  opacity: 1;
+}
+
 .tab-bar button .tab-main {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

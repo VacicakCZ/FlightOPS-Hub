@@ -10,22 +10,27 @@
   <div id="app" x-data x-init="window.AppReady = $store.app.init()">
     <nav class="tab-bar">
       <button :class="{ active: $store.app.activeTab === 'flight' }" @click="$store.app.setTab('flight')">
+        <span class="tab-icon">✈️</span>
         <span class="tab-main" x-text="$store.app.tMain('tab_let')"></span>
         <span class="tab-sub" x-show="$store.app.tParen('tab_let')" x-text="$store.app.tParen('tab_let')"></span>
       </button>
       <button :class="{ active: $store.app.activeTab === 'autostart' }" @click="$store.app.setTab('autostart')">
+        <span class="tab-icon">⚡</span>
         <span class="tab-main" x-text="$store.app.tMain('tab_exe')"></span>
         <span class="tab-sub" x-show="$store.app.tParen('tab_exe')" x-text="$store.app.tParen('tab_exe')"></span>
       </button>
       <button :class="{ active: $store.app.activeTab === 'scenery' }" @click="$store.app.setTab('scenery')">
+        <span class="tab-icon">🗺️</span>
         <span class="tab-main" x-text="$store.app.tMain('tab_scenery')"></span>
         <span class="tab-sub" x-show="$store.app.tParen('tab_scenery')" x-text="$store.app.tParen('tab_scenery')"></span>
       </button>
       <button :class="{ active: $store.app.activeTab === 'aircraft' }" @click="$store.app.setTab('aircraft')">
+        <span class="tab-icon">🛫</span>
         <span class="tab-main" x-text="$store.app.tMain('tab_aircraft')"></span>
         <span class="tab-sub" x-show="$store.app.tParen('tab_aircraft')" x-text="$store.app.tParen('tab_aircraft')"></span>
       </button>
       <button :class="{ active: $store.app.activeTab === 'settings' }" @click="$store.app.setTab('settings')">
+        <span class="tab-icon">⚙️</span>
         <span class="tab-main" x-text="$store.app.tMain('tab_set')"></span>
         <span class="tab-sub" x-show="$store.app.tParen('tab_set')" x-text="$store.app.tParen('tab_set')"></span>
       </button>
