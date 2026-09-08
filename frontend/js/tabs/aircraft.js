@@ -14,6 +14,7 @@ document.addEventListener("alpine:init", () => {
     statusText: "",
     progressFraction: 0,
     _lastDesired: {},
+    searchQuery: "",
 
     async init() {
       await window.AppReady;
@@ -25,6 +26,17 @@ document.addEventListener("alpine:init", () => {
       // startup too, so it needs to re-scan when the Community/disabled
       // path is set or changed afterward in Settings.
       FlightOpsEvents.on("config_changed", () => this.load());
+
+      // Same auto-expand/collapse-on-clear pattern as the Scenery tab's
+      // search - see the identical comment there for why.
+      this.$watch("searchQuery", (value) => {
+        if (value.trim()) {
+          this.expandSearchMatches();
+        } else {
+          this.expandedDevelopers = {};
+          this.expandedSections = {};
+        }
+      });
     },
 
     async load() {
@@ -84,9 +96,36 @@ document.addEventListener("alpine:init", () => {
       return this.$store.app.t("aircraft_other_developer");
     },
 
+    // Matches an aircraft/livery's own name or developer - same idea as the
+    // Scenery tab's matchesSearch.
+    matchesSearch(record) {
+      const q = this.searchQuery.trim().toLowerCase();
+      if (!q) return true;
+      return (
+        (record.display_name || "").toLowerCase().includes(q) ||
+        (record.developer || "").toLowerCase().includes(q)
+      );
+    },
+
+    expandSearchMatches() {
+      if (!this.searchQuery.trim()) return;
+      for (const developer of this.developers) {
+        this.expandedDevelopers[developer] = true;
+        const groups = this.grouped.byDeveloper[developer];
+        if (groups.aircraft.length) this.expandedSections[developer + "::aircraft"] = true;
+        if (groups.unassignedLiveries.length) this.expandedSections[developer + "::liveries"] = true;
+      }
+    },
+
     // {developer: {aircraft: [...], unassignedLiveries: [...]}} plus a
     // separate parent-folder_name -> [liveries] map, mirroring
     // build_aircraft_tab's liveries_by_aircraft/by_developer split exactly.
+    // While searching, an aircraft is kept if it matches directly or has at
+    // least one matching livery (so the parent stays visible as context);
+    // liveriesFor() below still returns the aircraft's full livery list
+    // once expanded rather than also filtering those - narrowing which
+    // top-level groups appear is enough without also picking apart what's
+    // inside an already-matched one.
     get grouped() {
       const aircraftFolders = new Set(this.aircraftRecords.map((r) => r.folder_name));
       const liveriesByAircraft = {};
@@ -101,8 +140,15 @@ document.addEventListener("alpine:init", () => {
 
       const byDeveloper = {};
       const bucket = (dev) => (byDeveloper[dev] ??= { aircraft: [], unassignedLiveries: [] });
-      for (const r of this.aircraftRecords) bucket(r.developer || this.otherDeveloperKey).aircraft.push(r);
-      for (const r of unassignedLiveries) bucket(r.developer || this.otherDeveloperKey).unassignedLiveries.push(r);
+      for (const r of this.aircraftRecords) {
+        const ownLiveries = liveriesByAircraft[r.folder_name] || [];
+        if (this.matchesSearch(r) || ownLiveries.some((l) => this.matchesSearch(l))) {
+          bucket(r.developer || this.otherDeveloperKey).aircraft.push(r);
+        }
+      }
+      for (const r of unassignedLiveries) {
+        if (this.matchesSearch(r)) bucket(r.developer || this.otherDeveloperKey).unassignedLiveries.push(r);
+      }
 
       return { byDeveloper, liveriesByAircraft };
     },

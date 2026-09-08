@@ -135,6 +135,8 @@
               <button class="btn primary" :disabled="applying" @click="apply()" x-text="$store.app.t('scenery_apply_btn')"></button>
             </div>
 
+            <p class="hint" x-text="$store.app.t('scenery_apply_pending_hint')"></p>
+
             <div class="view-toggle">
               <button class="view-toggle-btn" :class="{ active: !mapView }" :disabled="applying" @click="showListView()">
                 <span class="view-toggle-icon">☰</span>
@@ -310,6 +312,16 @@
             <template x-if="dataLoaded && allRecords.length === 0">
               <p class="placeholder-note">&mdash;</p>
             </template>
+
+            <div class="scenery-search">
+              <input type="text" class="scenery-search-input" x-model="searchQuery"
+                     :placeholder="$store.app.t('aircraft_search_placeholder')" />
+              <button class="btn icon-btn" x-show="searchQuery" @click="searchQuery = ''"
+                      :title="$store.app.t('scenery_search_clear')">✕</button>
+            </div>
+
+            <p class="placeholder-note" x-show="searchQuery.trim() && developers.length === 0"
+               x-text="$store.app.t('aircraft_search_no_results')"></p>
 
             <div class="scenery-tree" :class="{ 'is-busy': applying }">
               <template x-for="developer in developers" :key="developer">
