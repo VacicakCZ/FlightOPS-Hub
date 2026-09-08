@@ -9,6 +9,22 @@ import time
 
 from .version import APP_VERSION
 
+# Fields stripped from the config before it goes into a diagnostics file -
+# this is meant to be attached directly to a *public* GitHub issue, unlike
+# the Backup & Restore export (backup.py), which keeps everything since
+# that one is for the user's own restore. A SimBrief username is often
+# tied to the person's real name/VATSIM identity and is essentially never
+# needed to diagnose a bug - whether it's set at all is enough signal.
+_REDACTED_KEYS = {"_simbrief_username"}
+
+
+def _redact(config):
+    redacted = dict(config)
+    for key in _REDACTED_KEYS:
+        if redacted.get(key):
+            redacted[key] = "<redacted>"
+    return redacted
+
 
 def build_report(config, os_info, log_tail):
     lines = [
@@ -17,7 +33,7 @@ def build_report(config, os_info, log_tail):
         f"OS: {os_info}",
         "",
         "--- Config ---",
-        json.dumps(config, indent=2, ensure_ascii=False, sort_keys=True),
+        json.dumps(_redact(config), indent=2, ensure_ascii=False, sort_keys=True),
         "",
         "--- Recent log ---",
         log_tail or "(no log file yet)",

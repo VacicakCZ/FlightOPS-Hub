@@ -15,6 +15,19 @@ def test_build_report_handles_empty_log():
     assert "(no log file yet)" in report
 
 
+def test_build_report_redacts_simbrief_username():
+    # This file is meant to be attached directly to a public GitHub issue -
+    # the real username must never appear in it, just whether it is set.
+    report = diagnostics.build_report({"_simbrief_username": "RealPersonName"}, "Windows-11", "")
+    assert "RealPersonName" not in report
+    assert "<redacted>" in report
+
+
+def test_build_report_leaves_empty_simbrief_username_alone():
+    report = diagnostics.build_report({"_simbrief_username": ""}, "Windows-11", "")
+    assert "<redacted>" not in report
+
+
 def test_default_filename_looks_like_a_txt_report():
     name = diagnostics.default_filename()
     assert name.startswith("flightops_hub_diagnostics_")

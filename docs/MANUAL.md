@@ -79,7 +79,7 @@ A different mechanism from the Scenery/Aircraft tabs above: this manages MSFS's 
 - **SimBrief username** — used by the SimBrief check on the Scenery tab.
 - **UI scale**, **theme** (dark/light/system), and **language** (Czech and English are hand-written; German, Spanish, and Chinese are AI-translated and flagged as such in the language picker).
 - **Backup & Restore** — export your flight profiles, aircraft classification overrides, and addon list to a single JSON file, and import it back later. Useful before reinstalling Windows or moving to a new PC, so you don't have to rebuild your setup from scratch. Importing replaces your current settings outright, so you'll be asked to confirm first.
-- **Diagnostics** — bundles your app version, OS info, current settings, and a recent activity log into one text file. Attach it to a GitHub issue when reporting a problem — it turns "it doesn't work" into something the maintainer can actually act on.
+- **Diagnostics** — bundles your app version, OS info, current settings, and a recent activity log into one text file. Attach it to a GitHub issue when reporting a problem — it turns "it doesn't work" into something the maintainer can actually act on. Your SimBrief username is left out (redacted) since this file is meant to be posted publicly; everything else (paths, profiles, overrides) is included as-is because it's actually needed to diagnose most issues.
 
 ---
 
