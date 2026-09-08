@@ -1,17 +1,23 @@
 :root {
-  --bg: #f2f2f5;
-  --panel: #ffffff;
-  --panel-border: #dcdce2;
-  --text: #1a1a1e;
-  --text-muted: #6b6b76;
+  /* Softened from pure white/near-black (was #ffffff panel on #f2f2f5,
+     #1a1a1e text) - that combination is the highest contrast physically
+     possible and read as harsh/glary, especially once the accent glow and
+     h2 underline (added for the dark theme's branding pass) started
+     showing up here too. Off-white panel + a dark warm gray instead of
+     near-black keeps things clearly readable without the glare. */
+  --bg: #eef0f4;
+  --panel: #f9fafc;
+  --panel-border: #d7dbe3;
+  --text: #26272e;
+  --text-muted: #6b7280;
   --accent: #2f6fed;
-  --accent-glow: rgba(47, 111, 237, 0.35);
+  --accent-glow: rgba(47, 111, 237, 0.22);
   --accent-text: #ffffff;
   --danger: #d1453b;
   --success: #2fa84f;
   --warning: #d69a1f;
   --input-bg: #ffffff;
-  --tab-bg: #e6e6ec;
+  --tab-bg: #e2e5eb;
   --tab-active-bg: var(--panel);
 }
 
