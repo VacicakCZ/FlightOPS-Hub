@@ -5,6 +5,7 @@
   <img src="https://img.shields.io/github/downloads/VacicakCZ/FlightOPS-Hub/total?style=for-the-badge&color=28a745" alt="Total Downloads" />
   <img src="https://img.shields.io/badge/MSFS-2020%20%7C%202024-blue?style=for-the-badge" alt="MSFS Support" />
   <img src="https://img.shields.io/badge/UI-pywebview%20%2B%20HTML%2FJS-orange?style=for-the-badge" alt="Tech Stack" />
+  <img src="https://img.shields.io/github/license/VacicakCZ/FlightOPS-Hub?style=for-the-badge" alt="License" />
 </p>
 
 <p align="center">
@@ -99,6 +100,12 @@ Pure-logic backend modules (config migration, GSX detection, scenery scanning, v
 pip install -r requirements-dev.txt
 pytest
 ```
+
+---
+
+## 📄 License
+
+Licensed under the [GNU General Public License v3.0](LICENSE) - you're free to use, modify, and redistribute this project, as long as derivative works stay open source under the same license.
 
 ---
 
