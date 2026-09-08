@@ -1,0 +1,33 @@
+name: Tests
+
+# Runs the pytest suite + locale key consistency check on every push/PR, so
+# a regression can't slip into master unnoticed the way it could when tests
+# only ran locally, on whatever session happened to remember to run them.
+# windows-latest, not ubuntu - win_native.py (and anything importing it,
+# which includes most of backend/) calls ctypes.WinDLL at module import
+# time and simply cannot import on a non-Windows runner.
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      - name: Check locale key consistency
+        run: python scripts/check_locales.py
