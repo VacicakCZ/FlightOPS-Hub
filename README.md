@@ -13,6 +13,10 @@
   Organize add-ons, auto-toggle scenery and aircraft, validate SimBrief routes, manage GSX profiles, and automate your flight setup with live SimConnect integration.
 </p>
 
+<p align="center">
+  📖 <a href="docs/MANUAL.md"><b>User Manual</b></a> — what each tab does and how to use it, plus a troubleshooting FAQ.
+</p>
+
 ---
 
 ## 🌟 Key Features in v2.0
@@ -67,6 +71,8 @@ FlightOps Hub is **100% portable** - no installer, no admin rights needed.
 > **Note on UAC (Administrator rights):** You do **not** need to run FlightOps Hub itself as administrator. Individual add-ons that require elevated rights can be flagged with "Run as Administrator (UAC)" per-entry in Settings.
 
 > **Code signing:** This project has applied for free Windows code signing through the [SignPath Foundation](https://signpath.org/) open-source program. Until that's approved and wired into the release build, Windows SmartScreen may still show an "unknown publisher" warning on first run - the app itself is unaffected either way.
+
+For a full walkthrough of every tab and feature, see the **[User Manual](docs/MANUAL.md)**.
 
 ---
 
