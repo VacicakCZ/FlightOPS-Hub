@@ -27,8 +27,6 @@
   "btn_remove": "移除",
   "btn_save_edit": "保存更改",
   "community_usage_btn": "检查 Community 文件夹大小",
-  "community_usage_scanning": "正在计算大小…",
-  "community_usage_total": "总计：{}（下方为最大的插件）",
   "continent_africa": "非洲",
   "continent_asia": "亚洲",
   "continent_europe": "欧洲",
@@ -46,6 +44,7 @@
   "disabled_path_placeholder": "默认位置（Community 旁边）",
   "disabled_path_reset_btn": "默认",
   "disabled_path_title": "禁用的插件移动到哪里",
+  "disabled_usage_btn": "检查禁用插件文件夹大小",
   "err_delay": "错误: 延迟必须是正数！",
   "err_empty": "错误: 必须填写名称和路径！",
   "exe_error": "读取 XML 文件时出错:",
@@ -63,6 +62,8 @@
   "exe_restore_confirm_message": "这将用应用第一次修改此文件前创建的备份覆盖当前的 exe.xml。此操作无法撤销。",
   "exe_restore_confirm_title": "从备份恢复 exe.xml？",
   "exe_title": "通过 exe.xml 管理插件",
+  "folder_usage_scanning": "正在计算大小…",
+  "folder_usage_total": "总计：{}（下方为最大的插件）",
   "gsx_legend_match": "配置文件来自地景本身的开发者",
   "gsx_legend_missing": "没有配置文件 - 点击在 flightsim.to 上搜索",
   "gsx_legend_unmatched": "已找到配置文件，开发者未确认",
@@ -157,5 +158,6 @@
   "tt_update": "更新选定的配置",
   "ui_scale_label": "界面缩放:",
   "update_available": "🔔 有新版本可用：{}",
-  "update_open_btn": "在 GitHub 上查看"
+  "update_open_btn": "在 GitHub 上查看",
+  "usage_close": "关闭"
 }

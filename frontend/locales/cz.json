@@ -27,8 +27,6 @@
   "btn_remove": "Odebrat",
   "btn_save_edit": "Uložit úpravy",
   "community_usage_btn": "Zjistit velikost Community složky",
-  "community_usage_scanning": "Zjišťuji velikost...",
-  "community_usage_total": "Celkem: {} (největší balíčky níže)",
   "continent_africa": "Afrika",
   "continent_asia": "Asie",
   "continent_europe": "Evropa",
@@ -46,6 +44,7 @@
   "disabled_path_placeholder": "Výchozí umístění (vedle Community)",
   "disabled_path_reset_btn": "Výchozí",
   "disabled_path_title": "Kam se přesouvají vypnuté doplňky",
+  "disabled_usage_btn": "Zjistit velikost složky s vypnutými doplňky",
   "err_delay": "Chyba: Zpoždění musí být kladné číslo!",
   "err_empty": "Chyba: Musíš vyplnit název i cestu!",
   "exe_error": "Chyba při čtení XML souboru:",
@@ -63,6 +62,8 @@
   "exe_restore_confirm_message": "Přepíše se aktuální exe.xml zálohou, kterou appka pořídila před svojí úplně první úpravou tohoto souboru. Nedá se to vzít zpět.",
   "exe_restore_confirm_title": "Obnovit exe.xml ze zálohy?",
   "exe_title": "Správa doplňků v exe.xml",
+  "folder_usage_scanning": "Zjišťuji velikost...",
+  "folder_usage_total": "Celkem: {} (největší balíčky níže)",
   "gsx_legend_match": "profil od vývojáře scenérie",
   "gsx_legend_missing": "profil chybí – klik otevře hledání na flightsim.to",
   "gsx_legend_unmatched": "profil nalezen, vývojář neověřen",
@@ -157,5 +158,6 @@
   "tt_update": "Aktualizovat vybraný profil",
   "ui_scale_label": "Velikost UI:",
   "update_available": "🔔 Dostupná nová verze: {}",
-  "update_open_btn": "Otevřít na GitHubu"
+  "update_open_btn": "Otevřít na GitHubu",
+  "usage_close": "Zavřít"
 }

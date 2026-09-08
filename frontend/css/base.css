@@ -959,6 +959,17 @@ button.btn.danger {
   overflow-y: auto;
 }
 
+.community-usage-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.community-usage-head .hint {
+  margin: 0;
+}
+
 .community-usage-row {
   display: flex;
   justify-content: space-between;

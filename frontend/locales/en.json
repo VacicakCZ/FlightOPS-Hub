@@ -27,8 +27,6 @@
   "btn_remove": "Remove",
   "btn_save_edit": "Save changes",
   "community_usage_btn": "Check Community folder size",
-  "community_usage_scanning": "Scanning size...",
-  "community_usage_total": "Total: {} (biggest packages below)",
   "continent_africa": "Africa",
   "continent_asia": "Asia",
   "continent_europe": "Europe",
@@ -46,6 +44,7 @@
   "disabled_path_placeholder": "Default location (next to Community)",
   "disabled_path_reset_btn": "Default",
   "disabled_path_title": "Where disabled add-ons are moved",
+  "disabled_usage_btn": "Check disabled add-ons folder size",
   "err_delay": "Error: Delay must be a positive number!",
   "err_empty": "Error: Name and path must be filled!",
   "exe_error": "Error reading XML file:",
@@ -63,6 +62,8 @@
   "exe_restore_confirm_message": "This overwrites the current exe.xml with the backup the app made before its very first edit of this file. This can't be undone.",
   "exe_restore_confirm_title": "Restore exe.xml from backup?",
   "exe_title": "Manage Addons via exe.xml",
+  "folder_usage_scanning": "Scanning size...",
+  "folder_usage_total": "Total: {} (biggest packages below)",
   "gsx_legend_match": "profile from the scenery's own developer",
   "gsx_legend_missing": "no profile - click to search flightsim.to",
   "gsx_legend_unmatched": "profile found, developer unconfirmed",
@@ -157,5 +158,6 @@
   "tt_update": "Update selected profile",
   "ui_scale_label": "UI scale:",
   "update_available": "🔔 New version available: {}",
-  "update_open_btn": "Open on GitHub"
+  "update_open_btn": "Open on GitHub",
+  "usage_close": "Close"
 }

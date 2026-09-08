@@ -39,6 +39,7 @@ window.Api = (() => {
     setDisabledPath: (path) => call("settings_set_disabled_path", path),
     resetDisabledPath: () => call("settings_reset_disabled_path"),
     scanCommunityUsage: () => call("scan_community_usage"),
+    scanDisabledUsage: () => call("scan_disabled_usage"),
     setGsxPath: (path) => call("settings_set_gsx_path", path),
     resetGsxPath: () => call("settings_reset_gsx_path"),
     openGsxSearch: (icao) => call("open_gsx_search", icao),

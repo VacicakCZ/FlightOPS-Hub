@@ -9,14 +9,20 @@ document.addEventListener("alpine:init", () => {
       previousName: null,
     },
     errorKey: "",
-    communityUsage: null,
-    communityUsageScanning: false,
+    // Keyed by "community"/"disabled" - same shape, same on-demand-scan
+    // pattern, just a different backend folder + event per kind.
+    folderUsage: { community: null, disabled: null },
+    folderUsageScanning: { community: false, disabled: false },
 
     async init() {
       await window.AppReady;
       FlightOpsEvents.on("community_usage_done", (payload) => {
-        this.communityUsageScanning = false;
-        this.communityUsage = payload;
+        this.folderUsageScanning.community = false;
+        this.folderUsage.community = payload;
+      });
+      FlightOpsEvents.on("disabled_usage_done", (payload) => {
+        this.folderUsageScanning.disabled = false;
+        this.folderUsage.disabled = payload;
       });
     },
 
@@ -104,18 +110,29 @@ document.addEventListener("alpine:init", () => {
     },
 
     async scanCommunityUsage() {
-      this.communityUsage = null;
-      this.communityUsageScanning = true;
+      this.folderUsage.community = null;
+      this.folderUsageScanning.community = true;
       const result = await Api.scanCommunityUsage();
-      if (!result.ok) this.communityUsageScanning = false;
+      if (!result.ok) this.folderUsageScanning.community = false;
       // On success the community_usage_done event (registered in init())
-      // fills in communityUsage/clears communityUsageScanning once the
-      // background scan finishes - a full walk of a large Community
-      // folder can take a while.
+      // fills folderUsage.community in / clears the scanning flag once the
+      // background scan finishes - a full walk of a large folder can take
+      // a while.
     },
 
-    get topCommunityPackages() {
-      return this.communityUsage ? this.communityUsage.packages.slice(0, 20) : [];
+    async scanDisabledUsage() {
+      this.folderUsage.disabled = null;
+      this.folderUsageScanning.disabled = true;
+      const result = await Api.scanDisabledUsage();
+      if (!result.ok) this.folderUsageScanning.disabled = false;
+    },
+
+    closeUsage(kind) {
+      this.folderUsage[kind] = null;
+    },
+
+    topPackages(kind) {
+      return this.folderUsage[kind] ? this.folderUsage[kind].packages.slice(0, 20) : [];
     },
 
     formatBytes(bytes) {

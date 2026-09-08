@@ -1,10 +1,11 @@
-"""Computes Community folder disk usage - total size plus a per-package
-breakdown, for the Settings tab's storage-usage panel.
+"""Computes disk usage for a folder of add-on packages (Community, or the
+disabled-holding folder) - total size plus a per-package breakdown, for the
+Settings tab's storage-usage panels.
 
 Deliberately its own on-demand action (not run automatically during scenery/
-aircraft scans) - a full recursive walk of a Community folder with tens of
-thousands of files can take a noticeable amount of time, and nothing else in
-the app needs this data.
+aircraft scans) - a full recursive walk of a folder with tens of thousands of
+files can take a noticeable amount of time, and nothing else in the app needs
+this data.
 """
 import os
 
@@ -20,13 +21,13 @@ def _dir_size(path):
     return total
 
 
-def scan_community_usage(community_path):
+def scan_folder_usage(folder_path):
     """Returns {"total_bytes": int, "packages": [{"folder_name": str,
     "bytes": int}, ...]} sorted largest-first. Top-level entries only -
-    each direct Community subfolder is one add-on package."""
+    each direct subfolder is one add-on package."""
     packages = []
     try:
-        entries = list(os.scandir(community_path))
+        entries = list(os.scandir(folder_path))
     except OSError:
         return {"total_bytes": 0, "packages": []}
 

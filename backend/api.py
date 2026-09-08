@@ -142,6 +142,20 @@ class Api:
         self._save_config()
         return self._config_snapshot()
 
+    def _start_folder_usage_scan(self, folder_path, event_name):
+        """Shared by scan_community_usage/scan_disabled_usage below - both
+        just walk a different folder and report to a different event, so the
+        threading/emit machinery is identical."""
+        if not folder_path or not os.path.isdir(folder_path):
+            return {"ok": False}
+
+        def worker():
+            result = folder_size.scan_folder_usage(folder_path)
+            bus.emit(event_name, result)
+
+        threading.Thread(target=worker, daemon=True).start()
+        return {"ok": True}
+
     def scan_community_usage(self):
         """Kicks off a background disk-usage scan of the Community folder;
         result arrives via the community_usage_done event. A full recursive
@@ -149,15 +163,20 @@ class Api:
         ever run on explicit user request (Settings tab button), never as
         part of the regular scenery/aircraft scan."""
         community_path = self._config.get("_community_path", "")
+        return self._start_folder_usage_scan(community_path, "community_usage_done")
+
+    def scan_disabled_usage(self):
+        """Same as scan_community_usage, but for the disabled-holding folder
+        (where toggled-off scenery/aircraft packages live) - result arrives
+        via disabled_usage_done. Resolves the actual effective location
+        (custom override, or the default sibling-of-Community folder) the
+        same way scenery_scan/aircraft_scan already do, not just whatever
+        (possibly empty) override the user typed in Settings."""
+        community_path = self._config.get("_community_path", "")
         if not community_path or not os.path.isdir(community_path):
             return {"ok": False}
-
-        def worker():
-            result = folder_size.scan_community_usage(community_path)
-            bus.emit("community_usage_done", result)
-
-        threading.Thread(target=worker, daemon=True).start()
-        return {"ok": True}
+        primary_disabled = self._resolve_disabled_locations(community_path)[0]
+        return self._start_folder_usage_scan(primary_disabled, "disabled_usage_done")
 
     # --- settings: GSX (virtuali) profile folder, for the scenery-tab GSX badge ---
     def _gsx_path(self):

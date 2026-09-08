@@ -593,13 +593,16 @@
           <button class="btn" @click="browseCommunity()" x-text="$store.app.t('btn_browse')"></button>
         </div>
 
-        <button type="button" class="btn" :disabled="!communityPath || communityUsageScanning"
+        <button type="button" class="btn" :disabled="!communityPath || folderUsageScanning.community"
                 @click="scanCommunityUsage()"
-                x-text="communityUsageScanning ? $store.app.t('community_usage_scanning') : $store.app.t('community_usage_btn')"></button>
+                x-text="folderUsageScanning.community ? $store.app.t('folder_usage_scanning') : $store.app.t('community_usage_btn')"></button>
 
-        <div class="community-usage" x-show="communityUsage" x-cloak>
-          <p class="hint" x-text="$store.app.t('community_usage_total', formatBytes(communityUsage ? communityUsage.total_bytes : 0))"></p>
-          <template x-for="pkg in topCommunityPackages" :key="pkg.folder_name">
+        <div class="community-usage" x-show="folderUsage.community" x-cloak>
+          <div class="community-usage-head">
+            <p class="hint" x-text="$store.app.t('folder_usage_total', formatBytes(folderUsage.community ? folderUsage.community.total_bytes : 0))"></p>
+            <button type="button" class="btn icon-btn" @click="closeUsage('community')" :title="$store.app.t('usage_close')">✕</button>
+          </div>
+          <template x-for="pkg in topPackages('community')" :key="pkg.folder_name">
             <div class="community-usage-row">
               <span class="community-usage-name" x-text="pkg.folder_name"></span>
               <span class="community-usage-size" x-text="formatBytes(pkg.bytes)"></span>
@@ -613,6 +616,23 @@
           <input type="text" readonly :value="disabledPath" :placeholder="$store.app.t('disabled_path_placeholder')" />
           <button class="btn" @click="browseDisabledPath()" x-text="$store.app.t('btn_browse')"></button>
           <button class="btn" @click="resetDisabledPath()" x-text="$store.app.t('disabled_path_reset_btn')"></button>
+        </div>
+
+        <button type="button" class="btn" :disabled="!communityPath || folderUsageScanning.disabled"
+                @click="scanDisabledUsage()"
+                x-text="folderUsageScanning.disabled ? $store.app.t('folder_usage_scanning') : $store.app.t('disabled_usage_btn')"></button>
+
+        <div class="community-usage" x-show="folderUsage.disabled" x-cloak>
+          <div class="community-usage-head">
+            <p class="hint" x-text="$store.app.t('folder_usage_total', formatBytes(folderUsage.disabled ? folderUsage.disabled.total_bytes : 0))"></p>
+            <button type="button" class="btn icon-btn" @click="closeUsage('disabled')" :title="$store.app.t('usage_close')">✕</button>
+          </div>
+          <template x-for="pkg in topPackages('disabled')" :key="pkg.folder_name">
+            <div class="community-usage-row">
+              <span class="community-usage-name" x-text="pkg.folder_name"></span>
+              <span class="community-usage-size" x-text="formatBytes(pkg.bytes)"></span>
+            </div>
+          </template>
         </div>
 
         <h3 x-text="$store.app.t('simbrief_username_label')"></h3>
