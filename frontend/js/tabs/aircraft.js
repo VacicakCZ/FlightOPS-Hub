@@ -82,6 +82,13 @@ document.addEventListener("alpine:init", () => {
 
     async setTypeOverride(record, value) {
       this._applyScanResult(await Api.aircraftSetTypeOverride(record.folder_name, value === "auto" ? null : value));
+      // Picking "livery" reveals the parent-aircraft field right below, so
+      // keep the editor open for that follow-up step - anything else
+      // (aircraft/auto) has nothing left to do, so close it to avoid
+      // leaving a trail of open editors when correcting several in a row.
+      if (value !== "livery") {
+        this.overrideEditorOpen[record.folder_name] = false;
+      }
     },
 
     // --- "suspected_livery" hint (see scenery_data.py) - a weak, name-only
@@ -99,6 +106,9 @@ document.addEventListener("alpine:init", () => {
 
     async setParentOverride(record, value) {
       this._applyScanResult(await Api.aircraftSetParentOverride(record.folder_name, value === "auto" ? null : value));
+      // Parent is always the last field in the editor - once it's set,
+      // close it the same way setTypeOverride does for the non-livery case.
+      this.overrideEditorOpen[record.folder_name] = false;
     },
 
     get allRecords() {
