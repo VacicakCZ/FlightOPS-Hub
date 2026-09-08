@@ -13,6 +13,7 @@ document.addEventListener("alpine:init", () => {
     // pattern, just a different backend folder + event per kind.
     folderUsage: { community: null, disabled: null },
     folderUsageScanning: { community: false, disabled: false },
+    detectedCommunityPath: null,
 
     async init() {
       await window.AppReady;
@@ -24,6 +25,26 @@ document.addEventListener("alpine:init", () => {
         this.folderUsageScanning.disabled = false;
         this.folderUsage.disabled = payload;
       });
+      await this.refreshDetectedCommunityPath();
+    },
+
+    async refreshDetectedCommunityPath() {
+      const result = await Api.detectCommunityPath();
+      this.detectedCommunityPath = result.found;
+    },
+
+    // Only worth showing as a suggestion when it actually differs from
+    // what is already set - otherwise it is just noise confirming what
+    // the user already has.
+    get communityPathSuggestion() {
+      if (!this.detectedCommunityPath) return null;
+      return this.detectedCommunityPath !== this.communityPath ? this.detectedCommunityPath : null;
+    },
+
+    async useDetectedCommunityPath() {
+      if (!this.detectedCommunityPath) return;
+      this.$store.app.config = await Api.setCommunityPath(this.detectedCommunityPath);
+      FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 
     get languages() {
@@ -166,14 +187,20 @@ document.addEventListener("alpine:init", () => {
       FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 
+    // Dedicated Api calls (not generic configSet) - the backend remembers
+    // the Community path per sim_version/platform combo and swaps it back
+    // in when switching, instead of silently pointing at the wrong
+    // install's folder. See Api._switch_sim.
     async saveSimVersion(version) {
-      this.$store.app.config = await Api.configSet({ _sim_version: version });
+      this.$store.app.config = await Api.setSimVersion(version);
       FlightOpsEvents.dispatch({ type: "config_changed" });
+      await this.refreshDetectedCommunityPath();
     },
 
     async saveSimPlatform(platform) {
-      this.$store.app.config = await Api.configSet({ _sim_platform: platform });
+      this.$store.app.config = await Api.setSimPlatform(platform);
       FlightOpsEvents.dispatch({ type: "config_changed" });
+      await this.refreshDetectedCommunityPath();
     },
 
     async savePostLaunch(key) {

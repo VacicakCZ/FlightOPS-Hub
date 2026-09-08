@@ -6,10 +6,12 @@ document.addEventListener("alpine:init", () => {
     airac: { current: "", installed: "" },
     updateJustSaved: false,
     launching: false,
+    detectedCommunityPath: null,
 
     async init() {
       await window.AppReady;
       const cfg = this.$store.app.config;
+      Api.detectCommunityPath().then((result) => { this.detectedCommunityPath = result.found; });
       for (const name of Object.keys(this.$store.app.apps)) {
         this.checked[name] = cfg[name] === "on";
       }
@@ -37,6 +39,18 @@ document.addEventListener("alpine:init", () => {
     // calls) rather than reaching into another tab's Alpine component.
     get showOnboarding() {
       return !this.$store.app.config._onboarding_dismissed;
+    },
+
+    get communityPathSuggestion() {
+      const current = this.$store.app.config._community_path || "";
+      if (!this.detectedCommunityPath) return null;
+      return this.detectedCommunityPath !== current ? this.detectedCommunityPath : null;
+    },
+
+    async onboardingUseDetectedCommunityPath() {
+      if (!this.detectedCommunityPath) return;
+      this.$store.app.config = await Api.setCommunityPath(this.detectedCommunityPath);
+      FlightOpsEvents.dispatch({ type: "config_changed" });
     },
 
     async onboardingBrowseCommunity() {

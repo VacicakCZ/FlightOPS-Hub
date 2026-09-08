@@ -17,6 +17,7 @@ from . import (
     airac,
     apps_manager,
     airports_data,
+    community_detect,
     community_paths,
     config_manager,
     exe_xml_manager,
@@ -125,9 +126,45 @@ class Api:
         return {"ok": True}
 
     # --- settings: community / disabled-holding paths ---
+    def _sim_key(self):
+        return f"{self._config.get('_sim_version', 'MSFS 2024')}|{self._config.get('_sim_platform', 'Steam')}"
+
     def settings_set_community_path(self, path):
-        self._update_config({"_community_path": os.path.normpath(path)})
+        path = os.path.normpath(path)
+        remembered = self._config.setdefault("_community_paths_by_sim", {})
+        remembered[self._sim_key()] = path
+        self._update_config({"_community_path": path, "_community_paths_by_sim": remembered})
         return self._config_snapshot()
+
+    def _switch_sim(self, key, value):
+        """Shared by settings_set_sim_version/settings_set_sim_platform:
+        remembers the Community path under the sim/platform combo being left,
+        then restores whatever was last used for the combo being switched to
+        (or clears it if that combo has never had one set) - so flipping
+        between MSFS 2020/2024 (or Steam/MS Store) does not silently keep
+        pointing at the wrong install's Community folder."""
+        remembered = self._config.setdefault("_community_paths_by_sim", {})
+        old_path = self._config.get("_community_path", "")
+        if old_path:
+            remembered[self._sim_key()] = old_path
+
+        self._config[key] = value
+        self._config["_community_path"] = remembered.get(self._sim_key(), "")
+        self._save_config()
+        return self._config_snapshot()
+
+    def settings_set_sim_version(self, version):
+        return self._switch_sim("_sim_version", version)
+
+    def settings_set_sim_platform(self, platform):
+        return self._switch_sim("_sim_platform", platform)
+
+    def detect_community_path(self):
+        """Best-effort suggestion only - see community_detect.py. Returns
+        {"found": path} or {"found": None}."""
+        sim_version = self._config.get("_sim_version", "MSFS 2024")
+        sim_platform = self._config.get("_sim_platform", "Steam")
+        return {"found": community_detect.detect_community_path(sim_version, sim_platform)}
 
     def settings_set_disabled_path(self, path):
         path = os.path.normpath(path)

@@ -51,6 +51,9 @@
               <input type="text" readonly :value="$store.app.config._community_path || ''" :placeholder="$store.app.t('set_nav_placeholder')" />
               <button class="btn" @click="onboardingBrowseCommunity()" x-text="$store.app.t('btn_browse')"></button>
             </div>
+            <button type="button" class="btn detected-path-btn" x-show="communityPathSuggestion" x-cloak
+                    @click="onboardingUseDetectedCommunityPath()"
+                    x-text="$store.app.t('community_path_detected', communityPathSuggestion)"></button>
           </div>
 
           <div class="field-row">
@@ -594,6 +597,9 @@
           <input type="text" readonly :value="communityPath" :placeholder="$store.app.t('set_nav_placeholder')" />
           <button class="btn" @click="browseCommunity()" x-text="$store.app.t('btn_browse')"></button>
         </div>
+        <button type="button" class="btn detected-path-btn" x-show="communityPathSuggestion" x-cloak
+                @click="useDetectedCommunityPath()"
+                x-text="$store.app.t('community_path_detected', communityPathSuggestion)"></button>
 
         <button type="button" class="btn" :disabled="!communityPath || folderUsageScanning.community"
                 @click="scanCommunityUsage()"

@@ -36,6 +36,9 @@ window.Api = (() => {
     appsOpenFolder: (path) => call("apps_open_folder", path),
 
     setCommunityPath: (path) => call("settings_set_community_path", path),
+    setSimVersion: (version) => call("settings_set_sim_version", version),
+    setSimPlatform: (platform) => call("settings_set_sim_platform", platform),
+    detectCommunityPath: () => call("detect_community_path"),
     setDisabledPath: (path) => call("settings_set_disabled_path", path),
     resetDisabledPath: () => call("settings_reset_disabled_path"),
     scanCommunityUsage: () => call("scan_community_usage"),

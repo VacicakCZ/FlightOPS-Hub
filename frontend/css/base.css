@@ -510,6 +510,26 @@ button.btn.danger {
   text-decoration: underline;
 }
 
+/* "We found a likely Community folder, use it?" suggestion - a text-only
+   link-style button (not a filled .btn) so it reads as an optional
+   shortcut rather than competing with the real Browse button next to it. */
+.detected-path-btn {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.detected-path-btn:hover {
+  text-decoration: underline;
+}
+
 .update-notes {
   margin: 6px auto 0 auto;
   max-width: 420px;
