@@ -378,12 +378,8 @@ document.addEventListener("alpine:init", () => {
         el.appendChild(officialName);
       }
 
-      if (marker.gsx_installed) {
-        const gsxTag = document.createElement("span");
-        gsxTag.className = "gsx-tag";
-        gsxTag.textContent = "GSX";
-        gsxTag.title = app.t("scenery_gsx_installed_tt");
-        el.appendChild(gsxTag);
+      if (marker.gsx_status) {
+        el.appendChild(this.buildGsxTag(marker.gsx_status, marker.icao));
       }
 
       const button = document.createElement("button");
@@ -396,6 +392,46 @@ document.addEventListener("alpine:init", () => {
       el.appendChild(button);
 
       return el;
+    },
+
+    // Builds the same GSX status tag the list view renders declaratively
+    // (index.html) - needed here as a DOM node instead since Leaflet popup
+    // content is built in JS, not templated.
+    buildGsxTag(status, icao) {
+      const app = this.$store.app;
+      if (status === "installed_match") {
+        const tag = document.createElement("span");
+        tag.className = "gsx-tag gsx-match";
+        tag.textContent = "GSX";
+        tag.title = app.t("scenery_gsx_match_tt");
+        return tag;
+      }
+      if (status === "installed_unmatched") {
+        const tag = document.createElement("span");
+        tag.className = "gsx-tag gsx-unmatched";
+        tag.title = app.t("scenery_gsx_unmatched_tt");
+        tag.appendChild(document.createTextNode("GSX"));
+        const warn = document.createElement("span");
+        warn.className = "gsx-warn";
+        warn.textContent = "!";
+        tag.appendChild(warn);
+        return tag;
+      }
+      // "missing" - clickable, opens a flightsim.to GSX Pro search for this ICAO
+      const tag = document.createElement("button");
+      tag.type = "button";
+      tag.className = "gsx-tag gsx-missing";
+      tag.textContent = "GSX";
+      tag.title = app.t("scenery_gsx_missing_tt");
+      tag.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.openGsxSearch(icao);
+      });
+      return tag;
+    },
+
+    async openGsxSearch(icao) {
+      await Api.openGsxSearch(icao);
     },
 
     // --- SimBrief flight-plan check: suggests enabling installed-but-

@@ -227,7 +227,13 @@
                                   <span class="scenery-item-text">
                                     <span class="scenery-name-row">
                                       <span class="scenery-name-truncate" x-text="record.display_name"></span>
-                                      <span class="gsx-tag" x-show="record.gsx_installed" :title="$store.app.t('scenery_gsx_installed_tt')">GSX</span>
+                                      <span class="gsx-tag gsx-match" x-show="record.gsx_status === 'installed_match'"
+                                            :title="$store.app.t('scenery_gsx_match_tt')">GSX</span>
+                                      <span class="gsx-tag gsx-unmatched" x-show="record.gsx_status === 'installed_unmatched'"
+                                            :title="$store.app.t('scenery_gsx_unmatched_tt')">GSX<span class="gsx-warn">!</span></span>
+                                      <button type="button" class="gsx-tag gsx-missing" x-show="record.gsx_status === 'missing'"
+                                              @click.stop.prevent="openGsxSearch(record.icao)"
+                                              :title="$store.app.t('scenery_gsx_missing_tt')">GSX</button>
                                     </span>
                                     <span class="scenery-airport-name" x-show="record.airport_name" x-text="record.airport_name"></span>
                                   </span>

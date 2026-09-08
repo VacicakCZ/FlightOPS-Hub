@@ -21,7 +21,7 @@ def build_markers(records):
             "lat": airport["lat"],
             "lon": airport["lon"],
             "airport_name": airport["name"],
-            "gsx_installed": record.get("gsx_installed", False),
+            "gsx_status": record.get("gsx_status"),
         })
     return markers
 

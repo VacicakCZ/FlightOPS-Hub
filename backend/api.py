@@ -130,6 +130,19 @@ class Api:
         config_manager.save_config(self._config)
         return self._config_snapshot()
 
+    def open_gsx_search(self, icao):
+        # Builds the URL itself from a validated ICAO rather than accepting
+        # an arbitrary URL from the frontend, so this can't be used to open
+        # anything other than a flightsim.to GSX Pro search.
+        icao = (icao or "").strip().upper()
+        if len(icao) != 4 or not icao.isalpha():
+            return {"ok": False}
+        try:
+            os.startfile(f"https://flightsim.to/miscellaneous/gsx-pro?q={icao}")
+            return {"ok": True}
+        except OSError:
+            return {"ok": False}
+
     # --- profiles (kind: "flight" for the Flight tab, "exe" for exe.xml profiles in M3) ---
     def profiles_list(self, kind):
         return self._config.get(config_manager.PROFILE_STORES[kind], {})
