@@ -667,7 +667,10 @@ button.btn.danger {
 }
 
 .simbrief-status {
-  flex: 1;
+  /* No flex-grow: that used to push the trailing GSX badge/button all the
+     way to the far right of the row, which looked broken/disconnected -
+     especially on a wide window, or when a row has both a badge and the
+     "Zapnout" button. Everything just packs left now, close together. */
 }
 
 .simbrief-status.status-enabled { color: var(--success); }
