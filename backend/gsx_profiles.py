@@ -31,6 +31,14 @@ def _developer_key(folder_name):
     return re.split(r"[-_]", folder_name, maxsplit=1)[0].lower()
 
 
+def _prettify_dev_key(key):
+    # Same trivial capitalize-first-letter heuristic scenery_data.py's own
+    # _prettify_dev_key already uses for the Aircraft tab's developer
+    # grouping - "inibuilds" -> "Inibuilds" (not true-cased "iniBuilds",
+    # but consistent with what that tab already shows).
+    return key[:1].upper() + key[1:] if key else key
+
+
 def scan_profiles(gsx_path):
     """Returns {icao: [filename, ...]} for every GSX profile file found."""
     if not gsx_path or not os.path.isdir(gsx_path):
@@ -65,13 +73,17 @@ def attach_gsx_status(records, gsx_path):
     None for records with no recognizable ICAO (nothing to check). Also
     attaches the ICAO itself (already embedded in display_name, but not
     otherwise exposed as its own field) - the frontend needs it to build
-    the flightsim.to search link for a missing profile."""
+    the flightsim.to search link for a missing profile. Also attaches the
+    scenery's own developer name (prettified dev key, same source as the
+    match check) so the UI can show it next to the airport name."""
     profiles = scan_profiles(gsx_path)
     for record in records:
         icao = icao_from_display_name(record["display_name"])
         record["icao"] = icao
+        dev_key = _developer_key(record["folder_name"])
+        record["developer"] = _prettify_dev_key(dev_key)
         if not icao:
             record["gsx_status"] = None
             continue
-        record["gsx_status"] = _status_for(_developer_key(record["folder_name"]), profiles.get(icao, []))
+        record["gsx_status"] = _status_for(dev_key, profiles.get(icao, []))
     return records

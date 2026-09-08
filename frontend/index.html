@@ -226,7 +226,7 @@
                                   <input type="checkbox" :checked="isEnabled(record)" @change="onToggle(record)" />
                                   <span class="scenery-item-text">
                                     <span class="scenery-name-row">
-                                      <span class="scenery-name-truncate" x-text="record.display_name"></span>
+                                      <span class="scenery-name-truncate" x-text="sceneryLabel(record)"></span>
                                       <span class="gsx-tag gsx-match" x-show="record.gsx_status === 'installed_match'"
                                             :title="$store.app.t('scenery_gsx_match_tt')">GSX</span>
                                       <span class="gsx-tag gsx-unmatched" x-show="record.gsx_status === 'installed_unmatched'"

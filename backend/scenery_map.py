@@ -22,6 +22,7 @@ def build_markers(records):
             "lon": airport["lon"],
             "airport_name": airport["name"],
             "gsx_status": record.get("gsx_status"),
+            "developer": record.get("developer"),
         })
     return markers
 
