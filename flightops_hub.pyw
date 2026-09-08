@@ -3,7 +3,7 @@ import traceback
 
 import webview
 
-from backend import config_manager, paths, win_native
+from backend import app_logging, config_manager, paths, win_native
 from backend.api import Api
 from backend.events import bus
 from backend.version import APP_VERSION
@@ -66,6 +66,8 @@ def main():
         _show_already_running_message()
         return
 
+    app_logging.setup()
+
     try:
         api = Api()
         config = api.config_get()
@@ -86,7 +88,9 @@ def main():
         api.start_gsx_watcher()
 
         webview.start(icon=paths.resource_path("OIG3.ico"))
+        app_logging.get_logger().info("FlightOps Hub exiting normally")
     except Exception:
+        app_logging.get_logger().exception("Startup failed")
         try:
             with open("crash_log.txt", "w", encoding="utf-8") as f:
                 f.write("CRASH LOG:\n")

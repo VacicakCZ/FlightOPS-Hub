@@ -16,6 +16,9 @@ document.addEventListener("alpine:init", () => {
     detectedCommunityPath: null,
     diagnostics: null,
     diagnosticsScanning: false,
+    configExportMessage: "",
+    configImportMessage: "",
+    diagnosticsExportMessage: "",
 
     async init() {
       await window.AppReady;
@@ -170,6 +173,51 @@ document.addEventListener("alpine:init", () => {
 
     get diagnosticsHasIssues() {
       return !!this.diagnostics && (this.diagnostics.misplaced.length > 0 || this.diagnostics.duplicates.length > 0);
+    },
+
+    // --- backup/restore: bundles profiles, aircraft overrides, addon list
+    // and paths into one portable JSON file (see backend/backup.py) ---
+    async exportConfig() {
+      this.configExportMessage = "";
+      const result = await Api.exportConfig();
+      // result.ok === false with no path just means the user cancelled the
+      // save dialog - nothing worth reporting in that case.
+      if (result.ok) {
+        this.configExportMessage = this.$store.app.t("backup_export_done", result.path);
+      } else if (result.error) {
+        this.configExportMessage = this.$store.app.t("backup_export_error", result.error);
+      }
+    },
+
+    async importConfig() {
+      const proceed = await Modal.confirmDialog(
+        this.$store.app.t("backup_import_confirm_title"),
+        this.$store.app.t("backup_import_confirm_message")
+      );
+      if (!proceed) return;
+
+      this.configImportMessage = "";
+      const result = await Api.importConfig();
+      if (result.ok) {
+        this.$store.app.config = result.config;
+        this.$store.app.apps = result.apps;
+        this.configImportMessage = this.$store.app.t("backup_import_done");
+        FlightOpsEvents.dispatch({ type: "config_changed" });
+      } else if (result.error) {
+        this.configImportMessage = this.$store.app.t("backup_import_error", result.error);
+      }
+    },
+
+    // --- diagnostics export: version + OS + config + recent log in one
+    // plain-text file, meant to be attached directly to a bug report ---
+    async exportDiagnostics() {
+      this.diagnosticsExportMessage = "";
+      const result = await Api.exportDiagnostics();
+      if (result.ok) {
+        this.diagnosticsExportMessage = this.$store.app.t("diagnostics_export_done", result.path);
+      } else if (result.error) {
+        this.diagnosticsExportMessage = this.$store.app.t("diagnostics_export_error", result.error);
+      }
     },
 
     topPackages(kind) {

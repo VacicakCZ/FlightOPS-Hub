@@ -3,6 +3,8 @@ dist/
 __pycache__/
 *.pyc
 crash_log.txt
+flightops_hub.log
+flightops_hub.log.1
 
 # Real user data - never track this, it contains local file paths,
 # Windows username, and the user's own SimBrief login. Was already

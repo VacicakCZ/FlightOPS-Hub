@@ -30,6 +30,9 @@ window.Api = (() => {
 
     configGet: () => call("config_get"),
     configSet: (patch) => call("config_set", patch),
+    exportConfig: () => call("export_config"),
+    importConfig: () => call("import_config"),
+    exportDiagnostics: () => call("export_diagnostics"),
 
     appsList: () => call("apps_list"),
     appsSave: (app) => call("apps_save", app),

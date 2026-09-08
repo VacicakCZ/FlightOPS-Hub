@@ -766,6 +766,22 @@
           </template>
         </div>
 
+        <hr />
+
+        <h3 x-text="$store.app.t('backup_title')"></h3>
+        <p class="hint" x-text="$store.app.t('backup_hint')"></p>
+        <div class="field-row inline">
+          <button class="btn" @click="exportConfig()" x-text="$store.app.t('backup_export_btn')"></button>
+          <button class="btn" @click="importConfig()" x-text="$store.app.t('backup_import_btn')"></button>
+        </div>
+        <p class="hint" x-show="configExportMessage" x-text="configExportMessage"></p>
+        <p class="hint" x-show="configImportMessage" x-text="configImportMessage"></p>
+
+        <h3 x-text="$store.app.t('diagnostics_export_title')"></h3>
+        <p class="hint" x-text="$store.app.t('diagnostics_export_hint')"></p>
+        <button class="btn" @click="exportDiagnostics()" x-text="$store.app.t('diagnostics_export_btn')"></button>
+        <p class="hint" x-show="diagnosticsExportMessage" x-text="diagnosticsExportMessage"></p>
+
         <p class="version-footer" x-text="`FlightOps Hub ${$store.app.version}`"></p>
 
         <div class="update-notice-wrap" x-show="$store.app.updateInfo" x-cloak>

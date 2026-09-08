@@ -5,7 +5,9 @@ method per button. Each method validates its own input, delegates to a plain
 Python module, and returns a JSON-serializable value - pywebview marshals the
 return value into the resolved JS Promise automatically.
 """
+import json
 import os
+import platform
 import threading
 
 import webview
@@ -17,10 +19,13 @@ from . import (
     airac,
     apps_manager,
     airports_data,
+    app_logging,
+    backup,
     community_detect,
     community_diagnostics,
     community_paths,
     config_manager,
+    diagnostics,
     exe_xml_manager,
     folder_size,
     gsx_profiles,
@@ -35,6 +40,8 @@ from . import (
 from .events import bus
 from .i18n import translate
 from .version import APP_VERSION
+
+_log = app_logging.get_logger("api")
 
 
 class Api:
@@ -97,10 +104,13 @@ class Api:
             finally:
                 self._update_download_active = False
             if result.get("ok"):
+                _log.info("Update download finished: %s", result["path"])
                 try:
                     win_native.open_folder_and_select(result["path"])
                 except OSError:
                     pass
+            else:
+                _log.warning("Update download failed: %s", result.get("error"))
             bus.emit("update_download_done", result)
 
         threading.Thread(target=worker, daemon=True).start()
@@ -452,6 +462,7 @@ class Api:
 
         selected = [name for name, checked in app_states.items() if checked]
         lang = self._config.get("_language", "EN")
+        _log.info("Launch: %s", ", ".join(selected) or "(nothing selected)")
 
         self._session = launch_orchestrator.LaunchSession(
             webview.windows[0], lambda key: translate(lang, key)
@@ -474,6 +485,7 @@ class Api:
     def scenery_scan(self):
         community_path = self._config.get("_community_path", "")
         if not community_path or not os.path.isdir(community_path):
+            _log.warning("Scenery scan: no valid Community path set (%r)", community_path)
             return {"records": [], "no_community": True}
         disabled_locations = self._resolve_disabled_locations(community_path)
         records = scenery_data.scan_scenery_packages(community_path, disabled_locations)
@@ -616,6 +628,7 @@ class Api:
 
         self._addon_apply_active = True
         disabled_locations = self._resolve_disabled_locations(community_path)
+        _log.info("%s apply: %d change(s) requested", event_prefix, len(desired_states))
 
         def on_progress(idx, total, name, copied, total_bytes):
             bus.emit(f"{event_prefix}_apply_progress", {
@@ -628,10 +641,16 @@ class Api:
                     community_path, disabled_locations, desired_states, progress_callback=on_progress
                 )
             except Exception as e:
+                _log.exception("%s apply crashed", event_prefix)
                 raw_results = [("?", False, str(e))]
             finally:
                 self._addon_apply_active = False
             results = [{"folder_name": n, "ok": ok, "error": err} for n, ok, err in raw_results]
+            errors = [r for r in results if not r["ok"]]
+            if errors:
+                _log.warning("%s apply finished with %d error(s): %s", event_prefix, len(errors), errors)
+            else:
+                _log.info("%s apply finished: %d ok", event_prefix, len(results))
             bus.emit(f"{event_prefix}_apply_done", {"results": results})
 
         threading.Thread(target=worker, daemon=True).start()
@@ -649,3 +668,66 @@ class Api:
             webview.FileDialog.OPEN, directory=initial_dir or "", file_types=file_types
         )
         return result[0] if result else None
+
+    # --- backup/restore: bundles msfs_launcher_config.json + msfs_apps.json
+    # (profiles, aircraft overrides, addon list, paths) so a reinstall or a
+    # move to a new PC does not mean starting over. See backup.py. ---
+    def export_config(self):
+        window = webview.windows[0]
+        result = window.create_file_dialog(
+            webview.FileDialog.SAVE, save_filename=backup.default_filename(), file_types=("JSON files (*.json)",)
+        )
+        if not result:
+            return {"ok": False}
+        path = result[0]
+        bundle = backup.build_bundle(self._config, self._apps)
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(bundle, f, indent=2, ensure_ascii=False)
+        except OSError as e:
+            _log.exception("Config export failed")
+            return {"ok": False, "error": str(e)}
+        _log.info("Config exported to %s", path)
+        return {"ok": True, "path": path}
+
+    def import_config(self):
+        window = webview.windows[0]
+        result = window.create_file_dialog(webview.FileDialog.OPEN, file_types=("JSON files (*.json)",))
+        if not result:
+            return {"ok": False}
+        path = result[0]
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            new_config, new_apps = backup.parse_bundle(data)
+        except (OSError, ValueError, json.JSONDecodeError) as e:
+            _log.warning("Config import failed (%s): %s", path, e)
+            return {"ok": False, "error": str(e)}
+
+        self._config = new_config
+        self._apps = new_apps
+        self._save_config()
+        apps_manager.save_apps(self._apps)
+        _log.info("Config imported from %s", path)
+        return {"ok": True, "config": self._config_snapshot(), "apps": self._apps}
+
+    # --- diagnostics: a plain-text bundle (version, OS, config, recent log)
+    # for the user to attach directly to a GitHub bug report. See
+    # diagnostics.py and app_logging.py. ---
+    def export_diagnostics(self):
+        window = webview.windows[0]
+        result = window.create_file_dialog(
+            webview.FileDialog.SAVE, save_filename=diagnostics.default_filename(), file_types=("Text files (*.txt)",)
+        )
+        if not result:
+            return {"ok": False}
+        path = result[0]
+        report = diagnostics.build_report(self._config, platform.platform(), app_logging.read_recent_lines())
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(report)
+        except OSError as e:
+            _log.exception("Diagnostics export failed")
+            return {"ok": False, "error": str(e)}
+        _log.info("Diagnostics exported to %s", path)
+        return {"ok": True, "path": path}
