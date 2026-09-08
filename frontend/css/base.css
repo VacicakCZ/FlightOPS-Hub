@@ -467,6 +467,48 @@ button.btn.danger {
   margin-top: 18px;
 }
 
+.update-notice-wrap {
+  margin-top: 4px;
+  text-align: center;
+}
+
+.update-notice-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.update-notice-toggle:hover {
+  text-decoration: underline;
+}
+
+.update-notes {
+  margin: 6px auto 0 auto;
+  max-width: 420px;
+  padding: 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  background: var(--bg);
+  text-align: left;
+}
+
+.update-notes pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0 0 8px 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
 .exe-row {
   display: flex;
   align-items: center;

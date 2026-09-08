@@ -26,6 +26,7 @@ from . import (
     scenery_map,
     scenery_simbrief_match,
     simbrief_client,
+    update_check,
 )
 from .events import bus
 from .i18n import translate
@@ -41,6 +42,16 @@ class Api:
 
     def app_version(self):
         return APP_VERSION
+
+    def check_for_update(self):
+        return update_check.check_for_update()
+
+    def open_update_page(self):
+        try:
+            os.startfile(update_check.UPDATE_PAGE_URL)
+            return {"ok": True}
+        except OSError:
+            return {"ok": False}
 
     # --- config ---
     def _save_config(self):

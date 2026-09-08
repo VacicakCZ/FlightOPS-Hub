@@ -622,6 +622,17 @@
         </div>
 
         <p class="version-footer" x-text="`FlightOps Hub ${$store.app.version}`"></p>
+
+        <div class="update-notice-wrap" x-show="$store.app.updateInfo" x-cloak>
+          <button type="button" class="update-notice-toggle" @click="$store.app.updateNotesOpen = !$store.app.updateNotesOpen">
+            <span x-text="$store.app.t('update_available', $store.app.updateInfo ? $store.app.updateInfo.version : '')"></span>
+            <span x-text="$store.app.updateNotesOpen ? '▲' : '▼'"></span>
+          </button>
+          <div class="update-notes" x-show="$store.app.updateNotesOpen" x-cloak>
+            <pre x-text="$store.app.updateInfo ? $store.app.updateInfo.notes : ''"></pre>
+            <button type="button" class="btn" @click="$store.app.openUpdatePage()" x-text="$store.app.t('update_open_btn')"></button>
+          </div>
+        </div>
       </section>
     </div>
 

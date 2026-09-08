@@ -147,5 +147,7 @@
   "tt_add": "Neues Profil hinzufügen",
   "tt_delete": "Ausgewähltes Profil löschen",
   "tt_update": "Ausgewähltes Profil aktualisieren",
-  "ui_scale_label": "UI-Größe:"
+  "ui_scale_label": "UI-Größe:",
+  "update_available": "🔔 Neue Version verfügbar: {}",
+  "update_open_btn": "Auf GitHub öffnen"
 }

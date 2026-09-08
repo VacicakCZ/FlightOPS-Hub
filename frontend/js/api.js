@@ -23,6 +23,8 @@ window.Api = (() => {
 
   return {
     appVersion: () => call("app_version"),
+    checkForUpdate: () => call("check_for_update"),
+    openUpdatePage: () => call("open_update_page"),
 
     configGet: () => call("config_get"),
     configSet: (patch) => call("config_set", patch),

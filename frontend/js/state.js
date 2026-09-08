@@ -13,6 +13,8 @@ document.addEventListener("alpine:init", () => {
     apps: {},
     uiScale: 100,
     version: "",
+    updateInfo: null,
+    updateNotesOpen: false,
 
     async init() {
       this.version = await Api.appVersion();
@@ -33,6 +35,26 @@ document.addEventListener("alpine:init", () => {
       const requestedLang = this.config._language || "EN";
       const lang = this.languages.some((l) => l.code === requestedLang) ? requestedLang : "EN";
       await this.setLanguage(lang, /* persist */ false);
+
+      // Fire-and-forget: a slow/failed network call must never delay the
+      // app becoming interactive, and a missing update is not worth
+      // surfacing as an error - see backend/update_check.py.
+      this.checkForUpdate();
+    },
+
+    async checkForUpdate() {
+      try {
+        const result = await Api.checkForUpdate();
+        if (result.available) {
+          this.updateInfo = result;
+        }
+      } catch (e) {
+        // silent - purely a nicety, never worth bothering the user about
+      }
+    },
+
+    openUpdatePage() {
+      Api.openUpdatePage();
     },
 
     async refreshApps() {

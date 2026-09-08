@@ -147,5 +147,7 @@
   "tt_add": "Añadir nuevo perfil",
   "tt_delete": "Eliminar perfil seleccionado",
   "tt_update": "Actualizar perfil seleccionado",
-  "ui_scale_label": "Tamaño de la interfaz:"
+  "ui_scale_label": "Tamaño de la interfaz:",
+  "update_available": "🔔 Nueva versión disponible: {}",
+  "update_open_btn": "Abrir en GitHub"
 }
