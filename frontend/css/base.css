@@ -640,6 +640,10 @@ button.btn.danger {
   border: 1px solid var(--panel-border);
   border-radius: 6px;
   background: var(--bg);
+  /* Card of short, fixed-width rows - stretching it edge-to-edge on a wide
+     window just leaves a big empty gray box. Caps it to a sane content
+     width instead of filling the panel. */
+  max-width: 460px;
 }
 
 .simbrief-legs {
@@ -649,8 +653,17 @@ button.btn.danger {
   margin-top: 8px;
 }
 
+/* Grid (not flex) so role/ICAO/status line up into real columns across
+   rows - every .simbrief-leg uses the same fixed column widths, so they
+   align even though each row is its own grid. Role/status get an ellipsis
+   safety net since translated labels vary a lot in length (e.g. German
+   "Ausweichflughafen" vs "Ziel"). */
 .simbrief-leg {
-  display: flex;
+  display: grid;
+  /* max-content, not auto: an "auto" track absorbs leftover grid space by
+     default, which stretched the badge/button into giant bars on a wide
+     window - max-content keeps them sized to their own content only. */
+  grid-template-columns: 78px 42px 90px max-content max-content;
   align-items: center;
   gap: 8px;
   font-size: 12px;
@@ -658,19 +671,19 @@ button.btn.danger {
 
 .simbrief-role {
   color: var(--text-muted);
-  min-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .simbrief-icao {
   font-weight: 600;
-  min-width: 40px;
 }
 
 .simbrief-status {
-  /* No flex-grow: that used to push the trailing GSX badge/button all the
-     way to the far right of the row, which looked broken/disconnected -
-     especially on a wide window, or when a row has both a badge and the
-     "Zapnout" button. Everything just packs left now, close together. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .simbrief-status.status-enabled { color: var(--success); }
