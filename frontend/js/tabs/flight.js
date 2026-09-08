@@ -29,6 +29,37 @@ document.addEventListener("alpine:init", () => {
       });
     },
 
+    // First-run setup panel: shown until a Community folder is set (the one
+    // thing every other tab needs), or until explicitly dismissed. Kept
+    // self-contained here (small duplication of settingsTab's browse/save
+    // calls) rather than reaching into another tab's Alpine component.
+    get showOnboarding() {
+      const cfg = this.$store.app.config;
+      return !cfg._community_path && !cfg._onboarding_dismissed;
+    },
+
+    async onboardingBrowseCommunity() {
+      const path = await Api.browseFolder("");
+      if (!path) return;
+      this.$store.app.config = await Api.setCommunityPath(path);
+      FlightOpsEvents.dispatch({ type: "config_changed" });
+    },
+
+    async onboardingBrowseGsx() {
+      const path = await Api.browseFolder(this.$store.app.config._gsx_profiles_path_effective || "");
+      if (!path) return;
+      this.$store.app.config = await Api.setGsxPath(path);
+      FlightOpsEvents.dispatch({ type: "config_changed" });
+    },
+
+    async onboardingSaveSimbrief(value) {
+      this.$store.app.config = await Api.configSet({ _simbrief_username: value.trim() });
+    },
+
+    async dismissOnboarding() {
+      this.$store.app.config = await Api.configSet({ _onboarding_dismissed: true });
+    },
+
     get appNames() {
       return Object.keys(this.$store.app.apps);
     },

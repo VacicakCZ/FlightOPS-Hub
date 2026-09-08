@@ -38,6 +38,37 @@
 
     <div class="tab-panels">
       <section x-show="$store.app.activeTab === 'flight'" x-data="flightTab">
+        <div class="onboarding-panel" x-show="showOnboarding" x-cloak>
+          <div class="onboarding-head">
+            <h3 x-text="$store.app.t('onboarding_title')"></h3>
+            <button type="button" class="btn icon-btn" @click="dismissOnboarding()" :title="$store.app.t('onboarding_dismiss')">✕</button>
+          </div>
+          <p class="hint" x-text="$store.app.t('onboarding_intro')"></p>
+
+          <div class="field-row">
+            <label x-text="$store.app.t('set_nav_title')"></label>
+            <div class="path-row">
+              <input type="text" readonly :value="$store.app.config._community_path || ''" :placeholder="$store.app.t('set_nav_placeholder')" />
+              <button class="btn" @click="onboardingBrowseCommunity()" x-text="$store.app.t('btn_browse')"></button>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <label x-text="$store.app.t('gsx_path_title')"></label>
+            <div class="path-row">
+              <input type="text" readonly :value="$store.app.config._gsx_profiles_path_effective || ''" :placeholder="$store.app.t('gsx_path_placeholder')" />
+              <button class="btn" @click="onboardingBrowseGsx()" x-text="$store.app.t('btn_browse')"></button>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <label x-text="$store.app.t('simbrief_username_label')"></label>
+            <input type="text" :value="$store.app.config._simbrief_username || ''" @change="onboardingSaveSimbrief($event.target.value)" placeholder="Navigraph Alias / SimBrief username" />
+          </div>
+
+          <p class="hint" x-text="$store.app.t('onboarding_optional_hint')"></p>
+        </div>
+
         <h2 x-text="$store.app.t('main_title')"></h2>
 
         <div class="field-row inline">
@@ -167,6 +198,15 @@
               <span class="gsx-legend-item"><span class="gsx-tag gsx-match">GSX</span> <span x-text="$store.app.t('gsx_legend_match')"></span></span>
               <span class="gsx-legend-item"><span class="gsx-tag gsx-unmatched">GSX</span> <span x-text="$store.app.t('gsx_legend_unmatched')"></span></span>
               <span class="gsx-legend-item"><span class="gsx-tag gsx-missing">GSX</span> <span x-text="$store.app.t('gsx_legend_missing')"></span></span>
+            </div>
+
+            <div class="warning-panel" x-show="!mapView && conflicts.length" x-cloak>
+              <p class="warning-text" x-text="$store.app.t('scenery_conflict_hint')"></p>
+              <template x-for="c in conflicts" :key="c.icao">
+                <p class="hint">
+                  <strong x-text="c.icao"></strong>: <span x-text="c.records.map(r => r.display_name).join(', ')"></span>
+                </p>
+              </template>
             </div>
 
             <div class="simbrief-panel">
@@ -551,6 +591,20 @@
         <div class="path-row">
           <input type="text" readonly :value="communityPath" :placeholder="$store.app.t('set_nav_placeholder')" />
           <button class="btn" @click="browseCommunity()" x-text="$store.app.t('btn_browse')"></button>
+        </div>
+
+        <button type="button" class="btn" :disabled="!communityPath || communityUsageScanning"
+                @click="scanCommunityUsage()"
+                x-text="communityUsageScanning ? $store.app.t('community_usage_scanning') : $store.app.t('community_usage_btn')"></button>
+
+        <div class="community-usage" x-show="communityUsage" x-cloak>
+          <p class="hint" x-text="$store.app.t('community_usage_total', formatBytes(communityUsage ? communityUsage.total_bytes : 0))"></p>
+          <template x-for="pkg in topCommunityPackages" :key="pkg.folder_name">
+            <div class="community-usage-row">
+              <span class="community-usage-name" x-text="pkg.folder_name"></span>
+              <span class="community-usage-size" x-text="formatBytes(pkg.bytes)"></span>
+            </div>
+          </template>
         </div>
 
         <h3 x-text="$store.app.t('disabled_path_title')"></h3>

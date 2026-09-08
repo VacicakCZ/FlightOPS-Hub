@@ -134,6 +134,22 @@ document.addEventListener("alpine:init", () => {
       return override === undefined ? record.enabled : override;
     },
 
+    // Two+ enabled sceneries sharing the same ICAO fight over the same
+    // tiles in the sim and cause visual glitches - easy to catch since the
+    // ICAO is already attached to every record (gsx_profiles.attach_gsx_status),
+    // and cheap to recompute reactively off isEnabled()/pending as the user
+    // toggles things, no backend round-trip needed.
+    get conflicts() {
+      const byIcao = {};
+      for (const r of this.allRecords) {
+        if (!r.icao || !this.isEnabled(r)) continue;
+        (byIcao[r.icao] ??= []).push(r);
+      }
+      return Object.entries(byIcao)
+        .filter(([, records]) => records.length > 1)
+        .map(([icao, records]) => ({ icao, records }));
+    },
+
     groupState(items) {
       const total = items.length;
       const enabled = items.filter((r) => this.isEnabled(r)).length;

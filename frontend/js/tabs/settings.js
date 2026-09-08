@@ -9,6 +9,16 @@ document.addEventListener("alpine:init", () => {
       previousName: null,
     },
     errorKey: "",
+    communityUsage: null,
+    communityUsageScanning: false,
+
+    async init() {
+      await window.AppReady;
+      FlightOpsEvents.on("community_usage_done", (payload) => {
+        this.communityUsageScanning = false;
+        this.communityUsage = payload;
+      });
+    },
 
     get languages() {
       return this.$store.app.languages;
@@ -91,6 +101,32 @@ document.addEventListener("alpine:init", () => {
     async resetGsxPath() {
       this.$store.app.config = await Api.resetGsxPath();
       FlightOpsEvents.dispatch({ type: "config_changed" });
+    },
+
+    async scanCommunityUsage() {
+      this.communityUsage = null;
+      this.communityUsageScanning = true;
+      const result = await Api.scanCommunityUsage();
+      if (!result.ok) this.communityUsageScanning = false;
+      // On success the community_usage_done event (registered in init())
+      // fills in communityUsage/clears communityUsageScanning once the
+      // background scan finishes - a full walk of a large Community
+      // folder can take a while.
+    },
+
+    get topCommunityPackages() {
+      return this.communityUsage ? this.communityUsage.packages.slice(0, 20) : [];
+    },
+
+    formatBytes(bytes) {
+      const units = ["B", "KB", "MB", "GB", "TB"];
+      let value = bytes || 0;
+      let unitIndex = 0;
+      while (value >= 1024 && unitIndex < units.length - 1) {
+        value /= 1024;
+        unitIndex++;
+      }
+      return `${value.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
     },
 
     // exe.xml path is picked directly (not a folder) - initial_dir needs

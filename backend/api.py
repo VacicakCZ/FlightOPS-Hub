@@ -20,6 +20,7 @@ from . import (
     community_paths,
     config_manager,
     exe_xml_manager,
+    folder_size,
     gsx_profiles,
     gsx_watcher,
     launch_orchestrator,
@@ -140,6 +141,23 @@ class Api:
         self._config.pop("_disabled_holding_path", None)
         self._save_config()
         return self._config_snapshot()
+
+    def scan_community_usage(self):
+        """Kicks off a background disk-usage scan of the Community folder;
+        result arrives via the community_usage_done event. A full recursive
+        walk can take a noticeable while on a large folder, so this is only
+        ever run on explicit user request (Settings tab button), never as
+        part of the regular scenery/aircraft scan."""
+        community_path = self._config.get("_community_path", "")
+        if not community_path or not os.path.isdir(community_path):
+            return {"ok": False}
+
+        def worker():
+            result = folder_size.scan_community_usage(community_path)
+            bus.emit("community_usage_done", result)
+
+        threading.Thread(target=worker, daemon=True).start()
+        return {"ok": True}
 
     # --- settings: GSX (virtuali) profile folder, for the scenery-tab GSX badge ---
     def _gsx_path(self):
