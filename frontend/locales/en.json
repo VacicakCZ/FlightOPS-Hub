@@ -48,6 +48,7 @@
   "exe_rename_title": "Custom Name",
   "exe_rename_tt": "Rename",
   "exe_title": "Manage Addons via exe.xml",
+  "gsx_open_folder_btn": "Open the GSX profiles folder",
   "gsx_path_hint": "Where the app checks whether you have a GSX (virtuali) profile installed for a given scenery. Defaults to GSX's standard install location - only change this if you moved it elsewhere.",
   "gsx_path_placeholder": "AppData\\Roaming\\virtuali\\GSX\\MSFS",
   "gsx_path_reset_btn": "Default",

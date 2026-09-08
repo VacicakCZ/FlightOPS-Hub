@@ -39,6 +39,7 @@ window.Api = (() => {
     setGsxPath: (path) => call("settings_set_gsx_path", path),
     resetGsxPath: () => call("settings_reset_gsx_path"),
     openGsxSearch: (icao) => call("open_gsx_search", icao),
+    openGsxFolder: () => call("open_gsx_folder"),
 
     profilesList: (kind) => call("profiles_list", kind),
     profilesSave: (kind, name, members) => call("profiles_save", kind, name, members),

@@ -437,6 +437,10 @@ document.addEventListener("alpine:init", () => {
       await Api.openGsxSearch(icao);
     },
 
+    async openGsxFolder() {
+      await Api.openGsxFolder();
+    },
+
     // --- SimBrief flight-plan check: suggests enabling installed-but-
     // disabled sceneries for the planned origin/destination/alternate ---
     get simbriefUsernameSet() {

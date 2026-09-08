@@ -144,6 +144,20 @@ class Api:
         except OSError:
             return {"ok": False}
 
+    def open_gsx_folder(self):
+        path = self._gsx_path()
+        if not path:
+            return {"ok": False}
+        try:
+            # Create it if this is a first-time user who's never had GSX
+            # write anything there yet - opening a folder that doesn't
+            # exist would otherwise just fail.
+            os.makedirs(path, exist_ok=True)
+            os.startfile(path)
+            return {"ok": True}
+        except OSError:
+            return {"ok": False}
+
     def start_gsx_watcher(self):
         # Called once from flightops_hub.pyw after the window/EventBus are
         # ready. Reuses config_changed (already listened for by the Scenery

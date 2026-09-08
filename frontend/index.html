@@ -190,6 +190,8 @@
                       :title="$store.app.t('scenery_search_clear')">✕</button>
             </div>
 
+            <button type="button" class="link-btn gsx-folder-link" x-show="!mapView" @click="openGsxFolder()">📁 <span x-text="$store.app.t('gsx_open_folder_btn')"></span></button>
+
             <p class="placeholder-note" x-show="!mapView && searchQuery.trim() && visibleContinents.length === 0"
                x-text="$store.app.t('scenery_search_no_results')"></p>
 
