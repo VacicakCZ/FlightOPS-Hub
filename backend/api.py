@@ -268,13 +268,30 @@ class Api:
 
         legs = [("origin", ofp["origin"]), ("destination", ofp["destination"]), ("alternate", ofp["alternate"])]
         matched_legs = scenery_simbrief_match.match_flight_plan(scan["records"], legs)
-        # Coordinates for the map's route line - looked up independently of
-        # the scenery match, since a leg (e.g. an alternate with no scenery
-        # installed) should still be plottable on the route.
+
+        # scan["records"] already carries gsx_status (from scenery_scan's
+        # gsx_profiles.attach_gsx_status) for every installed scenery - reuse
+        # it here instead of re-deriving, so the SimBrief panel shows the
+        # same GSX info as the scenery list without a separate lookup.
+        records_by_icao = {r["icao"]: r for r in scan["records"] if r.get("icao")}
+        gsx_profiles_by_icao = gsx_profiles.scan_profiles(self._gsx_path())
+
         for leg in matched_legs:
+            # Coordinates for the map's route line - looked up independently
+            # of the scenery match, since a leg (e.g. an alternate with no
+            # scenery installed) should still be plottable on the route.
             airport = airports_data.lookup(leg["icao"])
             leg["lat"] = airport["lat"] if airport else None
             leg["lon"] = airport["lon"] if airport else None
+
+            matched_record = records_by_icao.get(leg["icao"])
+            if matched_record:
+                leg["gsx_status"] = matched_record.get("gsx_status")
+            else:
+                # No scenery installed for this leg at all, so there's no
+                # developer to compare a profile against - the best we can
+                # say is whether any profile exists for the ICAO.
+                leg["gsx_status"] = "installed_unmatched" if gsx_profiles_by_icao.get(leg["icao"]) else "missing"
         return {"ok": True, "legs": matched_legs}
 
     def scenery_apply(self, desired_states):

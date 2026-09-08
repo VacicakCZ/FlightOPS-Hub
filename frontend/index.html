@@ -155,6 +155,13 @@
                       <span class="simbrief-role" x-text="$store.app.t('simbrief_role_' + leg.role)"></span>
                       <span class="simbrief-icao" x-text="leg.icao"></span>
                       <span class="simbrief-status" :class="'status-' + leg.status" x-text="$store.app.t('simbrief_status_' + leg.status)"></span>
+                      <span class="gsx-tag gsx-match" x-show="leg.gsx_status === 'installed_match'"
+                            :title="$store.app.t('scenery_gsx_match_tt')">GSX</span>
+                      <span class="gsx-tag gsx-unmatched" x-show="leg.gsx_status === 'installed_unmatched'"
+                            :title="$store.app.t('scenery_gsx_unmatched_tt')">GSX<span class="gsx-warn">!</span></span>
+                      <button type="button" class="gsx-tag gsx-missing" x-show="leg.gsx_status === 'missing'"
+                              @click.stop.prevent="openGsxSearch(leg.icao)"
+                              :title="$store.app.t('scenery_gsx_missing_tt')">GSX</button>
                       <button class="btn" x-show="leg.status === 'disabled'" :disabled="applying" @click="quickEnable(leg.folder_name)" x-text="$store.app.t('simbrief_enable_btn')"></button>
                     </div>
                   </template>
