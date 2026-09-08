@@ -134,13 +134,6 @@ document.addEventListener("alpine:init", () => {
       return override === undefined ? record.enabled : override;
     },
 
-    // Appends the installed scenery's developer in parentheses, e.g.
-    // "[LOWI] LOWI Innsbruck (Inibuilds)" - shared by the list row and the
-    // map popup title so both stay in sync.
-    sceneryLabel(record) {
-      return record.developer ? `${record.display_name} (${record.developer})` : record.display_name;
-    },
-
     groupState(items) {
       const total = items.length;
       const enabled = items.filter((r) => this.isEnabled(r)).length;
@@ -375,8 +368,15 @@ document.addEventListener("alpine:init", () => {
       el.className = "map-popup";
 
       const title = document.createElement("strong");
-      title.textContent = this.sceneryLabel(marker);
+      title.textContent = marker.display_name;
       el.appendChild(title);
+
+      if (marker.developer) {
+        const developer = document.createElement("span");
+        developer.className = "scenery-developer";
+        developer.textContent = ` (${marker.developer})`;
+        title.appendChild(developer);
+      }
 
       if (marker.airport_name) {
         const officialName = document.createElement("div");

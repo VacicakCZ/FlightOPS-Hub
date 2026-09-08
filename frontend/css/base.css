@@ -365,6 +365,13 @@ button.btn.danger {
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
+  flex-shrink: 1;
+}
+
+.scenery-developer {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .scenery-airport-name {
