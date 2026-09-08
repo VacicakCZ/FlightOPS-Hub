@@ -22,7 +22,7 @@ def test_default_filename_looks_like_a_json_backup():
 
 
 def test_parse_bundle_round_trip():
-    config = {"_theme": "dark", "_simbrief_username": "Vacicak"}
+    config = {"_theme": "dark", "_simbrief_username": "TestPilot"}
     apps = {"SimBrief": {"path": "C:\\x.exe"}}
     bundle = backup.build_bundle(config, apps)
 
