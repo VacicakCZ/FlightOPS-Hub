@@ -3,3 +3,11 @@ dist/
 __pycache__/
 *.pyc
 crash_log.txt
+
+# Real user data - never track this, it contains local file paths,
+# Windows username, and the user's own SimBrief login. Was already
+# committed accidentally early in this project's history and had to be
+# purged with git filter-branch before the repo could go public - see
+# project_github_publish memory.
+msfs_launcher_config.json
+msfs_apps.json
