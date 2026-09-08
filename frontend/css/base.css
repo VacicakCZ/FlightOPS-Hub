@@ -31,7 +31,7 @@
   --success: #4fce70;
   --warning: #e8b34a;
   --input-bg: #12161f;
-  --tab-bg: #161b26;
+  --tab-bg: #0d1119;
   --tab-active-bg: var(--panel);
 }
 
@@ -49,7 +49,7 @@
     --success: #4fce70;
     --warning: #e8b34a;
     --input-bg: #12161f;
-    --tab-bg: #161b26;
+    --tab-bg: #0d1119;
     --tab-active-bg: var(--panel);
   }
 }
@@ -100,12 +100,18 @@ html, body {
   min-height: 46px;
   padding: 6px 3px;
   border: 1px solid var(--panel-border);
-  border-bottom: none;
+  border-bottom: 3px solid transparent;
   background: var(--tab-bg);
   color: var(--text-muted);
   border-radius: 8px 8px 0 0;
   cursor: pointer;
   font-size: 12px;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab-bar button:hover:not(.active) {
+  background: var(--panel-border);
+  color: var(--text);
 }
 
 .tab-bar button .tab-main {
@@ -128,6 +134,8 @@ html, body {
   background: var(--tab-active-bg);
   color: var(--text);
   font-weight: 600;
+  border-bottom-color: var(--accent);
+  box-shadow: 0 2px 8px -2px var(--accent-glow, transparent);
 }
 
 .tab-panels {
