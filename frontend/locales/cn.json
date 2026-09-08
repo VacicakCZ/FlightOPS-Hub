@@ -63,8 +63,6 @@
   "diagnostics_issues_found": "⚠️ 发现问题——详见下方",
   "diagnostics_misplaced_hint": "文件夹本身没有 manifest.json，但在其下一级嵌套文件夹中有（解压已包含外层文件夹的 zip 时常见的错误）——MSFS 会忽略这类插件：",
   "diagnostics_none_found": "✓ 未发现问题",
-  "dialog_community": "选择 MSFS 的主 Community 文件夹",
-  "dialog_disabled_path": "选择禁用插件的文件夹",
   "disabled_path_cross_drive_warning": "所选文件夹与 Community 位于不同的磁盘。移动到那里将不再是瞬间重命名，而是真正的数据复制——对于大型插件，这可能需要几分钟，期间应用程序将无响应。",
   "disabled_path_hint": "留空 = Community 旁边的默认位置。也可以设置到其他磁盘。",
   "disabled_path_invalid_nested": "无法使用此文件夹 - 它与 Community 相同或包含在其中（或相反）。",

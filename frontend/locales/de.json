@@ -63,8 +63,6 @@
   "diagnostics_issues_found": "⚠️ Probleme gefunden - siehe unten",
   "diagnostics_misplaced_hint": "Ordner ohne eigene manifest.json, aber mit einer eine Ebene tiefer verschachtelten (ein häufiger Fehler beim Entpacken eines ZIPs, das bereits einen umschließenden Ordner enthält) - MSFS ignoriert solche Add-ons:",
   "diagnostics_none_found": "✓ Keine Probleme gefunden",
-  "dialog_community": "Wähle den Haupt-Community-Ordner für MSFS",
-  "dialog_disabled_path": "Ordner für deaktivierte Add-ons wählen",
   "disabled_path_cross_drive_warning": "Der gewählte Ordner liegt auf einem anderen Laufwerk als Community. Das Verschieben dorthin ist dann kein sofortiges Umbenennen mehr, sondern echtes Kopieren der Daten - bei großen Paketen kann das Minuten dauern, und die App reagiert währenddessen nicht.",
   "disabled_path_hint": "Leer = Standardort neben Community. Kann auch auf ein anderes Laufwerk gesetzt werden.",
   "disabled_path_invalid_nested": "Dieser Ordner kann nicht verwendet werden - er ist identisch mit Community oder darin enthalten (oder umgekehrt).",

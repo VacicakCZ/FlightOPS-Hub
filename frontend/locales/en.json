@@ -63,8 +63,6 @@
   "diagnostics_issues_found": "⚠️ Problems found - see below",
   "diagnostics_misplaced_hint": "Folder with no manifest.json of its own, but one nested one level too deep (a common mistake when extracting a zip that already has a wrapping folder) - MSFS ignores these:",
   "diagnostics_none_found": "✓ No problems found",
-  "dialog_community": "Select main Community folder for MSFS",
-  "dialog_disabled_path": "Select the folder for disabled add-ons",
   "disabled_path_cross_drive_warning": "The chosen folder is on a different drive than Community. Moving there won't be an instant rename anymore, but an actual data copy - for large packages this can take minutes and the app will be unresponsive during that time.",
   "disabled_path_hint": "Empty = default location next to Community. Can also be set to a different drive.",
   "disabled_path_invalid_nested": "This folder can't be used - it's the same as Community or contained within it (or the other way around).",
