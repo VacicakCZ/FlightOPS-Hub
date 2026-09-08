@@ -38,6 +38,7 @@
   "default_profile": "Standard",
   "delay_label": "Sekunden Verzögerung nach MSFS-Start",
   "diagnostics_btn": "Auf Installationsprobleme prüfen",
+  "diagnostics_duplicates_caveat": "Hinweis: Der Abgleich erfolgt anhand des Titels in der manifest.json, nicht anhand des Paketinhalts - Varianten desselben Produkts (z. B. unterschiedliche Kennungen oder Livery-Pakete mit demselben Titel) können einen Fehlalarm auslösen.",
   "diagnostics_duplicates_hint": "Dasselbe Add-on unter mehreren Ordnernamen installiert - verschwendet Speicherplatz und kann zu Konflikten führen:",
   "diagnostics_issues_found": "⚠️ Probleme gefunden - siehe unten",
   "diagnostics_misplaced_hint": "Ordner ohne eigene manifest.json, aber mit einer eine Ebene tiefer verschachtelten (ein häufiger Fehler beim Entpacken eines ZIPs, das bereits einen umschließenden Ordner enthält) - MSFS ignoriert solche Add-ons:",

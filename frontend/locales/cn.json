@@ -38,6 +38,7 @@
   "default_profile": "默认",
   "delay_label": "MSFS 启动后的延迟秒数",
   "diagnostics_btn": "检查安装问题",
+  "diagnostics_duplicates_caveat": "提示：匹配依据是 manifest.json 中的 title，而非包内容——同一产品的不同变体（例如不同注册号或共用同一 title 的涂装包）可能会被误判。",
   "diagnostics_duplicates_hint": "同一插件安装在多个不同名称的文件夹下——浪费磁盘空间且可能引发冲突：",
   "diagnostics_issues_found": "⚠️ 发现问题——详见下方",
   "diagnostics_misplaced_hint": "文件夹本身没有 manifest.json，但在其下一级嵌套文件夹中有（解压已包含外层文件夹的 zip 时常见的错误）——MSFS 会忽略这类插件：",

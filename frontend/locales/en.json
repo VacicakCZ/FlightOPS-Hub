@@ -38,6 +38,7 @@
   "default_profile": "Default",
   "delay_label": "seconds delay after MSFS starts",
   "diagnostics_btn": "Check for install problems",
+  "diagnostics_duplicates_caveat": "Note: matching is based on the manifest.json title, not package contents - variants of the same product (e.g. different registrations or livery packs sharing a title) can trigger a false positive.",
   "diagnostics_duplicates_hint": "Same add-on installed under more than one folder name - wastes disk space and can conflict:",
   "diagnostics_issues_found": "⚠️ Problems found - see below",
   "diagnostics_misplaced_hint": "Folder with no manifest.json of its own, but one nested one level too deep (a common mistake when extracting a zip that already has a wrapping folder) - MSFS ignores these:",

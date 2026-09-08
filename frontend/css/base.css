@@ -271,6 +271,12 @@ button.btn:disabled {
   font-style: italic;
 }
 
+.diagnostics-caveat {
+  font-style: italic;
+  opacity: 0.8;
+  margin-top: -4px;
+}
+
 .theme-choice-row {
   display: flex;
   gap: 6px;

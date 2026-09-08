@@ -38,6 +38,7 @@
   "default_profile": "Por defecto",
   "delay_label": "segundos de retraso tras iniciar MSFS",
   "diagnostics_btn": "Comprobar problemas de instalación",
+  "diagnostics_duplicates_caveat": "Nota: la comparación se basa en el título del manifest.json, no en el contenido del paquete - variantes del mismo producto (p. ej. distintas matrículas o packs de librea con el mismo título) pueden dar un falso positivo.",
   "diagnostics_duplicates_hint": "El mismo addon instalado bajo más de un nombre de carpeta - desperdicia espacio en disco y puede causar conflictos:",
   "diagnostics_issues_found": "⚠️ Problemas encontrados - ver abajo",
   "diagnostics_misplaced_hint": "Carpeta sin su propio manifest.json, pero con uno anidado un nivel más abajo (un error común al descomprimir un zip que ya contiene una carpeta envolvente) - MSFS ignora estos addons:",

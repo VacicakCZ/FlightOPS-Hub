@@ -38,6 +38,7 @@
   "default_profile": "Výchozí",
   "delay_label": "sekund zpoždění po startu MSFS",
   "diagnostics_btn": "Zkontrolovat problémy s instalací",
+  "diagnostics_duplicates_caveat": "Poznámka: párování probíhá podle názvu (title) v manifest.json, ne podle obsahu balíčku - u variant stejného produktu (např. různé registrace nebo sady liver se stejným title) to může být falešný poplach.",
   "diagnostics_duplicates_hint": "Stejný doplněk nainstalovaný pod více názvy složek - zbytečně zabírá místo a může způsobit konflikt:",
   "diagnostics_issues_found": "⚠️ Nalezeny problémy - viz níže",
   "diagnostics_misplaced_hint": "Složka bez vlastního manifest.json, ale s ním o jednu úroveň hlouběji (častá chyba při rozbalování zipu, který už obsahuje obalovou složku) - MSFS takové doplňky ignoruje:",

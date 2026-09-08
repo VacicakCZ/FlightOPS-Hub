@@ -667,6 +667,7 @@
           <template x-if="diagnostics && diagnostics.duplicates.length > 0">
             <div>
               <p class="hint" x-text="$store.app.t('diagnostics_duplicates_hint')"></p>
+              <p class="hint diagnostics-caveat" x-text="$store.app.t('diagnostics_duplicates_caveat')"></p>
               <template x-for="item in (diagnostics ? diagnostics.duplicates : [])" :key="item.title">
                 <div class="community-usage-row">
                   <span class="community-usage-name" x-text="item.title + ': ' + item.folders.join(', ')"></span>
