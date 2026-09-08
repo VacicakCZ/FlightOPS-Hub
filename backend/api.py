@@ -43,6 +43,21 @@ class Api:
         return APP_VERSION
 
     # --- config ---
+    def _save_config(self):
+        # The ONLY place that should call config_manager.save_config(). Every
+        # config-mutating method below goes through this (directly, or via
+        # _update_config) rather than calling config_manager.save_config()
+        # itself, so it's structurally impossible to accidentally save some
+        # other dict (e.g. a stale captured snapshot) over the real config -
+        # exactly the bug that once leaked the computed-only
+        # _gsx_profiles_path_effective field into the config file on every
+        # window close (see save_window_geometry's docstring below).
+        config_manager.save_config(self._config)
+
+    def _update_config(self, patch):
+        self._config.update(patch)
+        self._save_config()
+
     def _config_snapshot(self):
         # _gsx_profiles_path_effective is computed fresh each call (never
         # persisted under that key) so Settings can always show the actual
@@ -58,8 +73,7 @@ class Api:
         return self._config_snapshot()
 
     def config_set(self, patch):
-        self._config.update(patch)
-        config_manager.save_config(self._config)
+        self._update_config(patch)
         return self._config_snapshot()
 
     # --- apps (external addons) ---
@@ -99,8 +113,7 @@ class Api:
 
     # --- settings: community / disabled-holding paths ---
     def settings_set_community_path(self, path):
-        self._config["_community_path"] = os.path.normpath(path)
-        config_manager.save_config(self._config)
+        self._update_config({"_community_path": os.path.normpath(path)})
         return self._config_snapshot()
 
     def settings_set_disabled_path(self, path):
@@ -108,13 +121,12 @@ class Api:
         result = community_paths.validate_disabled_path(path, self._config.get("_community_path", ""))
         if not result["ok"]:
             return result
-        self._config["_disabled_holding_path"] = path
-        config_manager.save_config(self._config)
+        self._update_config({"_disabled_holding_path": path})
         return {**result, "config": self._config_snapshot()}
 
     def settings_reset_disabled_path(self):
         self._config.pop("_disabled_holding_path", None)
-        config_manager.save_config(self._config)
+        self._save_config()
         return self._config_snapshot()
 
     # --- settings: GSX (virtuali) profile folder, for the scenery-tab GSX badge ---
@@ -122,13 +134,12 @@ class Api:
         return self._config.get("_gsx_profiles_path") or gsx_profiles.default_gsx_path()
 
     def settings_set_gsx_path(self, path):
-        self._config["_gsx_profiles_path"] = os.path.normpath(path)
-        config_manager.save_config(self._config)
+        self._update_config({"_gsx_profiles_path": os.path.normpath(path)})
         return self._config_snapshot()
 
     def settings_reset_gsx_path(self):
         self._config.pop("_gsx_profiles_path", None)
-        config_manager.save_config(self._config)
+        self._save_config()
         return self._config_snapshot()
 
     def open_gsx_search(self, icao):
@@ -152,8 +163,7 @@ class Api:
         # earlier version of this that saved a captured snapshot dict
         # instead of self._config baked that field permanently into the
         # real config file on every close.
-        self._config.update({"_window_width": width, "_window_height": height, "_window_x": x, "_window_y": y})
-        config_manager.save_config(self._config)
+        self._update_config({"_window_width": width, "_window_height": height, "_window_x": x, "_window_y": y})
 
     def open_gsx_folder(self):
         path = self._gsx_path()
@@ -186,14 +196,14 @@ class Api:
         store_key = config_manager.PROFILE_STORES[kind]
         self._config.setdefault(store_key, {})[name] = members
         self._config[config_manager.LAST_PROFILE_KEYS[kind]] = name
-        config_manager.save_config(self._config)
+        self._save_config()
         return {"profiles": self._config[store_key], "last": name}
 
     def profiles_delete(self, kind, name):
         store_key = config_manager.PROFILE_STORES[kind]
         self._config.get(store_key, {}).pop(name, None)
         self._config[config_manager.LAST_PROFILE_KEYS[kind]] = None
-        config_manager.save_config(self._config)
+        self._save_config()
         return {"profiles": self._config.get(store_key, {}), "last": None}
 
     # --- exe.xml (MSFS AutoStart) ---
@@ -224,7 +234,7 @@ class Api:
             custom_names.pop(unique_key, None)
         else:
             custom_names[unique_key] = new_name
-        config_manager.save_config(self._config)
+        self._save_config()
         return {"ok": True}
 
     def exe_apply_profile(self, profile_name):
@@ -238,7 +248,7 @@ class Api:
         desired = {a["unique_key"]: (a["unique_key"] in members) for a in addons}
         exe_xml_manager.set_addons_enabled(xml_path, desired)
         self._config["_last_exe_profile"] = profile_name
-        config_manager.save_config(self._config)
+        self._save_config()
         return {"ok": True}
 
     # --- Navigraph AIRAC status ---
@@ -255,7 +265,7 @@ class Api:
         for name, checked in app_states.items():
             self._config[name] = "on" if checked else "off"
         self._config["_last_profile"] = profile_name
-        config_manager.save_config(self._config)
+        self._save_config()
 
         selected = [name for name, checked in app_states.items() if checked]
         lang = self._config.get("_language", "EN")
@@ -372,7 +382,7 @@ class Api:
             overrides.pop(folder_name, None)
         else:
             overrides[folder_name] = type_value
-        config_manager.save_config(self._config)
+        self._save_config()
         return self.aircraft_scan()
 
     def aircraft_set_parent_override(self, folder_name, parent_folder_name):
@@ -384,7 +394,7 @@ class Api:
             overrides.pop(folder_name, None)
         else:
             overrides[folder_name] = parent_folder_name
-        config_manager.save_config(self._config)
+        self._save_config()
         return self.aircraft_scan()
 
     def aircraft_apply(self, desired_states):
