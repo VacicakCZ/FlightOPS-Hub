@@ -64,7 +64,8 @@
           </template>
         </div>
 
-        <button class="btn primary btn-launch" :disabled="launching" @click="launchAll()" x-text="$store.app.t('btn_launch')"></button>
+        <button class="btn primary btn-launch" :disabled="launching" @click="launchAll()"
+                x-text="launching ? $store.app.t('btn_launching') : $store.app.t('btn_launch')"></button>
       </section>
 
       <section x-show="$store.app.activeTab === 'autostart'" x-data="autostartTab">

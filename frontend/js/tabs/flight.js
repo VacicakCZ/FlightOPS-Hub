@@ -91,6 +91,13 @@ document.addEventListener("alpine:init", () => {
     async launchAll() {
       if (this.launching) return;
       this.launching = true;
+      // For an all-immediate-apps launch, the backend hides (often
+      // destroys) the native window almost instantly once launch_all()
+      // starts running - previously that could happen before the browser
+      // ever got a chance to paint the "launching" button state, so
+      // clicking Launch looked like it did nothing. This deliberate pause
+      // guarantees the user actually sees the button change first.
+      await new Promise((resolve) => setTimeout(resolve, 400));
       await Api.launchAll(this.checked, this.profileName);
     },
   }));
