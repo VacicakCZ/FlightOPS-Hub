@@ -1,6 +1,10 @@
 # ✈️ FlightOps Hub
 
 <p align="center">
+  <img src="assets/logowide.jpg" alt="FlightOps Hub" width="720" />
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/github/v/release/VacicakCZ/FlightOPS-Hub?style=for-the-badge&color=007acc" alt="Latest Release" />
   <img src="https://img.shields.io/github/downloads/VacicakCZ/FlightOPS-Hub/total?style=for-the-badge&color=28a745" alt="Total Downloads" />
   <img src="https://img.shields.io/github/actions/workflow/status/VacicakCZ/FlightOPS-Hub/tests.yml?style=for-the-badge&label=tests" alt="Tests" />
