@@ -13,6 +13,7 @@ import os
 import re
 import json
 import shutil
+import sys
 
 CONTINENT_ORDER = ["europe", "north_america", "south_america", "asia", "africa", "oceania", "other"]
 
@@ -473,6 +474,30 @@ def _prettify_dev_key(key):
     return key[:1].upper() + key[1:] if key else key
 
 
+# Curated folder-prefix -> studio display name, built from real installed
+# packages + web research (see data/aircraft_developers.json). Deliberately
+# small and only covers prefixes verified to actually be a studio's package
+# ID - individual community livery painters (who don't follow a "studio-"
+# folder convention) are intentionally left out and fall through to the
+# creator-consensus/prettified-prefix heuristic below instead of a guess.
+_aircraft_developers_cache = None
+
+
+def _aircraft_developers():
+    global _aircraft_developers_cache
+    if _aircraft_developers_cache is None:
+        if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+            base_dir = sys._MEIPASS
+        else:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+        try:
+            with open(os.path.join(base_dir, "data", "aircraft_developers.json"), "r", encoding="utf-8") as f:
+                _aircraft_developers_cache = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            _aircraft_developers_cache = {}
+    return _aircraft_developers_cache
+
+
 _BASE_CONTAINER_RE = re.compile(r'base_container\s*=\s*"([^"]+)"', re.IGNORECASE)
 
 
@@ -521,6 +546,24 @@ def _find_base_containers(pkg_path):
     return bases
 
 
+def _is_actually_a_livery(pkg_path):
+    """True if this package's own aircraft.cfg base_container points outside
+    its own SimObjects folder - i.e. it structurally depends on another
+    package's aircraft to even render, which makes it a livery/repaint no
+    matter what the package declares itself as. Needed because manifest.json
+    content_type is self-reported by the addon author and is often wrong in
+    practice for registration/repaint packs (content_type "AIRCRAFT" used
+    for what is really just a livery) - base_container is MSFS's own,
+    non-optional wiring and can't lie the same way."""
+    own_names = {n.lower() for n in _find_simobject_names(pkg_path)}
+    if not own_names:
+        return False
+    for base_name in _find_base_containers(pkg_path):
+        if base_name.lower() not in own_names:
+            return True
+    return False
+
+
 def scan_aircraft_and_liveries(community_path, disabled_paths):
     """Vrati (aircraft, liveries) - dva seznamy zaznamu
     {folder_name, display_name, developer, enabled}, seskupitelne podle
@@ -529,11 +572,21 @@ def scan_aircraft_and_liveries(community_path, disabled_paths):
     seskupeni se nepouziva).
 
     "developer" se odvozuje z prefixu nazvu slozky (spolehlivy - stejny
-    vyvojar ho pouziva pro cely svuj sortiment), zobrazeny nazev se snazi
-    dohledat pres manifest.json pole "creator" - ale jen kdyz se na nem
-    VSECHNA letadla (ne liverky, ty casto maji jako creatora jednotliveho
-    malire) se stejnym prefixem shodnou. Kdyz ne, radsi neutralni prefix
-    nez nahodne jmeno jednoho maliru.
+    vyvojar ho pouziva pro cely svuj sortiment). Zobrazeny nazev se hleda v
+    tomto poradi: (1) kurirovany seznam znamych studii viz
+    _aircraft_developers() / data/aircraft_developers.json, (2) manifest.json
+    pole "creator" - ale jen kdyz se na nem VSECHNA letadla (ne liverky, ty
+    casto maji jako creatora jednotliveho malire) se stejnym prefixem
+    shodnou, (3) neutralni prettified prefix jako posledni zaloha.
+
+    content_type z manifest.json ("AIRCRAFT"/"LIVERY") je bohuzel casto
+    nespolehlivy - registracni/repaint baliky se v praxi casto oznacuji
+    jako "AIRCRAFT", i kdyz jde jen o liverku pro jiz existujici letadlo.
+    Kdyz balicek deklaruje AIRCRAFT, ale jeho vlastni base_container
+    ukazuje mimo jeho vlastni SimObjects slozku (viz _is_actually_a_livery),
+    prekvalifikuje se na LIVERY - tomuhle se addon nemuze "priblbnout" tak
+    snadno jako manifestu, protoze bez spravneho base_container by v MSFS
+    vubec nefungoval.
 
     Stejny princip jako scan_scenery_packages - poloha na disku = stav.
 
@@ -564,6 +617,8 @@ def scan_aircraft_and_liveries(community_path, disabled_paths):
             content_type = manifest.get("content_type")
             if content_type not in ("AIRCRAFT", "LIVERY"):
                 continue
+            if content_type == "AIRCRAFT" and _is_actually_a_livery(entry.path):
+                content_type = "LIVERY"
 
             title = (manifest.get("title") or "").strip()
             creator = (manifest.get("creator") or "").strip()
@@ -588,9 +643,12 @@ def scan_aircraft_and_liveries(community_path, disabled_paths):
             target = aircraft_by_name if content_type == "AIRCRAFT" else livery_by_name
             target[entry.name] = record
 
+    known_developers = _aircraft_developers()
     dev_display = {}
     for dev_key, bucket in creators_by_dev_key.items():
-        if len(bucket["aircraft"]) == 1:
+        if dev_key in known_developers:
+            dev_display[dev_key] = known_developers[dev_key]
+        elif len(bucket["aircraft"]) == 1:
             dev_display[dev_key] = next(iter(bucket["aircraft"]))
         elif len(bucket["all"]) == 1:
             dev_display[dev_key] = next(iter(bucket["all"]))
