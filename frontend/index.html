@@ -303,6 +303,7 @@
               <button class="btn primary" :disabled="applying" @click="apply()" x-text="$store.app.t('scenery_apply_btn')"></button>
             </div>
 
+            <p class="hint" x-text="$store.app.t('scenery_apply_pending_hint')"></p>
             <p class="hint" x-text="$store.app.t('aircraft_grouping_hint')"></p>
             <p class="hint" x-show="statusText" x-text="statusText"></p>
             <div class="progress-track" x-show="applying">
