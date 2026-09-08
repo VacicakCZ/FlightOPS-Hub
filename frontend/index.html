@@ -87,6 +87,8 @@
         <p class="hint" x-text="path"></p>
         <p class="hint" x-text="$store.app.t('exe_rename_hint')"></p>
 
+        <button type="button" class="btn" x-show="hasBackup" @click="restoreBackup()" x-text="$store.app.t('exe_restore_btn')"></button>
+
         <template x-if="!exists">
           <p class="error-text" x-text="$store.app.t('exe_not_found')"></p>
         </template>
@@ -96,16 +98,28 @@
         </template>
 
         <template x-if="exists && !error">
-          <div class="app-checklist">
-            <template x-for="addon in addons" :key="addon.unique_key">
-              <div class="exe-row">
-                <label class="exe-row-label">
-                  <input type="checkbox" :checked="addon.enabled" @change="toggle(addon)" />
-                  <span x-text="addon.display_name"></span>
-                </label>
-                <button class="btn" @click="rename(addon)" :title="$store.app.t('exe_rename_tt')">✏️</button>
-              </div>
-            </template>
+          <div>
+            <div class="scenery-search">
+              <input type="text" class="scenery-search-input" x-model="searchQuery"
+                     :placeholder="$store.app.t('autostart_search_placeholder')" />
+              <button class="btn icon-btn" x-show="searchQuery" @click="searchQuery = ''"
+                      :title="$store.app.t('scenery_search_clear')">✕</button>
+            </div>
+
+            <p class="placeholder-note" x-show="searchQuery.trim() && filteredAddons.length === 0"
+               x-text="$store.app.t('autostart_search_no_results')"></p>
+
+            <div class="app-checklist">
+              <template x-for="addon in filteredAddons" :key="addon.unique_key">
+                <div class="exe-row">
+                  <label class="exe-row-label">
+                    <input type="checkbox" :checked="addon.enabled" @change="toggle(addon)" />
+                    <span x-text="addon.display_name"></span>
+                  </label>
+                  <button class="btn" @click="rename(addon)" :title="$store.app.t('exe_rename_tt')">✏️</button>
+                </div>
+              </template>
+            </div>
           </div>
         </template>
       </section>
@@ -617,8 +631,8 @@
         <p x-text="$store.modal.message"></p>
         <input type="text" x-show="$store.modal.kind === 'prompt'" x-model="$store.modal.value" @keydown.enter="$store.modal.confirm()" />
         <div class="actions">
-          <button class="btn" x-show="$store.modal.kind !== 'alert'" @click="$store.modal.cancel()">Zrušit</button>
-          <button class="btn primary" @click="$store.modal.confirm()">OK</button>
+          <button class="btn" x-show="$store.modal.kind !== 'alert'" @click="$store.modal.cancel()" x-text="$store.app.t('modal_cancel')"></button>
+          <button class="btn primary" @click="$store.modal.confirm()" x-text="$store.app.t('modal_ok')"></button>
         </div>
       </div>
     </div>

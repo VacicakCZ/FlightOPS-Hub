@@ -49,6 +49,7 @@ window.Api = (() => {
     exeToggle: (uniqueKey, enabled) => call("exe_toggle", uniqueKey, enabled),
     exeRename: (uniqueKey, originalName, newName) => call("exe_rename", uniqueKey, originalName, newName),
     exeApplyProfile: (name) => call("exe_apply_profile", name),
+    exeRestoreBackup: () => call("exe_restore_backup"),
     setExeXmlPath: (path) => call("settings_set_exe_xml_path", path),
     resetExeXmlPath: () => call("settings_reset_exe_xml_path"),
 
@@ -66,6 +67,7 @@ window.Api = (() => {
     aircraftSetParentOverride: (folderName, parentFolderName) => call("aircraft_set_parent_override", folderName, parentFolderName),
 
     airacStatus: () => call("airac_status"),
+    launchPrecheck: (appStates) => call("launch_precheck", appStates),
     launchAll: (appStates, profileName) => call("launch_all", appStates, profileName),
 
     browseFolder: (initialDir) => call("dialogs_browse_folder", initialDir || ""),

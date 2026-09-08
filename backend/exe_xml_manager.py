@@ -64,8 +64,28 @@ def list_addons(xml_path, custom_names):
     return records
 
 
+def backup_path_for(xml_path):
+    return os.path.join(os.path.dirname(xml_path), "exe_FlightOpsHub_backup.xml")
+
+
+def has_backup(xml_path):
+    return os.path.exists(backup_path_for(xml_path))
+
+
+def restore_from_backup(xml_path):
+    """Overwrites xml_path with the pre-first-edit backup FlightOps Hub made
+    (see _backup_once below), i.e. the state before this app ever touched
+    the file. Returns True if a backup existed and was restored, False if
+    there was nothing to restore."""
+    backup_path = backup_path_for(xml_path)
+    if not os.path.exists(backup_path):
+        return False
+    shutil.copy2(backup_path, xml_path)
+    return True
+
+
 def _backup_once(xml_path):
-    backup_path = os.path.join(os.path.dirname(xml_path), "exe_FlightOpsHub_backup.xml")
+    backup_path = backup_path_for(xml_path)
     if not os.path.exists(backup_path):
         try:
             shutil.copy2(xml_path, backup_path)

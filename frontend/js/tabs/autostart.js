@@ -7,6 +7,8 @@ document.addEventListener("alpine:init", () => {
     profiles: {},
     profileName: null,
     updateJustSaved: false,
+    searchQuery: "",
+    hasBackup: false,
 
     async init() {
       await window.AppReady;
@@ -25,10 +27,29 @@ document.addEventListener("alpine:init", () => {
       this.exists = result.exists;
       this.error = result.error;
       this.addons = result.addons;
+      this.hasBackup = result.has_backup;
     },
 
     get profileNames() {
       return Object.keys(this.profiles);
+    },
+
+    // Flat list (unlike Scenery/Aircraft's continent/developer trees), so
+    // filtering is just this - no expand/collapse state needed.
+    get filteredAddons() {
+      const q = this.searchQuery.trim().toLowerCase();
+      if (!q) return this.addons;
+      return this.addons.filter((a) => (a.display_name || "").toLowerCase().includes(q));
+    },
+
+    async restoreBackup() {
+      const proceed = await Modal.confirmDialog(
+        this.$store.app.t("exe_restore_confirm_title"),
+        this.$store.app.t("exe_restore_confirm_message")
+      );
+      if (!proceed) return;
+      await Api.exeRestoreBackup();
+      await this.loadAddons();
     },
 
     activeKeys() {

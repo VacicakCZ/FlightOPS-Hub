@@ -90,6 +90,16 @@ document.addEventListener("alpine:init", () => {
 
     async launchAll() {
       if (this.launching) return;
+
+      const precheck = await Api.launchPrecheck(this.checked);
+      if (precheck.missing.length) {
+        const proceed = await Modal.confirmDialog(
+          this.$store.app.t("launch_missing_title"),
+          this.$store.app.t("launch_missing_message", precheck.missing.join(", "))
+        );
+        if (!proceed) return;
+      }
+
       this.launching = true;
       // For an all-immediate-apps launch, the backend hides (often
       // destroys) the native window almost instantly once launch_all()

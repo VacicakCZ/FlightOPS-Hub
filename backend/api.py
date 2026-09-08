@@ -228,13 +228,18 @@ class Api:
 
     def exe_list(self):
         xml_path = self._current_exe_xml_path()
+        has_backup = exe_xml_manager.has_backup(xml_path)
         if not os.path.exists(xml_path):
-            return {"path": xml_path, "exists": False, "addons": [], "error": None}
+            return {"path": xml_path, "exists": False, "addons": [], "error": None, "has_backup": has_backup}
         try:
             addons = exe_xml_manager.list_addons(xml_path, self._config.get("_exe_custom_names", {}))
-            return {"path": xml_path, "exists": True, "addons": addons, "error": None}
+            return {"path": xml_path, "exists": True, "addons": addons, "error": None, "has_backup": has_backup}
         except Exception as e:
-            return {"path": xml_path, "exists": True, "addons": [], "error": str(e)}
+            return {"path": xml_path, "exists": True, "addons": [], "error": str(e), "has_backup": has_backup}
+
+    def exe_restore_backup(self):
+        restored = exe_xml_manager.restore_from_backup(self._current_exe_xml_path())
+        return {"ok": restored}
 
     def exe_toggle(self, unique_key, enabled):
         exe_xml_manager.set_addons_enabled(self._current_exe_xml_path(), {unique_key: enabled})
@@ -272,6 +277,20 @@ class Api:
         }
 
     # --- launch pipeline ---
+    def launch_precheck(self, app_states):
+        """Called before the real launch so the frontend can warn about (and
+        let the user confirm past) any checked app whose .exe path no longer
+        exists - launch_orchestrator itself silently skips those with no
+        user-visible signal at all, so without this a moved/uninstalled
+        add-on just looks like a launch that quietly did nothing for it."""
+        selected = [name for name, checked in app_states.items() if checked]
+        missing = [name for name in selected if not self._app_exe_exists(name)]
+        return {"missing": missing}
+
+    def _app_exe_exists(self, name):
+        data = self._apps.get(name)
+        return bool(data and os.path.exists(data.get("path", "")))
+
     def launch_all(self, app_states, profile_name):
         """app_states: {app_name: bool} for every configured app (mirrors the
         old per-checkbox on/off persistence, including explicitly-unchecked apps)."""
