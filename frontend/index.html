@@ -39,10 +39,7 @@
     <div class="tab-panels">
       <section x-show="$store.app.activeTab === 'flight'" x-data="flightTab">
         <div class="onboarding-panel" x-show="showOnboarding" x-cloak>
-          <div class="onboarding-head">
-            <h3 x-text="$store.app.t('onboarding_title')"></h3>
-            <button type="button" class="btn icon-btn" @click="dismissOnboarding()" :title="$store.app.t('onboarding_dismiss')">✕</button>
-          </div>
+          <h3 x-text="$store.app.t('onboarding_title')"></h3>
           <p class="hint" x-text="$store.app.t('onboarding_intro')"></p>
 
           <div class="field-row">
@@ -67,6 +64,8 @@
           </div>
 
           <p class="hint" x-text="$store.app.t('onboarding_optional_hint')"></p>
+
+          <button type="button" class="btn primary" @click="dismissOnboarding()" x-text="$store.app.t('onboarding_dismiss')"></button>
         </div>
 
         <h2 x-text="$store.app.t('main_title')"></h2>

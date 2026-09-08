@@ -29,13 +29,14 @@ document.addEventListener("alpine:init", () => {
       });
     },
 
-    // First-run setup panel: shown until a Community folder is set (the one
-    // thing every other tab needs), or until explicitly dismissed. Kept
+    // First-run setup panel: shown until the user explicitly confirms
+    // they're done (dismissOnboarding), NOT auto-hidden the instant a
+    // Community path gets set - the user should get to fill in GSX path/
+    // SimBrief username too before it disappears on them. Kept
     // self-contained here (small duplication of settingsTab's browse/save
     // calls) rather than reaching into another tab's Alpine component.
     get showOnboarding() {
-      const cfg = this.$store.app.config;
-      return !cfg._community_path && !cfg._onboarding_dismissed;
+      return !this.$store.app.config._onboarding_dismissed;
     },
 
     async onboardingBrowseCommunity() {

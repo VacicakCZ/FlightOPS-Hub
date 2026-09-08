@@ -87,7 +87,7 @@
   "nav_not_found": "Navigraph folder not found (Current: {})",
   "nav_ok": "✓ AIRAC {} is up to date",
   "nav_old": "⚠️ AIRAC OUTDATED (Installed: {} | Current: {})",
-  "onboarding_dismiss": "Close (I'll set this up later)",
+  "onboarding_dismiss": "✓ Done",
   "onboarding_intro": "Before you start, set your Community folder path - without it the app can't manage sceneries or aircraft.",
   "onboarding_optional_hint": "The GSX path and SimBrief username are optional - you can fill them in later in Settings too.",
   "onboarding_title": "👋 Welcome to FlightOps Hub",

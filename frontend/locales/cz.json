@@ -87,7 +87,7 @@
   "nav_not_found": "Složka Navigraph nenalezena (Aktuální: {})",
   "nav_ok": "✓ AIRAC {} je aktuální",
   "nav_old": "⚠️ AIRAC ZASTARALÝ (Máš: {} | Aktuální: {})",
-  "onboarding_dismiss": "Zavřít (nastavím později)",
+  "onboarding_dismiss": "✓ Hotovo",
   "onboarding_intro": "Než začneš, nastav si cestu ke Community složce - bez ní appka neumí spravovat scenérie ani letadla.",
   "onboarding_optional_hint": "GSX cesta a SimBrief jméno jsou volitelné, dají se doplnit i později v Nastavení.",
   "onboarding_title": "👋 Vítej ve FlightOps Hub",

@@ -87,7 +87,7 @@
   "nav_not_found": "Carpeta Navigraph no encontrada (Actual: {})",
   "nav_ok": "✓ AIRAC {} está actualizado",
   "nav_old": "⚠️ AIRAC OBSOLETO (Instalado: {} | Actual: {})",
-  "onboarding_dismiss": "Cerrar (lo configuraré más tarde)",
+  "onboarding_dismiss": "✓ Hecho",
   "onboarding_intro": "Antes de empezar, define la ruta de tu carpeta Community - sin ella la app no puede gestionar escenarios ni aeronaves.",
   "onboarding_optional_hint": "La ruta de GSX y el nombre de usuario de SimBrief son opcionales - también puedes completarlos más tarde en Ajustes.",
   "onboarding_title": "👋 Bienvenido a FlightOps Hub",

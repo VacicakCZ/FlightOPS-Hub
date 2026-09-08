@@ -87,7 +87,7 @@
   "nav_not_found": "未找到 Navigraph 文件夹 (当前: {})",
   "nav_ok": "✓ AIRAC {} 是最新的",
   "nav_old": "⚠️ AIRAC 已过期 (已安装: {} | 当前: {})",
-  "onboarding_dismiss": "关闭（稍后再设置）",
+  "onboarding_dismiss": "✓ 完成",
   "onboarding_intro": "开始之前，请先设置 Community 文件夹路径 - 没有它，应用无法管理地景或飞机。",
   "onboarding_optional_hint": "GSX 路径和 SimBrief 用户名是可选的，也可以稍后在设置中填写。",
   "onboarding_title": "👋 欢迎使用 FlightOps Hub",

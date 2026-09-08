@@ -87,7 +87,7 @@
   "nav_not_found": "Navigraph-Ordner nicht gefunden (Aktuell: {})",
   "nav_ok": "✓ AIRAC {} ist aktuell",
   "nav_old": "⚠️ AIRAC VERALTET (Installiert: {} | Aktuell: {})",
-  "onboarding_dismiss": "Schließen (später einrichten)",
+  "onboarding_dismiss": "✓ Fertig",
   "onboarding_intro": "Bevor du loslegst, lege deinen Community-Ordner fest - ohne ihn kann die App weder Szenerien noch Flugzeuge verwalten.",
   "onboarding_optional_hint": "Der GSX-Pfad und der SimBrief-Benutzername sind optional - du kannst sie auch später in den Einstellungen ergänzen.",
   "onboarding_title": "👋 Willkommen bei FlightOps Hub",

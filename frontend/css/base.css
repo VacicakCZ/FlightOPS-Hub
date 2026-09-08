@@ -937,16 +937,12 @@ button.btn.danger {
   background: var(--bg);
 }
 
-.onboarding-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 4px;
+.onboarding-panel h3 {
+  margin-top: 0;
 }
 
-.onboarding-head h3 {
-  margin: 0;
+.onboarding-panel .btn.primary {
+  margin-top: 4px;
 }
 
 .community-usage {
