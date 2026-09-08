@@ -33,6 +33,7 @@
         <span class="tab-icon">⚙️</span>
         <span class="tab-main" x-text="$store.app.tMain('tab_set')"></span>
         <span class="tab-sub" x-show="$store.app.tParen('tab_set')" x-text="$store.app.tParen('tab_set')"></span>
+        <span class="tab-update-dot" x-show="$store.app.updateInfo" x-cloak :title="$store.app.t('update_available', $store.app.updateInfo ? $store.app.updateInfo.version : '')"></span>
       </button>
     </nav>
 

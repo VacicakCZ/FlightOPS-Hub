@@ -97,6 +97,7 @@ html, body {
 }
 
 .tab-bar button {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -162,6 +163,20 @@ html, body {
   font-weight: 600;
   border-bottom-color: var(--accent);
   box-shadow: 0 2px 8px -2px var(--accent-glow, transparent);
+}
+
+/* Tiny "something's new" dot on the Settings tab when an update is
+   available - deliberately small and quiet (no badge count, no motion),
+   just enough to be noticed without a popup or visiting Settings first. */
+.tab-update-dot {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 4px var(--accent-glow, transparent);
 }
 
 .tab-panels {
