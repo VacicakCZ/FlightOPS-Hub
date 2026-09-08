@@ -5,6 +5,7 @@
   --text: #1a1a1e;
   --text-muted: #6b6b76;
   --accent: #2f6fed;
+  --accent-glow: rgba(47, 111, 237, 0.35);
   --accent-text: #ffffff;
   --danger: #d1453b;
   --success: #2fa84f;
@@ -15,35 +16,40 @@
 }
 
 [data-theme="dark"] {
-  --bg: #1e1e22;
-  --panel: #27272c;
-  --panel-border: #3a3a41;
+  /* Navy-tinted (not neutral gray) to match the app's own logo/marketing
+     art - same structure/contrast as before, just blue-black instead of
+     charcoal. See feedback_app_branding memory for the reasoning. */
+  --bg: #10141c;
+  --panel: #1a2029;
+  --panel-border: #2c3444;
   --text: #eaeaef;
-  --text-muted: #9a9aa5;
+  --text-muted: #9aa3b5;
   --accent: #4c8dff;
+  --accent-glow: rgba(76, 141, 255, 0.5);
   --accent-text: #0c0c0e;
   --danger: #e5675d;
   --success: #4fce70;
   --warning: #e8b34a;
-  --input-bg: #1a1a1e;
-  --tab-bg: #202024;
+  --input-bg: #12161f;
+  --tab-bg: #161b26;
   --tab-active-bg: var(--panel);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="dark"]) {
-    --bg: #1e1e22;
-    --panel: #27272c;
-    --panel-border: #3a3a41;
+    --bg: #10141c;
+    --panel: #1a2029;
+    --panel-border: #2c3444;
     --text: #eaeaef;
-    --text-muted: #9a9aa5;
+    --text-muted: #9aa3b5;
     --accent: #4c8dff;
+    --accent-glow: rgba(76, 141, 255, 0.5);
     --accent-text: #0c0c0e;
     --danger: #e5675d;
     --success: #4fce70;
     --warning: #e8b34a;
-    --input-bg: #1a1a1e;
-    --tab-bg: #202024;
+    --input-bg: #12161f;
+    --tab-bg: #161b26;
     --tab-active-bg: var(--panel);
   }
 }
@@ -135,7 +141,16 @@ html, body {
 
 h2 {
   margin-top: 0;
+  margin-bottom: 14px;
   font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  display: inline-block;
+  padding-bottom: 7px;
+  /* Small accent underline under each tab's heading - echoes the light
+     streak under the plane in the app logo, so the brand shows up in the
+     UI itself, not just the marketing art. */
+  border-bottom: 2px solid var(--accent);
 }
 
 .field-row {
@@ -178,6 +193,11 @@ button.btn.primary {
   background: var(--accent);
   color: var(--accent-text);
   border-color: var(--accent);
+  /* Subtle glow (not just a flat fill) to echo the neon plane outline in
+     the app logo - kept to just the one or two most prominent action
+     buttons rather than applied everywhere, so it stays a signature touch
+     instead of visual noise. */
+  box-shadow: 0 0 10px var(--accent-glow, transparent);
 }
 
 button.btn:disabled {
