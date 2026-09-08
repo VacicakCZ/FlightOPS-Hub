@@ -50,7 +50,17 @@ document.addEventListener("alpine:init", () => {
 
       // Auto-expand whatever the search currently matches, so results are
       // visible without also having to manually click through the tree.
-      this.$watch("searchQuery", () => this.expandSearchMatches());
+      // Clearing the search collapses everything back - otherwise every
+      // continent/country the search had opened stays open, which is
+      // exactly the cluttered tree the search was meant to cut through.
+      this.$watch("searchQuery", (value) => {
+        if (value.trim()) {
+          this.expandSearchMatches();
+        } else {
+          this.expandedContinents = {};
+          this.expandedCountries = {};
+        }
+      });
     },
 
     async load() {
