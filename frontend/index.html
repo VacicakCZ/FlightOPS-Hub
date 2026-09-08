@@ -775,7 +775,17 @@
           </button>
           <div class="update-notes" x-show="$store.app.updateNotesOpen" x-cloak>
             <pre x-text="$store.app.updateInfo ? $store.app.updateInfo.notes : ''"></pre>
-            <button type="button" class="btn" @click="$store.app.openUpdatePage()" x-text="$store.app.t('update_open_btn')"></button>
+            <div class="update-actions">
+              <button type="button" class="btn primary" :disabled="$store.app.updateDownloading"
+                      x-show="$store.app.updateInfo && $store.app.updateInfo.download_url"
+                      @click="$store.app.downloadUpdate()"
+                      x-text="$store.app.updateDownloading ? $store.app.t('update_downloading') : $store.app.t('update_download_btn')"></button>
+              <button type="button" class="btn" @click="$store.app.openUpdatePage()" x-text="$store.app.t('update_open_btn')"></button>
+            </div>
+            <div class="progress-track" x-show="$store.app.updateDownloading && $store.app.updateDownloadPercent != null">
+              <div class="progress-fill" :style="`width: ${$store.app.updateDownloadPercent}%`"></div>
+            </div>
+            <p class="error-text" x-show="$store.app.updateDownloadError" x-text="$store.app.t('update_download_error', $store.app.updateDownloadError)"></p>
           </div>
         </div>
       </section>

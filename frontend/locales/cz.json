@@ -174,6 +174,9 @@
   "ui_scale_label": "Velikost UI:",
   "update_available": "🔔 Dostupná nová verze: {}",
   "update_available_banner": "🔔 Update {} k dispozici v Nastavení",
+  "update_download_btn": "⬇ Stáhnout update",
+  "update_download_error": "Stažení selhalo: {}",
+  "update_downloading": "Stahuji...",
   "update_open_btn": "Otevřít na GitHubu",
   "usage_close": "Zavřít"
 }

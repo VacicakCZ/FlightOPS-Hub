@@ -30,6 +30,7 @@ from . import (
     scenery_simbrief_match,
     simbrief_client,
     update_check,
+    win_native,
 )
 from .events import bus
 from .i18n import translate
@@ -42,6 +43,7 @@ class Api:
         self._apps = apps_manager.load_apps()
         self._session = None  # the in-flight LaunchSession, if any
         self._addon_apply_active = False  # shared busy flag: scenery (M4) and aircraft (M5) share the Community folder
+        self._update_download_active = False
 
     def app_version(self):
         return APP_VERSION
@@ -55,6 +57,40 @@ class Api:
             return {"ok": True}
         except OSError:
             return {"ok": False}
+
+    def download_update(self, download_url, version):
+        """Kicks off a background download of the new release exe straight
+        into the user's Downloads folder, so grabbing an update is one click
+        instead of finding the right asset on the GitHub release page.
+        Progress arrives via update_download_progress, completion via
+        update_download_done - once it succeeds, Explorer opens with the
+        new exe highlighted so it's obvious where it landed."""
+        if self._update_download_active:
+            return {"ok": False, "error": "busy"}
+        if not download_url:
+            return {"ok": False, "error": "no_download_url"}
+
+        self._update_download_active = True
+        safe_version = "".join(c for c in version if c.isalnum() or c in ".-_") or "latest"
+        dest_path = os.path.join(win_native.downloads_folder(), f"flightops_hub_{safe_version}.exe")
+
+        def on_progress(downloaded, total):
+            bus.emit("update_download_progress", {"downloaded": downloaded, "total": total})
+
+        def worker():
+            try:
+                result = update_check.download_update(download_url, dest_path, on_progress=on_progress)
+            finally:
+                self._update_download_active = False
+            if result.get("ok"):
+                try:
+                    win_native.open_folder_and_select(result["path"])
+                except OSError:
+                    pass
+            bus.emit("update_download_done", result)
+
+        threading.Thread(target=worker, daemon=True).start()
+        return {"ok": True}
 
     # --- config ---
     def _save_config(self):

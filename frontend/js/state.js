@@ -15,6 +15,9 @@ document.addEventListener("alpine:init", () => {
     version: "",
     updateInfo: null,
     updateNotesOpen: false,
+    updateDownloading: false,
+    updateDownloadProgress: null,
+    updateDownloadError: null,
 
     async init() {
       this.version = await Api.appVersion();
@@ -36,6 +39,15 @@ document.addEventListener("alpine:init", () => {
       const lang = this.languages.some((l) => l.code === requestedLang) ? requestedLang : "EN";
       await this.setLanguage(lang, /* persist */ false);
 
+      FlightOpsEvents.on("update_download_progress", (payload) => {
+        this.updateDownloadProgress = payload;
+      });
+      FlightOpsEvents.on("update_download_done", (result) => {
+        this.updateDownloading = false;
+        this.updateDownloadProgress = null;
+        this.updateDownloadError = result.ok ? null : result.error;
+      });
+
       // Fire-and-forget: a slow/failed network call must never delay the
       // app becoming interactive, and a missing update is not worth
       // surfacing as an error - see backend/update_check.py.
@@ -55,6 +67,27 @@ document.addEventListener("alpine:init", () => {
 
     openUpdatePage() {
       Api.openUpdatePage();
+    },
+
+    async downloadUpdate() {
+      if (!this.updateInfo || !this.updateInfo.download_url || this.updateDownloading) return;
+      this.updateDownloading = true;
+      this.updateDownloadError = null;
+      this.updateDownloadProgress = null;
+      const result = await Api.downloadUpdate(this.updateInfo.download_url, this.updateInfo.version);
+      if (!result.ok) {
+        this.updateDownloading = false;
+        this.updateDownloadError = result.error;
+      }
+      // On success, updateDownloading/Progress are cleared by the
+      // update_download_done event once the background download actually
+      // finishes - this initial result only confirms the download started.
+    },
+
+    get updateDownloadPercent() {
+      const p = this.updateDownloadProgress;
+      if (!p || !p.total) return null;
+      return Math.min(100, Math.round((p.downloaded / p.total) * 100));
     },
 
     async refreshApps() {

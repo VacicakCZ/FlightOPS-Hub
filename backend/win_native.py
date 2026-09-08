@@ -4,6 +4,7 @@ Kept separate from pywebview/tkinter so the single-instance check and the
 "already running" message box can run before any window exists.
 """
 import ctypes
+import os
 
 _kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
 _user32 = ctypes.WinDLL("user32", use_last_error=True)
@@ -62,6 +63,41 @@ _kernel32.GetProcessId.argtypes = [ctypes.c_void_p]
 _kernel32.GetProcessId.restype = ctypes.c_ulong
 _kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
 _kernel32.CloseHandle.restype = ctypes.c_int
+
+
+class _GUID(ctypes.Structure):
+    _fields_ = [
+        ("Data1", ctypes.c_ulong),
+        ("Data2", ctypes.c_ushort),
+        ("Data3", ctypes.c_ushort),
+        ("Data4", ctypes.c_byte * 8),
+    ]
+
+
+# FOLDERID_Downloads - the well-known-folder GUID Explorer itself uses,
+# correct even if the user has redirected/renamed their Downloads folder
+# (unlike guessing os.path.expanduser("~") + "Downloads").
+_FOLDERID_DOWNLOADS = _GUID(
+    0x374DE290, 0x123F, 0x4565, (ctypes.c_byte * 8)(0x91, 0x64, 0x39, 0xC4, 0x92, 0x5E, 0x46, 0x7B)
+)
+
+
+def downloads_folder():
+    path_ptr = ctypes.c_wchar_p()
+    hresult = ctypes.windll.shell32.SHGetKnownFolderPath(
+        ctypes.byref(_FOLDERID_DOWNLOADS), 0, None, ctypes.byref(path_ptr)
+    )
+    if hresult != 0 or not path_ptr.value:
+        return os.path.join(os.path.expanduser("~"), "Downloads")
+    path = path_ptr.value
+    ctypes.windll.ole32.CoTaskMemFree(path_ptr)
+    return path
+
+
+def open_folder_and_select(file_path):
+    """Opens Explorer with `file_path` highlighted in its parent folder -
+    used to show the user exactly where a downloaded file landed."""
+    ctypes.windll.shell32.ShellExecuteW(None, "open", "explorer.exe", f'/select,"{file_path}"', None, 1)
 
 
 def run_as_admin(path, cwd=None):

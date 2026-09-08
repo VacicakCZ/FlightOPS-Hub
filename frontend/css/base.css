@@ -557,6 +557,12 @@ button.btn.danger {
   overflow-y: auto;
 }
 
+.update-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
 .exe-row {
   display: flex;
   align-items: center;

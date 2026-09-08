@@ -174,6 +174,9 @@
   "ui_scale_label": "Tamaño de la interfaz:",
   "update_available": "🔔 Nueva versión disponible: {}",
   "update_available_banner": "🔔 Actualización {} disponible en Ajustes",
+  "update_download_btn": "⬇ Descargar actualización",
+  "update_download_error": "Error al descargar: {}",
+  "update_downloading": "Descargando...",
   "update_open_btn": "Abrir en GitHub",
   "usage_close": "Cerrar"
 }

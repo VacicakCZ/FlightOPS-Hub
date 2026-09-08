@@ -26,3 +26,18 @@ def test_is_newer_garbage_text_never_beats_a_real_version():
 def test_parse_version_ignores_prerelease_suffix():
     assert update_check._parse_version("v2.1-beta") == (2, 1)
     assert update_check._parse_version("2.1.3-rc1") == (2, 1, 3)
+
+
+def test_find_asset_download_url_matches_exact_name():
+    data = {
+        "assets": [
+            {"name": "source.zip", "browser_download_url": "https://example.com/source.zip"},
+            {"name": "flightops_hub.exe", "browser_download_url": "https://example.com/flightops_hub.exe"},
+        ]
+    }
+    assert update_check._find_asset_download_url(data) == "https://example.com/flightops_hub.exe"
+
+
+def test_find_asset_download_url_none_when_missing():
+    assert update_check._find_asset_download_url({"assets": [{"name": "other.zip"}]}) is None
+    assert update_check._find_asset_download_url({}) is None
