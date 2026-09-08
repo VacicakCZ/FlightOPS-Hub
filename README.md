@@ -66,6 +66,8 @@ FlightOps Hub is **100% portable** - no installer, no admin rights needed.
 
 > **Note on UAC (Administrator rights):** You do **not** need to run FlightOps Hub itself as administrator. Individual add-ons that require elevated rights can be flagged with "Run as Administrator (UAC)" per-entry in Settings.
 
+> **Code signing:** This project has applied for free Windows code signing through the [SignPath Foundation](https://signpath.org/) open-source program. Until that's approved and wired into the release build, Windows SmartScreen may still show an "unknown publisher" warning on first run - the app itself is unaffected either way.
+
 ---
 
 ## 💻 Local Development Setup
