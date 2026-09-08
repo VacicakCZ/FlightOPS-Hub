@@ -470,7 +470,13 @@ class Api:
                 # developer to compare a profile against - the best we can
                 # say is whether any profile exists for the ICAO.
                 leg["gsx_status"] = "installed_unmatched" if gsx_profiles_by_icao.get(leg["icao"]) else "missing"
-        return {"ok": True, "legs": matched_legs}
+        return {
+            "ok": True,
+            "legs": matched_legs,
+            "duration_minutes": ofp.get("duration_minutes"),
+            "aircraft_name": ofp.get("aircraft_name"),
+            "planned_at": ofp.get("planned_at"),
+        }
 
     def scenery_apply(self, desired_states):
         return self._run_addon_apply("scenery", desired_states)

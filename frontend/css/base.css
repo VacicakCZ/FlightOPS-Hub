@@ -841,6 +841,13 @@ button.btn.danger {
   margin-top: 8px;
 }
 
+.simbrief-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 6px;
+}
+
 /* Grid (not flex) so role/ICAO/status line up into real columns across
    rows - every .simbrief-leg uses the same fixed column widths, so they
    align even though each row is its own grid. Role/status get an ellipsis

@@ -221,6 +221,12 @@
               <p class="hint" x-show="!simbriefUsernameSet" x-text="$store.app.t('simbrief_no_username')"></p>
               <p class="error-text" x-show="simbriefError" x-text="$store.app.t(simbriefError)"></p>
 
+              <div class="simbrief-summary" x-show="simbriefSummary" x-cloak>
+                <span class="hint" x-show="simbriefSummary && simbriefSummary.aircraft_name" x-text="$store.app.t('simbrief_summary_aircraft', simbriefSummary.aircraft_name)"></span>
+                <span class="hint" x-show="simbriefSummary && simbriefSummary.duration_minutes != null" x-text="$store.app.t('simbrief_summary_duration', formatDuration(simbriefSummary.duration_minutes))"></span>
+                <span class="hint" x-show="simbriefSummary && simbriefSummary.planned_at != null" x-text="$store.app.t('simbrief_summary_planned', formatPlannedAt(simbriefSummary.planned_at))"></span>
+              </div>
+
               <template x-if="simbriefLegs.length">
                 <div class="simbrief-legs">
                   <template x-for="leg in simbriefLegs" :key="leg.role">

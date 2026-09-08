@@ -15,6 +15,7 @@ document.addEventListener("alpine:init", () => {
     simbriefChecking: false,
     simbriefError: null,
     simbriefLegs: [],
+    simbriefSummary: null,
     mapView: false,
     mapMarkers: [],
     _map: null,
@@ -471,11 +472,32 @@ document.addEventListener("alpine:init", () => {
       if (!result.ok) {
         this.simbriefError = result.error;
         this.simbriefLegs = [];
+        this.simbriefSummary = null;
         this.renderRoute();
         return;
       }
       this.simbriefLegs = result.legs;
+      // Lets the user sanity-check this is actually the flight they meant -
+      // SimBrief has no "current" flight, just whatever was last generated,
+      // which could be an old plan if they forgot to regenerate.
+      this.simbriefSummary = {
+        aircraft_name: result.aircraft_name,
+        duration_minutes: result.duration_minutes,
+        planned_at: result.planned_at,
+      };
       this.renderRoute();
+    },
+
+    formatDuration(minutes) {
+      if (minutes == null) return "";
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      return h > 0 ? `${h}h ${m}m` : `${m}m`;
+    },
+
+    formatPlannedAt(epochSeconds) {
+      if (epochSeconds == null) return "";
+      return new Date(epochSeconds * 1000).toLocaleString();
     },
 
     // After an Apply (whether triggered from the main tree or from a
