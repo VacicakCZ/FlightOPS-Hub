@@ -33,9 +33,11 @@
         <span class="tab-icon">⚙️</span>
         <span class="tab-main" x-text="$store.app.tMain('tab_set')"></span>
         <span class="tab-sub" x-show="$store.app.tParen('tab_set')" x-text="$store.app.tParen('tab_set')"></span>
-        <span class="tab-update-dot" x-show="$store.app.updateInfo" x-cloak :title="$store.app.t('update_available', $store.app.updateInfo ? $store.app.updateInfo.version : '')"></span>
       </button>
     </nav>
+
+    <button type="button" class="global-update-banner" x-show="$store.app.updateInfo" x-cloak @click="$store.app.setTab('settings')"
+            x-text="$store.app.t('update_available_banner', $store.app.updateInfo ? $store.app.updateInfo.version : '')"></button>
 
     <div class="tab-panels">
       <section x-show="$store.app.activeTab === 'flight'" x-data="flightTab">

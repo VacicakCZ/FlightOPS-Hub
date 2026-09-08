@@ -158,6 +158,7 @@
   "tt_update": "Actualizar perfil seleccionado",
   "ui_scale_label": "Tamaño de la interfaz:",
   "update_available": "🔔 Nueva versión disponible: {}",
+  "update_available_banner": "🔔 Actualización {} disponible en Ajustes",
   "update_open_btn": "Abrir en GitHub",
   "usage_close": "Cerrar"
 }

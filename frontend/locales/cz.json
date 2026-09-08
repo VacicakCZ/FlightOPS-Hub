@@ -158,6 +158,7 @@
   "tt_update": "Aktualizovat vybraný profil",
   "ui_scale_label": "Velikost UI:",
   "update_available": "🔔 Dostupná nová verze: {}",
+  "update_available_banner": "🔔 Update {} k dispozici v Nastavení",
   "update_open_btn": "Otevřít na GitHubu",
   "usage_close": "Zavřít"
 }

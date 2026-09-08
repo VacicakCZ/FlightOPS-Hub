@@ -158,6 +158,7 @@
   "tt_update": "Update selected profile",
   "ui_scale_label": "UI scale:",
   "update_available": "🔔 New version available: {}",
+  "update_available_banner": "🔔 Update {} available in Settings",
   "update_open_btn": "Open on GitHub",
   "usage_close": "Close"
 }

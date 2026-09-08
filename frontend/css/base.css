@@ -165,18 +165,25 @@ html, body {
   box-shadow: 0 2px 8px -2px var(--accent-glow, transparent);
 }
 
-/* Tiny "something's new" dot on the Settings tab when an update is
-   available - deliberately small and quiet (no badge count, no motion),
-   just enough to be noticed without a popup or visiting Settings first. */
-.tab-update-dot {
-  position: absolute;
-  top: 6px;
-  right: 10px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 4px var(--accent-glow, transparent);
+/* Slim, always-visible (regardless of active tab) one-line notice when an
+   update is available - deliberately just text on the app background, no
+   box/border/icon-badge, so it reads as part of the app chrome rather than
+   something demanding attention. Click jumps to Settings, where the full
+   notice/changelog (already existing) lives. */
+.global-update-banner {
+  display: block;
+  width: 100%;
+  padding: 5px 8px;
+  border: none;
+  background: var(--bg);
+  color: var(--accent);
+  font-size: 11px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.global-update-banner:hover {
+  text-decoration: underline;
 }
 
 .tab-panels {
