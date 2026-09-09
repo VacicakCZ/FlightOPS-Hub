@@ -29,6 +29,8 @@
   "atc_network_vatsim": "VATSIM",
   "atc_offline_tt": "该机场目前没有管制员在线",
   "atc_online_tt": "该机场目前有管制员在线",
+  "atc_popover_empty": "该机场目前没有管制员在线。",
+  "atc_popover_title": "{} 的 ATC",
   "autostart_search_no_results": "没有符合搜索条件的插件。",
   "autostart_search_placeholder": "搜索插件...",
   "backup_export_btn": "导出设置...",

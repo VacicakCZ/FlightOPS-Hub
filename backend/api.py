@@ -530,7 +530,7 @@ class Api:
         # Opt-in (off by default) - see atc_network.py. A failed/empty fetch
         # just means no leg gets flagged online, never an error surfaced to
         # the user; this is a nice-to-have overlay on the existing check.
-        online_atc_airports = atc_network.fetch_online_atc_airports(self._config.get("_atc_network", "off"))
+        online_atc = atc_network.fetch_online_atc(self._config.get("_atc_network", "off"))
 
         for leg in matched_legs:
             # Coordinates for the map's route line - looked up independently
@@ -548,7 +548,8 @@ class Api:
                 # developer to compare a profile against - the best we can
                 # say is whether any profile exists for the ICAO.
                 leg["gsx_status"] = "installed_unmatched" if gsx_profiles_by_icao.get(leg["icao"]) else "missing"
-            leg["atc_online"] = leg["icao"] in online_atc_airports
+            leg["atc_positions"] = online_atc.get(leg["icao"], [])
+            leg["atc_online"] = len(leg["atc_positions"]) > 0
         return {
             "ok": True,
             "legs": matched_legs,

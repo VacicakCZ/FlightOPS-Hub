@@ -22,12 +22,35 @@ def test_icao_from_callsign_handles_none_and_empty():
     assert atc_network._icao_from_callsign("") is None
 
 
-def test_extract_airports_dedupes_and_uppercases():
-    result = atc_network._extract_airports(["vhhh_TWR", "VHHH_APP", "KOGD_ATIS", "SY_TWR", None])
-    assert result == {"VHHH", "KOGD"}
+def test_position_from_callsign_extracts_suffix():
+    assert atc_network._position_from_callsign("VHHH_TWR") == "TWR"
+    assert atc_network._position_from_callsign("KOGD_ATIS") == "ATIS"
 
 
-def test_fetch_online_atc_airports_returns_empty_set_for_off():
-    assert atc_network.fetch_online_atc_airports("off") == set()
-    assert atc_network.fetch_online_atc_airports(None) == set()
-    assert atc_network.fetch_online_atc_airports("something-else") == set()
+def test_position_from_callsign_falls_back_to_atc_when_no_suffix():
+    assert atc_network._position_from_callsign("SY_TWR_APP") == "TWR_APP"
+    assert atc_network._position_from_callsign("NOFACILITY") == "ATC"
+
+
+def test_add_position_groups_by_airport():
+    by_airport = {}
+    atc_network._add_position(by_airport, "VHHH_TWR", "118.200")
+    atc_network._add_position(by_airport, "VHHH_GND", "121.900")
+    atc_network._add_position(by_airport, "KOGD_ATIS", "125.550", position_override="ATIS")
+
+    assert by_airport == {
+        "VHHH": [{"position": "TWR", "frequency": "118.200"}, {"position": "GND", "frequency": "121.900"}],
+        "KOGD": [{"position": "ATIS", "frequency": "125.550"}],
+    }
+
+
+def test_add_position_ignores_unparseable_callsign():
+    by_airport = {}
+    atc_network._add_position(by_airport, "SY_TWR", "118.200")
+    assert by_airport == {}
+
+
+def test_fetch_online_atc_returns_empty_dict_for_off():
+    assert atc_network.fetch_online_atc("off") == {}
+    assert atc_network.fetch_online_atc(None) == {}
+    assert atc_network.fetch_online_atc("something-else") == {}

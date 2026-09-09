@@ -16,6 +16,7 @@ document.addEventListener("alpine:init", () => {
     simbriefError: null,
     simbriefLegs: [],
     simbriefSummary: null,
+    atcPopoverFor: null,
     mapView: false,
     mapMarkers: [],
     _map: null,
@@ -467,6 +468,7 @@ document.addEventListener("alpine:init", () => {
     async checkSimbrief() {
       this.simbriefChecking = true;
       this.simbriefError = null;
+      this.atcPopoverFor = null; // stale reference into the old legs otherwise
       const result = await Api.simbriefCheck();
       this.simbriefChecking = false;
       if (!result.ok) {
@@ -486,6 +488,10 @@ document.addEventListener("alpine:init", () => {
         planned_at: result.planned_at,
       };
       this.renderRoute();
+    },
+
+    toggleAtcPopover(icao) {
+      this.atcPopoverFor = this.atcPopoverFor === icao ? null : icao;
     },
 
     formatDuration(minutes) {

@@ -29,6 +29,8 @@
   "atc_network_vatsim": "VATSIM",
   "atc_offline_tt": "Na tomto letišti aktuálně není online žádný dispečer",
   "atc_online_tt": "Na tomto letišti je aktuálně online dispečer",
+  "atc_popover_empty": "Na tomto letišti aktuálně není online žádný dispečer.",
+  "atc_popover_title": "ATC na {}",
   "autostart_search_no_results": "Žádný doplněk neodpovídá hledání.",
   "autostart_search_placeholder": "Hledat doplněk...",
   "backup_export_btn": "Exportovat nastavení...",

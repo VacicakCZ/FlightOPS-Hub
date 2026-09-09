@@ -497,11 +497,36 @@ button.btn.danger {
   border-radius: 4px;
   padding: 1px 5px;
   font-family: inherit;
-  cursor: default;
+  cursor: pointer;
 }
 
 .atc-tag.atc-online { background: var(--success); }
 .atc-tag.atc-offline { background: var(--text-muted); opacity: 0.6; }
+
+.atc-popover {
+  margin: 4px 0 4px 128px;
+  padding: 6px 8px;
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  font-size: 11px;
+  max-width: 220px;
+}
+
+.atc-popover-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.atc-popover-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
 
 .version-footer {
   display: block;

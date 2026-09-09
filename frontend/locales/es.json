@@ -29,6 +29,8 @@
   "atc_network_vatsim": "VATSIM",
   "atc_offline_tt": "Actualmente no hay ATC en línea para este aeropuerto",
   "atc_online_tt": "Actualmente hay ATC en línea para este aeropuerto",
+  "atc_popover_empty": "Actualmente no hay ATC en línea aquí.",
+  "atc_popover_title": "ATC en {}",
   "autostart_search_no_results": "Ningún addon coincide con la búsqueda.",
   "autostart_search_placeholder": "Buscar addon...",
   "backup_export_btn": "Exportar configuración...",

@@ -230,25 +230,44 @@
               <template x-if="simbriefLegs.length">
                 <div class="simbrief-legs">
                   <template x-for="leg in simbriefLegs" :key="leg.role">
-                    <div class="simbrief-leg">
-                      <span class="simbrief-role" x-text="$store.app.t('simbrief_role_' + leg.role)"></span>
-                      <span class="simbrief-icao" x-text="leg.icao"></span>
-                      <span class="simbrief-status" :class="'status-' + leg.status" x-text="$store.app.t('simbrief_status_' + leg.status)"></span>
-                      <button class="btn simbrief-enable-btn"
-                              :style="leg.status === 'disabled' ? '' : 'visibility:hidden'"
-                              :disabled="applying || leg.status !== 'disabled'"
-                              @click="quickEnable(leg.folder_name)" x-text="$store.app.t('simbrief_enable_btn')"></button>
-                      <span class="gsx-tag gsx-match" x-show="leg.gsx_status === 'installed_match'"
-                            :title="$store.app.t('scenery_gsx_match_tt')">GSX</span>
-                      <span class="gsx-tag gsx-unmatched" x-show="leg.gsx_status === 'installed_unmatched'"
-                            :title="$store.app.t('scenery_gsx_unmatched_tt')">GSX</span>
-                      <button type="button" class="gsx-tag gsx-missing" x-show="leg.gsx_status === 'missing'"
-                              @click.stop.prevent="openGsxSearch(leg.icao)"
-                              :title="$store.app.t('scenery_gsx_missing_tt')">GSX</button>
-                      <span class="atc-tag atc-online" x-show="$store.app.config._atc_network && $store.app.config._atc_network !== 'off' && leg.atc_online"
-                            :title="$store.app.t('atc_online_tt')">ATC</span>
-                      <span class="atc-tag atc-offline" x-show="$store.app.config._atc_network && $store.app.config._atc_network !== 'off' && !leg.atc_online"
-                            :title="$store.app.t('atc_offline_tt')">ATC</span>
+                    <div>
+                      <div class="simbrief-leg">
+                        <span class="simbrief-role" x-text="$store.app.t('simbrief_role_' + leg.role)"></span>
+                        <span class="simbrief-icao" x-text="leg.icao"></span>
+                        <span class="simbrief-status" :class="'status-' + leg.status" x-text="$store.app.t('simbrief_status_' + leg.status)"></span>
+                        <button class="btn simbrief-enable-btn"
+                                :style="leg.status === 'disabled' ? '' : 'visibility:hidden'"
+                                :disabled="applying || leg.status !== 'disabled'"
+                                @click="quickEnable(leg.folder_name)" x-text="$store.app.t('simbrief_enable_btn')"></button>
+                        <span class="gsx-tag gsx-match" x-show="leg.gsx_status === 'installed_match'"
+                              :title="$store.app.t('scenery_gsx_match_tt')">GSX</span>
+                        <span class="gsx-tag gsx-unmatched" x-show="leg.gsx_status === 'installed_unmatched'"
+                              :title="$store.app.t('scenery_gsx_unmatched_tt')">GSX</span>
+                        <button type="button" class="gsx-tag gsx-missing" x-show="leg.gsx_status === 'missing'"
+                                @click.stop.prevent="openGsxSearch(leg.icao)"
+                                :title="$store.app.t('scenery_gsx_missing_tt')">GSX</button>
+                        <button type="button" class="atc-tag atc-online"
+                                x-show="$store.app.config._atc_network && $store.app.config._atc_network !== 'off' && leg.atc_online"
+                                @click="toggleAtcPopover(leg.icao)"
+                                :title="$store.app.t('atc_online_tt')">ATC</button>
+                        <button type="button" class="atc-tag atc-offline"
+                                x-show="$store.app.config._atc_network && $store.app.config._atc_network !== 'off' && !leg.atc_online"
+                                @click="toggleAtcPopover(leg.icao)"
+                                :title="$store.app.t('atc_offline_tt')">ATC</button>
+                      </div>
+                      <div class="atc-popover" x-show="atcPopoverFor === leg.icao" x-cloak>
+                        <div class="atc-popover-head">
+                          <span x-text="$store.app.t('atc_popover_title', leg.icao)"></span>
+                          <button type="button" class="btn icon-btn" @click="atcPopoverFor = null" :title="$store.app.t('usage_close')">✕</button>
+                        </div>
+                        <template x-for="pos in leg.atc_positions" :key="pos.position + ':' + pos.frequency">
+                          <div class="atc-popover-row">
+                            <span x-text="pos.position"></span>
+                            <span class="hint" x-text="pos.frequency ? '(' + pos.frequency + ')' : ''"></span>
+                          </div>
+                        </template>
+                        <p class="hint" x-show="!leg.atc_positions || !leg.atc_positions.length" x-text="$store.app.t('atc_popover_empty')"></p>
+                      </div>
                     </div>
                   </template>
                 </div>
