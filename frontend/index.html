@@ -234,6 +234,7 @@
                       <span class="simbrief-role" x-text="$store.app.t('simbrief_role_' + leg.role)"></span>
                       <span class="simbrief-icao" x-text="leg.icao"></span>
                       <span class="simbrief-status" :class="'status-' + leg.status" x-text="$store.app.t('simbrief_status_' + leg.status)"></span>
+                      <button class="btn" x-show="leg.status === 'disabled'" :disabled="applying" @click="quickEnable(leg.folder_name)" x-text="$store.app.t('simbrief_enable_btn')"></button>
                       <span class="gsx-tag gsx-match" x-show="leg.gsx_status === 'installed_match'"
                             :title="$store.app.t('scenery_gsx_match_tt')">GSX</span>
                       <span class="gsx-tag gsx-unmatched" x-show="leg.gsx_status === 'installed_unmatched'"
@@ -245,7 +246,6 @@
                             :title="$store.app.t('atc_online_tt')">ATC</span>
                       <span class="atc-tag atc-offline" x-show="$store.app.config._atc_network && $store.app.config._atc_network !== 'off' && !leg.atc_online"
                             :title="$store.app.t('atc_offline_tt')">ATC</span>
-                      <button class="btn" x-show="leg.status === 'disabled'" :disabled="applying" @click="quickEnable(leg.folder_name)" x-text="$store.app.t('simbrief_enable_btn')"></button>
                     </div>
                   </template>
                 </div>
@@ -630,9 +630,13 @@
           <input type="text" readonly :value="communityPath" :placeholder="$store.app.t('set_nav_placeholder')" />
           <button class="btn" @click="browseCommunity()" x-text="$store.app.t('btn_browse')"></button>
         </div>
-        <button type="button" class="btn detected-path-btn" x-show="communityPathSuggestion" x-cloak
-                @click="useDetectedCommunityPath()"
-                x-text="$store.app.t('community_path_detected', communityPathSuggestion)"></button>
+        <div class="detected-path-row" x-show="communityPathSuggestion" x-cloak>
+          <button type="button" class="btn detected-path-btn"
+                  @click="useDetectedCommunityPath()"
+                  x-text="$store.app.t('community_path_detected', communityPathSuggestion)"></button>
+          <button type="button" class="btn icon-btn" @click="dismissCommunityPathSuggestion()"
+                  :title="$store.app.t('community_path_detected_dismiss_tt')">✕</button>
+        </div>
 
         <button type="button" class="btn" :disabled="!communityPath || folderUsageScanning.community"
                 @click="scanCommunityUsage()"

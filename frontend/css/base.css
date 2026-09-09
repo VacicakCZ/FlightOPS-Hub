@@ -545,10 +545,17 @@ button.btn.danger {
 /* "We found a likely Community folder, use it?" suggestion - a text-only
    link-style button (not a filled .btn) so it reads as an optional
    shortcut rather than competing with the real Browse button next to it. */
-.detected-path-btn {
-  display: block;
-  width: 100%;
+.detected-path-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 4px;
+}
+
+.detected-path-btn {
+  flex: 1;
+  min-width: 0;
+  display: block;
   padding: 4px;
   border: none;
   background: none;
@@ -880,23 +887,26 @@ button.btn.danger {
   margin-top: 6px;
 }
 
-/* Grid (not flex) so role/ICAO/status line up into real columns across
-   rows - every .simbrief-leg uses the same fixed column widths, so they
-   align even though each row is its own grid. Role/status get an ellipsis
-   safety net since translated labels vary a lot in length (e.g. German
-   "Ausweichflughafen" vs "Ziel"). */
+/* Flex (not a fixed-column grid) - the number of trailing items (Enable
+   button, GSX tag, ATC tag) varies per leg (0-3 of them depending on
+   status/gsx_status/whether an ATC network is even selected), and a grid
+   with a fixed column count wrapped the overflow onto its own new grid
+   row once ATC tags pushed a row past 5 items - flex just flows however
+   many items there are on one line and wraps the whole row together if
+   it truly doesn't fit, never mid-row. Role/ICAO/status get a fixed
+   width instead of a grid track so they still line up into columns
+   across rows. Role/status get an ellipsis safety net since translated
+   labels vary a lot in length (e.g. German "Ausweichflughafen" vs "Ziel"). */
 .simbrief-leg {
-  display: grid;
-  /* max-content, not auto: an "auto" track absorbs leftover grid space by
-     default, which stretched the badge/button into giant bars on a wide
-     window - max-content keeps them sized to their own content only. */
-  grid-template-columns: 78px 42px 90px max-content max-content;
+  display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   font-size: 12px;
 }
 
 .simbrief-role {
+  flex: 0 0 78px;
   color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -904,10 +914,12 @@ button.btn.danger {
 }
 
 .simbrief-icao {
+  flex: 0 0 42px;
   font-weight: 600;
 }
 
 .simbrief-status {
+  flex: 0 0 90px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
