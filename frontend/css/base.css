@@ -929,6 +929,14 @@ button.btn.danger {
 .simbrief-status.status-disabled { color: var(--warning); }
 .simbrief-status.status-not_installed { color: var(--danger); }
 
+/* Fixed width, always rendered (just invisibility-toggled, not
+   display:none via x-show) - so GSX/ATC tags after it still line up
+   across rows regardless of which leg actually needs this button. */
+.simbrief-enable-btn {
+  flex: 0 0 100px;
+  text-align: center;
+}
+
 .scenery-map-view {
   display: flex;
   flex-direction: column;
