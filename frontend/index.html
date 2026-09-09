@@ -225,6 +225,8 @@
                 <span class="hint" x-show="simbriefSummary && simbriefSummary.aircraft_name" x-text="$store.app.t('simbrief_summary_aircraft', simbriefSummary.aircraft_name)"></span>
                 <span class="hint" x-show="simbriefSummary && simbriefSummary.duration_minutes != null" x-text="$store.app.t('simbrief_summary_duration', formatDuration(simbriefSummary.duration_minutes))"></span>
                 <span class="hint" x-show="simbriefSummary && simbriefSummary.planned_at != null" x-text="$store.app.t('simbrief_summary_planned', formatPlannedAt(simbriefSummary.planned_at))"></span>
+                <span class="airac-mismatch-badge" x-show="airacMismatch" x-cloak
+                      :title="simbriefSummary ? $store.app.t('simbrief_airac_mismatch', simbriefSummary.simbrief_airac, simbriefSummary.installed_airac) : ''">⚠️ AIRAC</span>
               </div>
 
               <template x-if="simbriefLegs.length">

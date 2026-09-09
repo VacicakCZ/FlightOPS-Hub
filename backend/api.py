@@ -557,6 +557,8 @@ class Api:
             "aircraft_name": ofp.get("aircraft_name"),
             "planned_at": ofp.get("planned_at"),
             "route_points": ofp.get("route_points") or [],
+            "simbrief_airac": ofp.get("airac"),
+            "installed_airac": airac.get_installed_airac(self._config.get("_community_path", "")) or None,
         }
 
     def scenery_apply(self, desired_states):

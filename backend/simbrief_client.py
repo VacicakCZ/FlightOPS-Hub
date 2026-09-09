@@ -48,6 +48,7 @@ def _parse_ofp(data):
         "aircraft_name": aircraft.get("name") or None,
         "planned_at": planned_at,
         "route_points": _parse_route_points(data),
+        "airac": params.get("airac") or None,
     }
 
 
@@ -72,7 +73,8 @@ def fetch_latest_ofp(username):
     """Returns {"ok": True, "origin": "KJFK", "destination": "KLAX",
     "alternate": "KONT"|None, "duration_minutes": int|None,
     "aircraft_name": str|None, "planned_at": int|None (unix seconds),
-    "route_points": [{"lat": float, "lon": float}, ...]} or
+    "route_points": [{"lat": float, "lon": float}, ...],
+    "airac": str|None (e.g. "2609", same 4-digit format as airac.py)} or
     {"ok": False, "error": <str>}. The error string is a translation key
     when recognized, else a raw message."""
     if not username or not username.strip():

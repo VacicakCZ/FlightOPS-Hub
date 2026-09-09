@@ -577,8 +577,15 @@ document.addEventListener("alpine:init", () => {
         aircraft_name: result.aircraft_name,
         duration_minutes: result.duration_minutes,
         planned_at: result.planned_at,
+        simbrief_airac: result.simbrief_airac,
+        installed_airac: result.installed_airac,
       };
       this.renderRoute();
+    },
+
+    get airacMismatch() {
+      const s = this.simbriefSummary;
+      return !!(s && s.simbrief_airac && s.installed_airac && s.simbrief_airac !== s.installed_airac);
     },
 
     toggleAtcPopover(icao) {

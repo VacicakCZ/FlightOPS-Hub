@@ -174,6 +174,7 @@
   "simbrief_status_not_installed": "未安装",
   "simbrief_summary_aircraft": "飞机：{}",
   "simbrief_summary_duration": "飞行时间：{}",
+  "simbrief_airac_mismatch": "SimBrief 计划使用的 AIRAC 是 {}，你安装的是 {}。",
   "simbrief_summary_planned": "计划时间：{}",
   "simbrief_username_hint": "用于获取你最近一次计划的航班，并与已安装的地景进行比对（地景标签页）。",
   "simbrief_username_label": "SimBrief 用户名",
