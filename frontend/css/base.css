@@ -1080,6 +1080,12 @@ button.btn.danger {
   margin-top: 4px;
 }
 
+.map-popup-divider {
+  border: none;
+  border-top: 1px solid var(--panel-border);
+  margin: 6px 0;
+}
+
 .type-tag {
   font-size: 10px;
   color: var(--text-muted);

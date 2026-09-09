@@ -401,10 +401,20 @@ document.addEventListener("alpine:init", () => {
 
     // Same content as the leg row's ATC popover (index.html), just built
     // as a plain DOM node since Leaflet popup content isn't Alpine-templated.
+    // A leg airport that also has installed scenery shares its map marker
+    // with the scenery marker (same coordinates), so this popup is built on
+    // top of buildPopup()'s content instead of replacing it - otherwise the
+    // GSX status and enable/disable button become unreachable at that spot.
     buildAtcPopup(leg) {
       const app = this.$store.app;
-      const el = document.createElement("div");
-      el.className = "map-popup atc-map-popup";
+      const sceneryMarker = this.mapMarkers.find((m) => m.icao === leg.icao);
+      const el = sceneryMarker ? this.buildPopup(sceneryMarker) : document.createElement("div");
+      if (!sceneryMarker) {
+        el.className = "map-popup atc-map-popup";
+      } else {
+        el.classList.add("atc-map-popup");
+        el.appendChild(document.createElement("hr")).className = "map-popup-divider";
+      }
 
       const title = document.createElement("strong");
       title.textContent = app.t("atc_popover_title", leg.icao);
