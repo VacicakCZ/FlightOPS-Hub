@@ -49,6 +49,7 @@
   "btn_remove": "Odebrat",
   "btn_save_edit": "Uložit úpravy",
   "community_path_detected": "💡 Nalezeno: {} (klik pro použití)",
+  "community_path_detected_dismiss_tt": "Ignorovat tento návrh (u téhle cesty se už zeptat nemá)",
   "community_usage_btn": "Zjistit velikost Community složky",
   "continent_africa": "Afrika",
   "continent_asia": "Asie",

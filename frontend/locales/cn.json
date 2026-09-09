@@ -49,6 +49,7 @@
   "btn_remove": "移除",
   "btn_save_edit": "保存更改",
   "community_path_detected": "💡 已找到：{}（点击使用）",
+  "community_path_detected_dismiss_tt": "忽略此建议（以后不再针对此路径提示）",
   "community_usage_btn": "检查 Community 文件夹大小",
   "continent_africa": "非洲",
   "continent_asia": "亚洲",

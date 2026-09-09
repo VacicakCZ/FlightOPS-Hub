@@ -49,6 +49,7 @@
   "btn_remove": "Entfernen",
   "btn_save_edit": "Änderungen speichern",
   "community_path_detected": "💡 Gefunden: {} (klicken zum Verwenden)",
+  "community_path_detected_dismiss_tt": "Diesen Vorschlag ignorieren (wird für diesen Pfad nicht erneut gefragt)",
   "community_usage_btn": "Größe des Community-Ordners prüfen",
   "continent_africa": "Afrika",
   "continent_asia": "Asien",

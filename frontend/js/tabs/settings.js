@@ -40,16 +40,27 @@ document.addEventListener("alpine:init", () => {
 
     // Only worth showing as a suggestion when it actually differs from
     // what is already set - otherwise it is just noise confirming what
-    // the user already has.
+    // the user already has. Also hidden once the user has explicitly
+    // dismissed this exact detected path (e.g. it found a default
+    // install location they deliberately don't use) - keyed by the path
+    // itself, not a blanket flag, so a genuinely different path detected
+    // later (e.g. after installing a second MSFS version) still suggests.
     get communityPathSuggestion() {
       if (!this.detectedCommunityPath) return null;
-      return this.detectedCommunityPath !== this.communityPath ? this.detectedCommunityPath : null;
+      if (this.detectedCommunityPath === this.communityPath) return null;
+      if (this.detectedCommunityPath === this.$store.app.config._community_path_suggestion_dismissed) return null;
+      return this.detectedCommunityPath;
     },
 
     async useDetectedCommunityPath() {
       if (!this.detectedCommunityPath) return;
       this.$store.app.config = await Api.setCommunityPath(this.detectedCommunityPath);
       FlightOpsEvents.dispatch({ type: "config_changed" });
+    },
+
+    async dismissCommunityPathSuggestion() {
+      if (!this.detectedCommunityPath) return;
+      this.$store.app.config = await Api.configSet({ _community_path_suggestion_dismissed: this.detectedCommunityPath });
     },
 
     get languages() {
