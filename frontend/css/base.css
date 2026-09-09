@@ -1008,6 +1008,9 @@ button.btn.danger {
 .route-point-marker.atc-online {
   background: var(--success);
   box-shadow: 0 0 0 2px var(--success), 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+.route-point-marker.interactive {
   cursor: pointer;
 }
 

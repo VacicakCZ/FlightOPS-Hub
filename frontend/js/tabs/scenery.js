@@ -361,6 +361,7 @@ document.addEventListener("alpine:init", () => {
 
       const accent = this.cssVar("--accent") || "#2f6fed";
       const point = (leg) => [leg.lat, leg.lon];
+      const boundsPoints = [];
 
       if (byRole.origin && byRole.destination) {
         const navlogPoints = this.simbriefRoutePoints.length >= 2
@@ -369,12 +370,14 @@ document.addEventListener("alpine:init", () => {
         L.polyline(navlogPoints, { color: accent, weight: 4 }).addTo(this._routeLayer);
         const midIdx = Math.max(1, Math.floor(navlogPoints.length / 2));
         this._addDirectionArrow(navlogPoints[midIdx - 1], navlogPoints[midIdx]);
+        boundsPoints.push(...navlogPoints);
       }
       if (byRole.destination && byRole.alternate) {
         const from = point(byRole.destination);
         const to = point(byRole.alternate);
         L.polyline([from, to], { color: accent, weight: 2, dashArray: "6 6" }).addTo(this._routeLayer);
         this._addDirectionArrow(from, to);
+        boundsPoints.push(from, to);
       }
 
       const atcNetworkOn = this.$store.app.config._atc_network && this.$store.app.config._atc_network !== "off";
@@ -385,17 +388,36 @@ document.addEventListener("alpine:init", () => {
         // end. Icon markers get repositioned every animation frame, so
         // their bound tooltip tracks the zoom smoothly instead.
         const atcOnline = atcNetworkOn && leg.atc_online;
+        // Also interactive (and needs the pointer cursor) when this leg's
+        // airport happens to also have installed scenery plotted here -
+        // see buildAtcPopup().
+        const sceneryMarker = this.mapMarkers.find((m) => m.icao === leg.icao);
+        const interactive = atcNetworkOn || !!sceneryMarker;
         const icon = L.divIcon({
-          className: "route-point-marker" + (atcOnline ? " atc-online" : ""),
+          className: "route-point-marker"
+            + (atcOnline ? " atc-online" : "")
+            + (interactive ? " interactive" : ""),
           iconSize: [14, 14],
           iconAnchor: [7, 7],
         });
         const marker = L.marker(point(leg), { icon })
           .bindTooltip(leg.icao, { permanent: true, direction: "top", offset: [0, -6], className: "route-icao-label" });
-        if (atcNetworkOn) {
-          marker.bindPopup(() => this.buildAtcPopup(leg));
+        if (interactive) {
+          marker.bindPopup(() => this.buildAtcPopup(leg, sceneryMarker, atcNetworkOn));
         }
         marker.addTo(this._routeLayer);
+      }
+
+      // Auto-fit the map to the route once per newly (re)loaded route -
+      // but not on incidental re-renders of the same route (e.g. toggling
+      // a scenery from the SimBrief panel), which would yank the view away
+      // from wherever the user had since panned/zoomed.
+      if (boundsPoints.length && this._map && this.mapView) {
+        const routeKey = Object.values(byRole).map((l) => `${l.role}:${l.icao}`).sort().join(",");
+        if (routeKey !== this._lastFitRouteKey) {
+          this._lastFitRouteKey = routeKey;
+          this._map.fitBounds(boundsPoints, { padding: [40, 40], maxZoom: 10 });
+        }
       }
     },
 
@@ -405,15 +427,18 @@ document.addEventListener("alpine:init", () => {
     // with the scenery marker (same coordinates), so this popup is built on
     // top of buildPopup()'s content instead of replacing it - otherwise the
     // GSX status and enable/disable button become unreachable at that spot.
-    buildAtcPopup(leg) {
+    // The ATC section itself is only appended when a network is selected -
+    // otherwise leg.atc_positions was never fetched and is always empty.
+    buildAtcPopup(leg, sceneryMarker, atcNetworkOn) {
       const app = this.$store.app;
-      const sceneryMarker = this.mapMarkers.find((m) => m.icao === leg.icao);
       const el = sceneryMarker ? this.buildPopup(sceneryMarker) : document.createElement("div");
       if (!sceneryMarker) {
         el.className = "map-popup atc-map-popup";
-      } else {
+      } else if (atcNetworkOn) {
         el.classList.add("atc-map-popup");
         el.appendChild(document.createElement("hr")).className = "map-popup-divider";
+      } else {
+        return el;
       }
 
       const title = document.createElement("strong");
@@ -539,6 +564,7 @@ document.addEventListener("alpine:init", () => {
         this.simbriefLegs = [];
         this.simbriefSummary = null;
         this.simbriefRoutePoints = [];
+        this._lastFitRouteKey = null;
         this.renderRoute();
         return;
       }
