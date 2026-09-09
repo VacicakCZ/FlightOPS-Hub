@@ -75,6 +75,40 @@ html, body {
   font-size: 13px;
 }
 
+/* The native OS scrollbar (light gray track/thumb) doesn't follow the
+   app's theme at all - jarring against the dark palette. Themed via the
+   same CSS variables as everything else, so it tracks light/dark/system
+   automatically. Firefox uses scrollbar-color/-width; everything else
+   here (this app included, since it runs on WebView2/Chromium) uses the
+   ::-webkit-scrollbar pseudo-elements. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--panel-border) var(--bg);
+}
+
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--panel-border);
+  border-radius: 8px;
+  border: 3px solid var(--bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--bg);
+}
+
 #app {
   display: flex;
   flex-direction: column;
