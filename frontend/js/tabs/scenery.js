@@ -216,7 +216,8 @@ document.addEventListener("alpine:init", () => {
     onProgress({ idx, total, name, copied, total_bytes }) {
       const fraction = (idx + (total_bytes ? copied / total_bytes : 1)) / Math.max(total, 1);
       this.progressFraction = Math.min(1, fraction);
-      this.statusText = this.$store.app.t("scenery_applying_progress", idx + 1, total, name);
+      const percent = Math.round(this.progressFraction * 100);
+      this.statusText = this.$store.app.t("scenery_applying_progress", idx + 1, total, name, percent);
     },
 
     formatBytes(bytes) {

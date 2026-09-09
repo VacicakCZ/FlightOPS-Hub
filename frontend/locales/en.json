@@ -143,7 +143,7 @@
   "scenery_apply_result": "Done: {} enabled, {} disabled",
   "scenery_conflict_hint": "⚠️ Enabled sceneries at the same airport - they can fight over tiles and cause visual glitches in the sim. Consider disabling one of them:",
   "scenery_applying": "Moving...",
-  "scenery_applying_progress": "Moving ({0}/{1}): {2}",
+  "scenery_applying_progress": "Moving ({0}/{1}): {2} — {3}%",
   "scenery_group_toggle_tt": "Enable/disable everything in this group",
   "scenery_gsx_match_tt": "GSX profile found - looks like it's from the same developer as the scenery",
   "scenery_gsx_missing_tt": "No GSX profile found - click to search flightsim.to",

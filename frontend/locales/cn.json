@@ -143,7 +143,7 @@
   "scenery_apply_result": "完成：已启用 {} 个，已禁用 {} 个",
   "scenery_conflict_hint": "⚠️ 同一机场有多个地景同时启用 - 可能会争抢地块导致模拟器出现视觉错误。建议禁用其中一个：",
   "scenery_applying": "正在移动...",
-  "scenery_applying_progress": "正在移动 ({0}/{1}): {2}",
+  "scenery_applying_progress": "正在移动 ({0}/{1}): {2} — {3}%",
   "scenery_group_toggle_tt": "启用/禁用此组中的全部内容",
   "scenery_gsx_match_tt": "已找到 GSX 配置文件 - 看起来与该地景是同一开发者",
   "scenery_gsx_missing_tt": "未找到 GSX 配置文件 - 点击在 flightsim.to 上搜索",

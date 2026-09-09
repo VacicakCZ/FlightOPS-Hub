@@ -143,7 +143,7 @@
   "scenery_apply_result": "Fertig: {} aktiviert, {} deaktiviert",
   "scenery_conflict_hint": "⚠️ Aktivierte Szenerien am selben Flughafen - sie können sich um Kacheln streiten und visuelle Fehler im Sim verursachen. Erwäge, eine davon zu deaktivieren:",
   "scenery_applying": "Verschiebe...",
-  "scenery_applying_progress": "Verschiebe ({0}/{1}): {2}",
+  "scenery_applying_progress": "Verschiebe ({0}/{1}): {2} — {3} %",
   "scenery_group_toggle_tt": "Alles in dieser Gruppe aktivieren/deaktivieren",
   "scenery_gsx_match_tt": "GSX-Profil gefunden - sieht nach demselben Entwickler wie die Szenerie aus",
   "scenery_gsx_missing_tt": "Kein GSX-Profil gefunden - klicken, um auf flightsim.to zu suchen",

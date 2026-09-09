@@ -143,7 +143,7 @@
   "scenery_apply_result": "Listo: {} activados, {} desactivados",
   "scenery_conflict_hint": "⚠️ Escenarios activados en el mismo aeropuerto - pueden competir por los mosaicos y causar errores visuales en el simulador. Considera desactivar uno de ellos:",
   "scenery_applying": "Moviendo...",
-  "scenery_applying_progress": "Moviendo ({0}/{1}): {2}",
+  "scenery_applying_progress": "Moviendo ({0}/{1}): {2} — {3} %",
   "scenery_group_toggle_tt": "Activar/desactivar todo en este grupo",
   "scenery_gsx_match_tt": "Perfil GSX encontrado - parece ser del mismo desarrollador que el escenario",
   "scenery_gsx_missing_tt": "No se encontró perfil GSX - haz clic para buscar en flightsim.to",

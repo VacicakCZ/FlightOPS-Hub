@@ -143,7 +143,7 @@
   "scenery_apply_result": "Hotovo: {} zapnuto, {} vypnuto",
   "scenery_conflict_hint": "⚠️ Zapnuté scenérie na stejném letišti - v simu se mohou prát o dlaždice a dělat vizuální chyby. Zvaž vypnutí jedné z nich:",
   "scenery_applying": "Přesouvám...",
-  "scenery_applying_progress": "Přesouvám ({0}/{1}): {2}",
+  "scenery_applying_progress": "Přesouvám ({0}/{1}): {2} — {3} %",
   "scenery_group_toggle_tt": "Zapnout/vypnout vše v této skupině",
   "scenery_gsx_match_tt": "GSX profil nalezen - vypadá, že je od stejného vývojáře jako scenérie",
   "scenery_gsx_missing_tt": "GSX profil nenalezen - klikni pro hledání na flightsim.to",
