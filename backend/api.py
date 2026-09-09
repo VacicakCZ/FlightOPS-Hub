@@ -671,6 +671,24 @@ class Api:
 
         def worker():
             try:
+                shortfalls = scenery_data.estimate_apply_space(community_path, disabled_locations, desired_states)
+            except Exception:
+                _log.exception("%s apply: disk space preflight crashed, skipping it", event_prefix)
+                shortfalls = []
+            if shortfalls:
+                # Refuse the whole batch before touching a single file - a
+                # cross-drive copy that runs out of space partway through
+                # leaves a broken partial folder behind instead of failing
+                # cleanly, so this is checked upfront rather than per item.
+                self._addon_apply_active = False
+                _log.warning(
+                    "%s apply blocked: insufficient disk space on %s",
+                    event_prefix, ", ".join(s["drive"] for s in shortfalls),
+                )
+                bus.emit(f"{event_prefix}_apply_done", {"results": [], "insufficient_space": shortfalls})
+                return
+
+            try:
                 raw_results = scenery_data.apply_package_changes(
                     community_path, disabled_locations, desired_states, progress_callback=on_progress
                 )

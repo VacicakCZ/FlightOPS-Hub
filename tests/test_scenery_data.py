@@ -260,6 +260,107 @@ def test_apply_package_changes_never_overwrites_existing_destination(tmp_path, m
     assert (community / "dup-package").is_dir()
 
 
+# --- estimate_apply_space (cross-drive preflight, same-drive tmp dirs
+# forced to look cross-drive via monkeypatching _same_drive) ---
+
+def test_estimate_apply_space_ignores_same_drive_moves(tmp_path):
+    # A same-drive move is an instant rename and never needs extra room -
+    # real tmp_path subfolders are genuinely on the same drive here, no
+    # monkeypatching needed to prove the "no shortfall" case.
+    community = tmp_path / "Community"
+    disabled = tmp_path / "Disabled"
+    community.mkdir()
+    disabled.mkdir()
+    _make_scenery_package(community, "big-package", "Big")
+
+    shortfalls = scenery_data.estimate_apply_space(
+        str(community), [str(disabled)], {"big-package": False}
+    )
+
+    assert shortfalls == []
+
+
+def test_estimate_apply_space_flags_drive_without_enough_room(tmp_path, monkeypatch):
+    community = tmp_path / "Community"
+    disabled = tmp_path / "Disabled"
+    community.mkdir()
+    disabled.mkdir()
+    _make_scenery_package(community, "big-package", "Big")
+
+    monkeypatch.setattr(scenery_data, "_same_drive", lambda a, b: False)
+    monkeypatch.setattr(scenery_data, "_directory_size", lambda path: 10 * 1024 ** 3)
+    monkeypatch.setattr(scenery_data.shutil, "disk_usage", lambda path: type(
+        "U", (), {"free": 1 * 1024 ** 3}
+    )())
+
+    shortfalls = scenery_data.estimate_apply_space(
+        str(community), [str(disabled)], {"big-package": False}
+    )
+
+    assert len(shortfalls) == 1
+    assert shortfalls[0]["needed_bytes"] == 10 * 1024 ** 3
+    assert shortfalls[0]["free_bytes"] == 1 * 1024 ** 3
+
+
+def test_estimate_apply_space_passes_when_drive_has_enough_room(tmp_path, monkeypatch):
+    community = tmp_path / "Community"
+    disabled = tmp_path / "Disabled"
+    community.mkdir()
+    disabled.mkdir()
+    _make_scenery_package(community, "small-package", "Small")
+
+    monkeypatch.setattr(scenery_data, "_same_drive", lambda a, b: False)
+    monkeypatch.setattr(scenery_data, "_directory_size", lambda path: 1024)
+    monkeypatch.setattr(scenery_data.shutil, "disk_usage", lambda path: type(
+        "U", (), {"free": 50 * 1024 ** 3}
+    )())
+
+    shortfalls = scenery_data.estimate_apply_space(
+        str(community), [str(disabled)], {"small-package": False}
+    )
+
+    assert shortfalls == []
+
+
+def test_estimate_apply_space_sums_multiple_packages_to_the_same_drive(tmp_path, monkeypatch):
+    community = tmp_path / "Community"
+    disabled = tmp_path / "Disabled"
+    community.mkdir()
+    disabled.mkdir()
+    _make_scenery_package(community, "pkg-a", "A")
+    _make_scenery_package(community, "pkg-b", "B")
+
+    monkeypatch.setattr(scenery_data, "_same_drive", lambda a, b: False)
+    monkeypatch.setattr(scenery_data, "_directory_size", lambda path: 6 * 1024 ** 3)
+    monkeypatch.setattr(scenery_data.shutil, "disk_usage", lambda path: type(
+        "U", (), {"free": 10 * 1024 ** 3}
+    )())
+
+    shortfalls = scenery_data.estimate_apply_space(
+        str(community), [str(disabled)], {"pkg-a": False, "pkg-b": False}
+    )
+
+    # 6 GiB + 6 GiB = 12 GiB needed on the disabled drive, only 10 GiB free -
+    # neither package alone would trip the check, only the combined total.
+    assert len(shortfalls) == 1
+    assert shortfalls[0]["needed_bytes"] == 12 * 1024 ** 3
+
+
+def test_estimate_apply_space_ignores_missing_source(tmp_path, monkeypatch):
+    community = tmp_path / "Community"
+    disabled = tmp_path / "Disabled"
+    community.mkdir()
+    disabled.mkdir()
+
+    monkeypatch.setattr(scenery_data, "_same_drive", lambda a, b: False)
+
+    shortfalls = scenery_data.estimate_apply_space(
+        str(community), [str(disabled)], {"never-existed": False}
+    )
+
+    assert shortfalls == []
+
+
 # --- scan_aircraft_and_liveries: developer lookup + base_container-based
 # reclassification (manifest content_type is self-reported and often wrong
 # for registration/repaint packs - see scenery_data.py's _is_actually_a_livery) ---

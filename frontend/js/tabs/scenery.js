@@ -219,7 +219,27 @@ document.addEventListener("alpine:init", () => {
       this.statusText = this.$store.app.t("scenery_applying_progress", idx + 1, total, name);
     },
 
-    async onDone({ results }) {
+    formatBytes(bytes) {
+      const units = ["B", "KB", "MB", "GB", "TB"];
+      let value = bytes || 0;
+      let unitIndex = 0;
+      while (value >= 1024 && unitIndex < units.length - 1) {
+        value /= 1024;
+        unitIndex++;
+      }
+      return `${value.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+    },
+
+    async onDone({ results, insufficient_space }) {
+      if (insufficient_space && insufficient_space.length) {
+        this.applying = false;
+        this.statusText = "";
+        const lines = insufficient_space
+          .map((s) => this.$store.app.t("insufficient_disk_space", s.drive, this.formatBytes(s.needed_bytes), this.formatBytes(s.free_bytes)))
+          .join("\n");
+        await Modal.alertMsg(this.$store.app.t("apply_blocked_title"), lines);
+        return;
+      }
       const desired = this._lastDesired || {};
       const enabledCount = results.filter((r) => r.ok && desired[r.folder_name] === true).length;
       const disabledCount = results.filter((r) => r.ok && desired[r.folder_name] === false).length;

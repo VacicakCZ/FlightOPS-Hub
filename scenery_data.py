@@ -397,21 +397,17 @@ def move_package(src, dst, progress_callback=None):
     shutil.rmtree(src)
 
 
-def apply_package_changes(community_path, disabled_paths, desired_states, progress_callback=None):
-    """desired_states: {folder_name: True/False (chce enabled?)}.
-    Presouva jen to, co se lisi od aktualni polohy. Nikdy nemaze, nikdy
-    nepretizi existujici cil. Vraci seznam (folder_name, ok, error_or_None).
-    Funguje pro jakykoliv typ obsahu (scenerie, letadla, liverky) - pracuje
-    jen s nazvem slozky, na content_type mu nezalezi.
+def _resolve_pending_moves(community_path, disabled_paths, desired_states):
+    """Figures out which folders actually need to move and where - shared by
+    apply_package_changes and estimate_apply_space below, so the two always
+    agree on exactly what an Apply is about to do.
 
     disabled_paths: serazeny seznam z resolve_disabled_locations - pri
     zapinani se zdroj hleda napric CELYM seznamem (balicek muze lezet ve
     starem i aktualne nastavenem umisteni), pri vypinani se vzdy cili na
     disabled_paths[0] (aktualne nastavene primarni umisteni).
 
-    progress_callback(item_index, item_count, folder_name, copied_bytes,
-    total_bytes), volano prubezne behem kazdeho presunu (u presunu na
-    stejnem disku jen jednou se 100 %) - pro progress bar v UI."""
+    Returns [(folder_name, src, dst), ...]."""
     primary_disabled = disabled_paths[0]
 
     pending = []
@@ -437,6 +433,53 @@ def apply_package_changes(community_path, disabled_paths, desired_states, progre
             src, dst = community_target, os.path.join(primary_disabled, folder_name)
 
         pending.append((folder_name, src, dst))
+    return pending
+
+
+def estimate_apply_space(community_path, disabled_paths, desired_states):
+    """Preflight for apply_package_changes: a same-drive move is just an
+    instant rename (see move_package) and never needs extra room, but a
+    cross-drive one is a real file-by-file copy - if the destination drive
+    runs out of space partway through, the source is safe (only deleted
+    after a successful copy), but the partial copy left at the destination
+    is not cleaned up automatically and blocks retrying. Checking upfront
+    lets the caller refuse the whole Apply before touching a single file.
+
+    Returns [{"drive": "D:", "needed_bytes": int, "free_bytes": int}, ...]
+    for every destination drive that does NOT have enough room for
+    everything headed to it - empty list means the Apply is safe to run."""
+    needed_per_drive = {}
+    for _folder_name, src, dst in _resolve_pending_moves(community_path, disabled_paths, desired_states):
+        if not src or not os.path.isdir(src) or _same_drive(src, dst):
+            continue
+        drive = os.path.splitdrive(os.path.normpath(dst))[0].lower()
+        needed_per_drive[drive] = needed_per_drive.get(drive, 0) + _directory_size(src)
+
+    shortfalls = []
+    for drive, needed_bytes in needed_per_drive.items():
+        try:
+            free_bytes = shutil.disk_usage(drive + os.sep).free
+        except OSError:
+            continue
+        if needed_bytes > free_bytes:
+            shortfalls.append({"drive": drive, "needed_bytes": needed_bytes, "free_bytes": free_bytes})
+    return shortfalls
+
+
+def apply_package_changes(community_path, disabled_paths, desired_states, progress_callback=None):
+    """desired_states: {folder_name: True/False (chce enabled?)}.
+    Presouva jen to, co se lisi od aktualni polohy. Nikdy nemaze, nikdy
+    nepretizi existujici cil. Vraci seznam (folder_name, ok, error_or_None).
+    Funguje pro jakykoliv typ obsahu (scenerie, letadla, liverky) - pracuje
+    jen s nazvem slozky, na content_type mu nezalezi.
+
+    progress_callback(item_index, item_count, folder_name, copied_bytes,
+    total_bytes), volano prubezne behem kazdeho presunu (u presunu na
+    stejnem disku jen jednou se 100 %) - pro progress bar v UI.
+
+    Caller is expected to have already checked estimate_apply_space - this
+    function does not check free space itself."""
+    pending = _resolve_pending_moves(community_path, disabled_paths, desired_states)
 
     results = []
     item_count = len(pending)
