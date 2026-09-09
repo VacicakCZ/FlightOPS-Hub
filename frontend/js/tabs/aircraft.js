@@ -299,7 +299,13 @@ document.addEventListener("alpine:init", () => {
 
     async onDone({ results, insufficient_space }) {
       if (insufficient_space && insufficient_space.length) {
+        // Nothing was actually touched - reset the same way a normal
+        // completion does (clear the optimistic pending toggles, reload the
+        // real on-disk state) before the modal, or the item the user tried
+        // to toggle stays looking as if the change went through.
         this.applying = false;
+        this.pending = {};
+        await this.load();
         this.statusText = "";
         const lines = insufficient_space
           .map((s) => this.$store.app.t("insufficient_disk_space", s.drive, this.formatBytes(s.needed_bytes), this.formatBytes(s.free_bytes)))
