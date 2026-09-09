@@ -112,6 +112,8 @@
   "launch_missing_message": "Tyto vybrané aplikace se nespustí, protože appka nenašla jejich soubor (cesta už neplatí): {}. Pokračovat i tak?",
   "launch_missing_title": "Některé aplikace nebyly nalezeny",
   "main_title": "Vyber aplikace pro tento let",
+  "low_disk_space_community": "⚠️ Málo místa na disku se složkou Community (volno: {})",
+  "low_disk_space_disabled": "⚠️ Málo místa na disku se složkou pro vypnuté doplňky (volno: {})",
   "modal_cancel": "Zrušit",
   "modal_ok": "OK",
   "mode_immediate": "Ihned",

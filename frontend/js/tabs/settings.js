@@ -14,6 +14,7 @@ document.addEventListener("alpine:init", () => {
     folderUsage: { community: null, disabled: null },
     folderUsageScanning: { community: false, disabled: false },
     detectedCommunityPath: null,
+    diskSpace: [],
     diagnostics: null,
     diagnosticsScanning: false,
     configExportMessage: "",
@@ -31,6 +32,20 @@ document.addEventListener("alpine:init", () => {
         this.folderUsage.disabled = payload;
       });
       await this.refreshDetectedCommunityPath();
+      await this.refreshDiskSpace();
+    },
+
+    // Cheap (a stat syscall, not a folder walk), so refreshed automatically
+    // on load and after every community/disabled path change - unlike the
+    // on-demand folder-usage scans below, which the user has to trigger.
+    // Only ever surfaced as a warning when a drive is actually low, to
+    // avoid a standing "all good" line no one needs to read.
+    async refreshDiskSpace() {
+      this.diskSpace = await Api.diskSpaceStatus();
+    },
+
+    get lowDiskSpaceEntries() {
+      return this.diskSpace.filter((e) => e.low);
     },
 
     async refreshDetectedCommunityPath() {
@@ -56,6 +71,7 @@ document.addEventListener("alpine:init", () => {
       if (!this.detectedCommunityPath) return;
       this.$store.app.config = await Api.setCommunityPath(this.detectedCommunityPath);
       FlightOpsEvents.dispatch({ type: "config_changed" });
+      await this.refreshDiskSpace();
     },
 
     async dismissCommunityPathSuggestion() {
@@ -120,6 +136,7 @@ document.addEventListener("alpine:init", () => {
       if (!path) return;
       this.$store.app.config = await Api.setCommunityPath(path);
       FlightOpsEvents.dispatch({ type: "config_changed" });
+      await this.refreshDiskSpace();
     },
 
     async browseDisabledPath() {
@@ -135,11 +152,13 @@ document.addEventListener("alpine:init", () => {
       }
       this.$store.app.config = result.config;
       FlightOpsEvents.dispatch({ type: "config_changed" });
+      await this.refreshDiskSpace();
     },
 
     async resetDisabledPath() {
       this.$store.app.config = await Api.resetDisabledPath();
       FlightOpsEvents.dispatch({ type: "config_changed" });
+      await this.refreshDiskSpace();
     },
 
     async browseGsxPath() {

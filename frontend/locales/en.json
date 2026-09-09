@@ -112,6 +112,8 @@
   "launch_missing_message": "These selected apps won't launch - their file path no longer exists: {}. Continue anyway?",
   "launch_missing_title": "Some apps were not found",
   "main_title": "Select applications for this flight",
+  "low_disk_space_community": "⚠️ Low disk space on the Community drive (free: {})",
+  "low_disk_space_disabled": "⚠️ Low disk space on the disabled-addons drive (free: {})",
   "modal_cancel": "Cancel",
   "modal_ok": "OK",
   "mode_immediate": "Immediate",

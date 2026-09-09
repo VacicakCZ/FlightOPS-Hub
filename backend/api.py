@@ -27,6 +27,7 @@ from . import (
     community_paths,
     config_manager,
     diagnostics,
+    disk_space,
     exe_xml_manager,
     folder_size,
     gsx_profiles,
@@ -287,6 +288,18 @@ class Api:
             return {"ok": False}
         primary_disabled = self._resolve_disabled_locations(community_path)[0]
         return self._start_folder_usage_scan(primary_disabled, "disabled_usage_done")
+
+    def disk_space_status(self):
+        """Instant free-space check (a stat syscall, not a folder walk like
+        scan_community_usage/scan_disabled_usage above) on the drive(s)
+        backing Community and the disabled-holding folder - cheap enough to
+        run on every Settings load and after every path change, unlike
+        those on-demand scans."""
+        community_path = self._config.get("_community_path", "")
+        disabled_path = ""
+        if community_path and os.path.isdir(community_path):
+            disabled_path = self._resolve_disabled_locations(community_path)[0]
+        return disk_space.check(community_path, disabled_path)
 
     def scan_community_diagnostics(self):
         """Structural sanity check of the Community folder - misplaced

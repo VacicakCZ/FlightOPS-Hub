@@ -662,6 +662,10 @@
                   :title="$store.app.t('community_path_detected_dismiss_tt')">✕</button>
         </div>
 
+        <template x-for="entry in lowDiskSpaceEntries" :key="entry.label">
+          <p class="warning-text" x-text="$store.app.t('low_disk_space_' + entry.label, formatBytes(entry.free_bytes))"></p>
+        </template>
+
         <button type="button" class="btn" :disabled="!communityPath || folderUsageScanning.community"
                 @click="scanCommunityUsage()"
                 x-text="folderUsageScanning.community ? $store.app.t('folder_usage_scanning') : $store.app.t('community_usage_btn')"></button>

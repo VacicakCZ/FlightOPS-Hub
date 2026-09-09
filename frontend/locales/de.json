@@ -112,6 +112,8 @@
   "launch_missing_message": "Diese ausgewählten Apps werden nicht gestartet - ihr Dateipfad existiert nicht mehr: {}. Trotzdem fortfahren?",
   "launch_missing_title": "Einige Apps wurden nicht gefunden",
   "main_title": "Wähle Anwendungen für diesen Flug",
+  "low_disk_space_community": "⚠️ Wenig Speicherplatz auf dem Community-Laufwerk (frei: {})",
+  "low_disk_space_disabled": "⚠️ Wenig Speicherplatz auf dem Laufwerk für deaktivierte Add-ons (frei: {})",
   "modal_cancel": "Abbrechen",
   "modal_ok": "OK",
   "mode_immediate": "Sofort",

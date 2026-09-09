@@ -112,6 +112,8 @@
   "launch_missing_message": "Estas aplicaciones seleccionadas no se iniciarán - su ruta de archivo ya no existe: {}. ¿Continuar de todos modos?",
   "launch_missing_title": "No se encontraron algunas aplicaciones",
   "main_title": "Selecciona aplicaciones para este vuelo",
+  "low_disk_space_community": "⚠️ Poco espacio en el disco de la carpeta Community (libre: {})",
+  "low_disk_space_disabled": "⚠️ Poco espacio en el disco de los complementos desactivados (libre: {})",
   "modal_cancel": "Cancelar",
   "modal_ok": "OK",
   "mode_immediate": "Inmediato",

@@ -112,6 +112,8 @@
   "launch_missing_message": "以下选中的应用无法启动，因为找不到其文件路径：{}。是否仍要继续？",
   "launch_missing_title": "部分应用未找到",
   "main_title": "请选择本次飞行的应用程序",
+  "low_disk_space_community": "⚠️ Community 文件夹所在磁盘空间不足（剩余：{}）",
+  "low_disk_space_disabled": "⚠️ 已停用插件文件夹所在磁盘空间不足（剩余：{}）",
   "modal_cancel": "取消",
   "modal_ok": "确定",
   "mode_immediate": "立即",
