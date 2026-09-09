@@ -20,6 +20,7 @@ from . import (
     apps_manager,
     airports_data,
     app_logging,
+    atc_network,
     backup,
     community_detect,
     community_diagnostics,
@@ -526,6 +527,10 @@ class Api:
         # same GSX info as the scenery list without a separate lookup.
         records_by_icao = {r["icao"]: r for r in scan["records"] if r.get("icao")}
         gsx_profiles_by_icao = gsx_profiles.scan_profiles(self._gsx_path())
+        # Opt-in (off by default) - see atc_network.py. A failed/empty fetch
+        # just means no leg gets flagged online, never an error surfaced to
+        # the user; this is a nice-to-have overlay on the existing check.
+        online_atc_airports = atc_network.fetch_online_atc_airports(self._config.get("_atc_network", "off"))
 
         for leg in matched_legs:
             # Coordinates for the map's route line - looked up independently
@@ -543,6 +548,7 @@ class Api:
                 # developer to compare a profile against - the best we can
                 # say is whether any profile exists for the ICAO.
                 leg["gsx_status"] = "installed_unmatched" if gsx_profiles_by_icao.get(leg["icao"]) else "missing"
+            leg["atc_online"] = leg["icao"] in online_atc_airports
         return {
             "ok": True,
             "legs": matched_legs,

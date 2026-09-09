@@ -92,6 +92,14 @@ document.addEventListener("alpine:init", () => {
       this.$store.app.config = await Api.configSet({ _simbrief_username: value.trim() });
     },
 
+    get atcNetwork() {
+      return this.$store.app.config._atc_network || "off";
+    },
+
+    async saveAtcNetwork(value) {
+      this.$store.app.config = await Api.configSet({ _atc_network: value });
+    },
+
     get appEntries() {
       return Object.entries(this.$store.app.apps);
     },

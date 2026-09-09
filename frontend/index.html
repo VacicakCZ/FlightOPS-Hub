@@ -241,6 +241,10 @@
                       <button type="button" class="gsx-tag gsx-missing" x-show="leg.gsx_status === 'missing'"
                               @click.stop.prevent="openGsxSearch(leg.icao)"
                               :title="$store.app.t('scenery_gsx_missing_tt')">GSX</button>
+                      <span class="atc-tag atc-online" x-show="$store.app.config._atc_network && $store.app.config._atc_network !== 'off' && leg.atc_online"
+                            :title="$store.app.t('atc_online_tt')">ATC</span>
+                      <span class="atc-tag atc-offline" x-show="$store.app.config._atc_network && $store.app.config._atc_network !== 'off' && !leg.atc_online"
+                            :title="$store.app.t('atc_offline_tt')">ATC</span>
                       <button class="btn" x-show="leg.status === 'disabled'" :disabled="applying" @click="quickEnable(leg.folder_name)" x-text="$store.app.t('simbrief_enable_btn')"></button>
                     </div>
                   </template>
@@ -710,6 +714,16 @@
         <p class="hint" x-text="$store.app.t('simbrief_username_hint')"></p>
         <div class="field-row">
           <input type="text" :value="simbriefUsername" @change="saveSimbriefUsername($event.target.value)" placeholder="Navigraph Alias / SimBrief username" />
+        </div>
+
+        <h3 x-text="$store.app.t('atc_network_title')"></h3>
+        <p class="hint" x-text="$store.app.t('atc_network_hint')"></p>
+        <div class="field-row">
+          <select :value="atcNetwork" @change="saveAtcNetwork($event.target.value)">
+            <option value="off" x-text="$store.app.t('atc_network_off')"></option>
+            <option value="vatsim" x-text="$store.app.t('atc_network_vatsim')"></option>
+            <option value="ivao" x-text="$store.app.t('atc_network_ivao')"></option>
+          </select>
         </div>
 
         <h3 x-text="$store.app.t('gsx_path_title')"></h3>
