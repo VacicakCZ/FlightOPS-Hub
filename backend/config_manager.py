@@ -114,9 +114,19 @@ def save_config(data):
     # load_config() can only recover from by silently resetting to an
     # empty config, losing every setting the user has.
     tmp_path = CONFIG_FILE + ".tmp"
-    with open(tmp_path, "w", encoding="utf-8") as f:
-        json.dump(data, f)
-    os.replace(tmp_path, CONFIG_FILE)
+    try:
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(data, f)
+        os.replace(tmp_path, CONFIG_FILE)
+    except Exception:
+        # Don't leave a stray .tmp file behind on a failed write (disk
+        # full, non-serializable value, ...) - it would otherwise just sit
+        # there forever, never cleaned up by anything.
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
+        raise
 
 
 _languages_cache = None

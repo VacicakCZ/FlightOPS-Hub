@@ -119,6 +119,13 @@ def set_addons_enabled(xml_path, desired_states):
         # truncated exe.xml behind (same reasoning as config_manager.py's
         # save_config).
         tmp_path = xml_path + ".tmp"
-        tree.write(tmp_path, encoding="utf-8", xml_declaration=True)
-        os.replace(tmp_path, xml_path)
+        try:
+            tree.write(tmp_path, encoding="utf-8", xml_declaration=True)
+            os.replace(tmp_path, xml_path)
+        except Exception:
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
+            raise
     return changed

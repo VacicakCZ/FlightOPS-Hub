@@ -148,6 +148,7 @@ def test_save_config_does_not_corrupt_existing_file_on_write_failure(tmp_path, m
     assert config_file.read_bytes() == original_bytes
     loaded = config_manager.load_config()
     assert loaded["_language"] == "CZ"
+    assert not (tmp_path / "msfs_launcher_config.json.tmp").exists()
 
 
 def test_load_config_strips_bom(tmp_path, monkeypatch):

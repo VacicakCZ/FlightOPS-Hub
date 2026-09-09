@@ -44,6 +44,7 @@ def test_set_addons_enabled_does_not_corrupt_existing_file_on_write_failure(tmp_
         pass
 
     assert xml_path.read_bytes() == original_bytes
+    assert not (tmp_path / "exe.xml.tmp").exists()
 
 
 def test_backup_path_for_sits_next_to_the_xml_file(tmp_path):

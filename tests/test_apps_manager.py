@@ -26,3 +26,4 @@ def test_save_apps_does_not_corrupt_existing_file_on_write_failure(tmp_path, mon
         pass
 
     assert apps_file.read_bytes() == original_bytes
+    assert not (tmp_path / "msfs_apps.json.tmp").exists()
