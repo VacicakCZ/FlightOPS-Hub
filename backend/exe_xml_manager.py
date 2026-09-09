@@ -113,5 +113,12 @@ def set_addons_enabled(xml_path, desired_states):
         _backup_once(xml_path)
         if hasattr(ET, "indent"):
             ET.indent(tree, space="  ", level=0)
-        tree.write(xml_path, encoding="utf-8", xml_declaration=True)
+        # Write to a temp file first, then an atomic os.replace - this is
+        # MSFS's own AutoStart config, not just this app's data, so getting
+        # killed/crashing/losing power mid-write must never leave a
+        # truncated exe.xml behind (same reasoning as config_manager.py's
+        # save_config).
+        tmp_path = xml_path + ".tmp"
+        tree.write(tmp_path, encoding="utf-8", xml_declaration=True)
+        os.replace(tmp_path, xml_path)
     return changed

@@ -33,8 +33,13 @@ def load_apps():
 
 
 def save_apps(apps):
-    with open(APPS_FILE, "w", encoding="utf-8") as f:
+    # Temp file + atomic os.replace, same reasoning as config_manager.py's
+    # save_config - a plain "w" open truncates the file immediately, so a
+    # crash/kill/power loss mid-write would leave the addon list corrupted.
+    tmp_path = APPS_FILE + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(apps, f, indent=4)
+    os.replace(tmp_path, APPS_FILE)
 
 
 def move_app(apps, name, direction):

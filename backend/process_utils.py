@@ -50,8 +50,15 @@ def run_app(path, as_admin=False):
 
 
 def terminate_pid(pid):
+    # List args (not a shell string built with f-string interpolation) -
+    # pid is always an int from our own subprocess.Popen/win_native calls
+    # today, but this avoids the shell-injection-shaped pattern regardless
+    # of where a future caller's pid comes from.
     try:
-        os.system(f"taskkill /PID {pid} /F /T >nul 2>&1")
+        subprocess.run(
+            ["taskkill", "/PID", str(pid), "/F", "/T"],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
     except Exception:
         pass
 

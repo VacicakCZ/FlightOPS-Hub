@@ -107,8 +107,16 @@ def load_config():
 
 
 def save_config(data):
-    with open(CONFIG_FILE, "w", encoding="utf-8") as f:
+    # Write to a temp file first, then an atomic os.replace - a plain
+    # open(CONFIG_FILE, "w") truncates the file immediately, so getting
+    # killed/crashing/losing power mid-write (this runs on every window
+    # close via save_window_geometry) would leave a half-written file that
+    # load_config() can only recover from by silently resetting to an
+    # empty config, losing every setting the user has.
+    tmp_path = CONFIG_FILE + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
+    os.replace(tmp_path, CONFIG_FILE)
 
 
 _languages_cache = None

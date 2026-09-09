@@ -119,6 +119,37 @@ def test_load_config_corrupt_json_falls_back_to_defaults(tmp_path, monkeypatch):
     assert loaded["_config_version"] == config_manager.CURRENT_CONFIG_VERSION
 
 
+def test_save_config_leaves_no_temp_file_behind(tmp_path, monkeypatch):
+    config_file = tmp_path / "msfs_launcher_config.json"
+    monkeypatch.setattr(config_manager, "CONFIG_FILE", str(config_file))
+
+    config_manager.save_config({"_language": "CZ"})
+
+    assert config_file.exists()
+    assert not (tmp_path / "msfs_launcher_config.json.tmp").exists()
+
+
+def test_save_config_does_not_corrupt_existing_file_on_write_failure(tmp_path, monkeypatch):
+    # A crash/kill/power-loss mid-write only ever touches the ".tmp" file -
+    # simulate that by making the write itself fail, and confirm the real
+    # config file (written successfully earlier) is completely untouched,
+    # not truncated/corrupted.
+    config_file = tmp_path / "msfs_launcher_config.json"
+    monkeypatch.setattr(config_manager, "CONFIG_FILE", str(config_file))
+    config_manager.save_config({"_language": "CZ", "_theme": "dark"})
+    original_bytes = config_file.read_bytes()
+
+    monkeypatch.setattr(json, "dump", lambda *a, **k: (_ for _ in ()).throw(OSError("disk full")))
+    try:
+        config_manager.save_config({"_language": "EN"})
+    except OSError:
+        pass
+
+    assert config_file.read_bytes() == original_bytes
+    loaded = config_manager.load_config()
+    assert loaded["_language"] == "CZ"
+
+
 def test_load_config_strips_bom(tmp_path, monkeypatch):
     config_file = tmp_path / "msfs_launcher_config.json"
     config_file.write_bytes(b"\xef\xbb\xbf" + json.dumps({"_language": "EN"}).encode("utf-8"))

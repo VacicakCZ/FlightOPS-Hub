@@ -1,4 +1,49 @@
+import xml.etree.ElementTree as ET
+
 from backend import exe_xml_manager
+
+_SAMPLE_XML = (
+    '<?xml version="1.0" encoding="UTF-8"?>'
+    "<SimBase.Document>"
+    "<Launch.Addon><Name>Test Addon</Name><Path>C:\\test.exe</Path><Disabled>False</Disabled></Launch.Addon>"
+    "</SimBase.Document>"
+)
+
+
+def test_set_addons_enabled_toggles_disabled_node(tmp_path):
+    xml_path = tmp_path / "exe.xml"
+    xml_path.write_text(_SAMPLE_XML, encoding="utf-8")
+
+    changed = exe_xml_manager.set_addons_enabled(str(xml_path), {"C:\\test.exe": False})
+
+    assert changed is True
+    root = ET.parse(str(xml_path)).getroot()
+    assert root.find("Launch.Addon/Disabled").text == "True"
+
+
+def test_set_addons_enabled_leaves_no_temp_file_behind(tmp_path):
+    xml_path = tmp_path / "exe.xml"
+    xml_path.write_text(_SAMPLE_XML, encoding="utf-8")
+
+    exe_xml_manager.set_addons_enabled(str(xml_path), {"C:\\test.exe": False})
+
+    assert not (tmp_path / "exe.xml.tmp").exists()
+
+
+def test_set_addons_enabled_does_not_corrupt_existing_file_on_write_failure(tmp_path, monkeypatch):
+    xml_path = tmp_path / "exe.xml"
+    xml_path.write_text(_SAMPLE_XML, encoding="utf-8")
+    original_bytes = xml_path.read_bytes()
+
+    monkeypatch.setattr(
+        ET.ElementTree, "write", lambda *a, **k: (_ for _ in ()).throw(OSError("disk full"))
+    )
+    try:
+        exe_xml_manager.set_addons_enabled(str(xml_path), {"C:\\test.exe": False})
+    except OSError:
+        pass
+
+    assert xml_path.read_bytes() == original_bytes
 
 
 def test_backup_path_for_sits_next_to_the_xml_file(tmp_path):
