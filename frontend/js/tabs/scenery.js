@@ -16,6 +16,7 @@ document.addEventListener("alpine:init", () => {
     simbriefError: null,
     simbriefLegs: [],
     simbriefSummary: null,
+    simbriefRoutePoints: [],
     atcPopoverFor: null,
     mapView: false,
     mapMarkers: [],
@@ -338,11 +339,18 @@ document.addEventListener("alpine:init", () => {
     // Draws the SimBrief route on top of the scenery markers, using
     // coordinates the backend already looked up per leg - independent of
     // whether that airport has scenery installed at all, so an alternate
-    // with no scenery still shows up. Main route (origin -> destination) is
-    // a solid, bold line; the diversion to the alternate (off destination)
-    // stays dashed to visually distinguish "the flight" from "the backup".
-    // A midpoint arrow on each segment shows which way it's flown, and
-    // every leg gets a permanent ICAO label instead of a hover-only one.
+    // with no scenery still shows up. Main route (origin -> destination)
+    // follows the real navlog waypoints when SimBrief provided them (see
+    // simbrief_client._parse_route_points), falling back to a straight
+    // line otherwise; it's a solid, bold line either way. The diversion to
+    // the alternate (off destination) has no planned navlog of its own -
+    // SimBrief doesn't compute one for a "what if" diversion - so it always
+    // stays a straight dashed line, visually distinguishing "the flight"
+    // from "the backup". A single direction arrow near the middle of each
+    // segment shows which way it's flown, and every leg gets a permanent
+    // ICAO label instead of a hover-only one - plus, when an ATC network is
+    // selected in Settings, a green ring and a click-to-open popover with
+    // the position/frequency breakdown (same data as the leg's ATC badge).
     renderRoute() {
       if (!this._routeLayer) return;
       this._routeLayer.clearLayers();
@@ -355,10 +363,12 @@ document.addEventListener("alpine:init", () => {
       const point = (leg) => [leg.lat, leg.lon];
 
       if (byRole.origin && byRole.destination) {
-        const from = point(byRole.origin);
-        const to = point(byRole.destination);
-        L.polyline([from, to], { color: accent, weight: 4 }).addTo(this._routeLayer);
-        this._addDirectionArrow(from, to);
+        const navlogPoints = this.simbriefRoutePoints.length >= 2
+          ? this.simbriefRoutePoints.map((p) => [p.lat, p.lon])
+          : [point(byRole.origin), point(byRole.destination)];
+        L.polyline(navlogPoints, { color: accent, weight: 4 }).addTo(this._routeLayer);
+        const midIdx = Math.max(1, Math.floor(navlogPoints.length / 2));
+        this._addDirectionArrow(navlogPoints[midIdx - 1], navlogPoints[midIdx]);
       }
       if (byRole.destination && byRole.alternate) {
         const from = point(byRole.destination);
@@ -367,17 +377,60 @@ document.addEventListener("alpine:init", () => {
         this._addDirectionArrow(from, to);
       }
 
+      const atcNetworkOn = this.$store.app.config._atc_network && this.$store.app.config._atc_network !== "off";
       for (const leg of Object.values(byRole)) {
         // A divIcon L.marker, not L.circleMarker - Leaflet's SVG vector
         // layers (circleMarker/polyline) only redraw at zoomend, so a
         // tooltip bound to one visually freezes mid-zoom and jumps at the
         // end. Icon markers get repositioned every animation frame, so
         // their bound tooltip tracks the zoom smoothly instead.
-        const icon = L.divIcon({ className: "route-point-marker", iconSize: [14, 14], iconAnchor: [7, 7] });
-        L.marker(point(leg), { icon })
-          .bindTooltip(leg.icao, { permanent: true, direction: "top", offset: [0, -6], className: "route-icao-label" })
-          .addTo(this._routeLayer);
+        const atcOnline = atcNetworkOn && leg.atc_online;
+        const icon = L.divIcon({
+          className: "route-point-marker" + (atcOnline ? " atc-online" : ""),
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+        });
+        const marker = L.marker(point(leg), { icon })
+          .bindTooltip(leg.icao, { permanent: true, direction: "top", offset: [0, -6], className: "route-icao-label" });
+        if (atcNetworkOn) {
+          marker.bindPopup(() => this.buildAtcPopup(leg));
+        }
+        marker.addTo(this._routeLayer);
       }
+    },
+
+    // Same content as the leg row's ATC popover (index.html), just built
+    // as a plain DOM node since Leaflet popup content isn't Alpine-templated.
+    buildAtcPopup(leg) {
+      const app = this.$store.app;
+      const el = document.createElement("div");
+      el.className = "map-popup atc-map-popup";
+
+      const title = document.createElement("strong");
+      title.textContent = app.t("atc_popover_title", leg.icao);
+      el.appendChild(title);
+
+      if (leg.atc_positions && leg.atc_positions.length) {
+        for (const pos of leg.atc_positions) {
+          const row = document.createElement("div");
+          row.className = "atc-popover-row";
+          const posSpan = document.createElement("span");
+          posSpan.textContent = pos.position;
+          const freqSpan = document.createElement("span");
+          freqSpan.className = "hint";
+          freqSpan.textContent = pos.frequency ? `(${pos.frequency})` : "";
+          row.appendChild(posSpan);
+          row.appendChild(freqSpan);
+          el.appendChild(row);
+        }
+      } else {
+        const empty = document.createElement("p");
+        empty.className = "hint";
+        empty.textContent = app.t("atc_popover_empty");
+        el.appendChild(empty);
+      }
+
+      return el;
     },
 
     buildPopup(marker) {
@@ -475,10 +528,12 @@ document.addEventListener("alpine:init", () => {
         this.simbriefError = result.error;
         this.simbriefLegs = [];
         this.simbriefSummary = null;
+        this.simbriefRoutePoints = [];
         this.renderRoute();
         return;
       }
       this.simbriefLegs = result.legs;
+      this.simbriefRoutePoints = result.route_points || [];
       // Lets the user sanity-check this is actually the flight they meant -
       // SimBrief has no "current" flight, just whatever was last generated,
       // which could be an old plan if they forgot to regenerate.

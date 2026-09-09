@@ -47,13 +47,32 @@ def _parse_ofp(data):
         "duration_minutes": duration_minutes,
         "aircraft_name": aircraft.get("name") or None,
         "planned_at": planned_at,
+        "route_points": _parse_route_points(data),
     }
+
+
+def _parse_route_points(data):
+    """The actual planned route (origin -> destination only - SimBrief does
+    not compute a navlog for the alternate diversion, so that leg stays a
+    straight line on the map same as before) as an ordered list of
+    {"lat": float, "lon": float} - lets the map draw the real route instead
+    of a straight line between airports. Best-effort: a missing/malformed
+    navlog just means an empty list, the map falls back to a straight line
+    - never treated as fatal, unlike origin/destination above."""
+    points = []
+    for fix in (data.get("navlog") or {}).get("fix") or []:
+        try:
+            points.append({"lat": float(fix["pos_lat"]), "lon": float(fix["pos_long"])})
+        except (TypeError, ValueError, KeyError):
+            continue
+    return points
 
 
 def fetch_latest_ofp(username):
     """Returns {"ok": True, "origin": "KJFK", "destination": "KLAX",
     "alternate": "KONT"|None, "duration_minutes": int|None,
-    "aircraft_name": str|None, "planned_at": int|None (unix seconds)} or
+    "aircraft_name": str|None, "planned_at": int|None (unix seconds),
+    "route_points": [{"lat": float, "lon": float}, ...]} or
     {"ok": False, "error": <str>}. The error string is a translation key
     when recognized, else a raw message."""
     if not username or not username.strip():

@@ -49,3 +49,32 @@ def test_missing_origin_raises():
 def test_garbage_est_time_enroute_does_not_crash():
     result = simbrief_client._parse_ofp(_ofp(times={"est_time_enroute": "not-a-number"}))
     assert result["duration_minutes"] is None
+
+
+def test_route_points_parsed_in_order():
+    ofp = _ofp(navlog={"fix": [
+        {"ident": "PR411", "pos_lat": "49.975392", "pos_long": "14.264369"},
+        {"ident": "VOZ", "pos_lat": "49.532328", "pos_long": "14.874664"},
+    ]})
+    result = simbrief_client._parse_ofp(ofp)
+
+    assert result["route_points"] == [
+        {"lat": 49.975392, "lon": 14.264369},
+        {"lat": 49.532328, "lon": 14.874664},
+    ]
+
+
+def test_route_points_empty_when_navlog_missing():
+    result = simbrief_client._parse_ofp(_ofp())
+    assert result["route_points"] == []
+
+
+def test_route_points_skips_malformed_fixes_without_crashing():
+    ofp = _ofp(navlog={"fix": [
+        {"ident": "OK", "pos_lat": "49.5", "pos_long": "14.5"},
+        {"ident": "BAD", "pos_lat": "not-a-number", "pos_long": "14.5"},
+        {"ident": "MISSING"},
+    ]})
+    result = simbrief_client._parse_ofp(ofp)
+
+    assert result["route_points"] == [{"lat": 49.5, "lon": 14.5}]

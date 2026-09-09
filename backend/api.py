@@ -556,6 +556,7 @@ class Api:
             "duration_minutes": ofp.get("duration_minutes"),
             "aircraft_name": ofp.get("aircraft_name"),
             "planned_at": ofp.get("planned_at"),
+            "route_points": ofp.get("route_points") or [],
         }
 
     def scenery_apply(self, desired_states):

@@ -1002,6 +1002,13 @@ button.btn.danger {
   background: var(--accent);
   border: 2px solid #fff;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  cursor: default;
+}
+
+.route-point-marker.atc-online {
+  background: var(--success);
+  box-shadow: 0 0 0 2px var(--success), 0 0 2px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
 }
 
 /* Dark mode: no free no-key dark tile source is reliably available
