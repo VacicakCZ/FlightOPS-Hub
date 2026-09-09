@@ -34,14 +34,16 @@
 
 ### 🗺️ Interactive Scenery & SimBrief Integration
 * **Interactive World Map (Leaflet):** Every installed Community scenery plotted by ICAO code. Enable or disable a scenery right from its map marker.
-* **SimBrief Route Validation:** Load your latest SimBrief flight plan and check origin/destination/alternate against your installed sceneries - enable whatever's missing with one click, see the route drawn on the map, and get a quick summary (planned aircraft, flight time, when the plan was generated) to confirm you're looking at the right one.
+* **SimBrief Route Validation:** Load your latest SimBrief flight plan and check origin/destination/alternate against your installed sceneries - enable whatever's missing with one click, see your actual planned route drawn on the map (not just a straight line between airports), and get a quick summary (planned aircraft, flight time, when the plan was generated) to confirm you're looking at the right one.
+* **Live ATC Awareness (VATSIM/IVAO, optional):** Shows which ATC positions - and their frequencies - are currently online at your origin, destination, and alternate, both as a badge in the SimBrief panel and as clickable markers on the map.
+* **AIRAC Cycle Mismatch Warning:** Flags when your SimBrief flight plan was generated with a different navdata cycle than what you actually have installed.
 * **GSX (virtuali) Profile Detection:** Each scenery shows whether a matching GSX profile is installed, color-coded:
   * 🟢 **Green:** profile installed, looks like the same developer as the scenery.
   * 🟠 **Orange:** profile installed, developer unconfirmed.
   * 🔴 **Red:** no profile found - click to search flightsim.to directly.
 * **Search** across sceneries (ICAO, name, or country) to jump straight to a specific airport.
 * **Community Folder Health Check:** Catches misplaced installs (a manifest nested one folder level too deep - a common zip-extraction mistake MSFS silently ignores) and duplicate installs (the same package under two or more different folder names). Read-only - nothing is ever moved or deleted automatically.
-* **Disk Usage:** See exactly how much space your Community and disabled-add-ons folders are using, broken down by package.
+* **Disk Usage & Space Protection:** See exactly how much space your Community and disabled-add-ons folders are using, broken down by package - plus a warning when a drive is running low, and an upfront check before enabling/disabling anything across two drives, so a full disk blocks the whole operation cleanly instead of failing partway through a copy.
 
 ### 🛩️ Aircraft & Liveries (Beta)
 * **Smart Grouping:** Toggle aircraft and liveries on/off safely (moves folders in/out of Community - nothing is ever deleted). Liveries are automatically nested under their matching aircraft and developer, collapsible per aircraft.

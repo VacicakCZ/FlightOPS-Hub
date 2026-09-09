@@ -50,7 +50,7 @@ Manages every SCENERY package sitting in your Community folder (and your disable
 - **Search** by ICAO, airport name, or country to jump straight to what you're looking for.
 - **GSX badges** (🟢/🟠/🔴) show whether a matching GSX (virtuali) ground-handling profile is installed for each airport, and whether it looks like it's from the same developer as the scenery. Red = no profile found, click it to search flightsim.to directly.
 - **Conflict warning**: if two enabled sceneries claim the same ICAO code, they'll be flagged — having both active can cause visual glitches as they fight over the same tiles.
-- **Disk usage**: two buttons in Settings show how much space your Community and disabled-add-ons folders are actually using, broken down by package, so you know what's worth uninstalling.
+- **Disk usage**: two buttons in Settings show how much space your Community and disabled-add-ons folders are actually using, broken down by package, so you know what's worth uninstalling. A separate, automatic warning appears if either drive is actually running low on free space; if your disabled-add-ons folder lives on a different drive than Community, **Apply** also checks upfront whether that drive has enough room for what you're about to move — if not, nothing is touched instead of failing partway through a copy.
 - **Install health check** (Settings): flags two common mistakes — a package with its manifest one folder level too deep (a common zip-extraction slip that MSFS silently ignores), and the same package installed under two or more different folder names. Both checks are read-only; nothing is changed automatically.
 - **SimBrief check**: see below.
 
@@ -77,9 +77,11 @@ A different mechanism from the Scenery/Aircraft tabs above: this manages MSFS's 
 - **MSFS version & platform** (2020/2024, Steam/MS Store) — drives auto-detection for the Community folder and `exe.xml` location. FlightOps Hub remembers a separate Community path per version/platform combination, so switching between a 2020 and 2024 install doesn't mix them up.
 - **GSX profiles folder** and **exe.xml location** — both auto-detected, only need changing for non-standard installs.
 - **SimBrief username** — used by the SimBrief check on the Scenery tab.
+- **ATC Network** — Off (default), VATSIM, or IVAO. Turns on the live ATC-online badges described under the SimBrief check below.
 - **UI scale**, **theme** (dark/light/system), and **language** (Czech and English are hand-written; German, Spanish, and Chinese are AI-translated and flagged as such in the language picker).
 - **Backup & Restore** — export your flight profiles, aircraft classification overrides, and addon list to a single JSON file, and import it back later. Useful before reinstalling Windows or moving to a new PC, so you don't have to rebuild your setup from scratch. Importing replaces your current settings outright, so you'll be asked to confirm first.
 - **Diagnostics** — bundles your app version, OS info, current settings, and a recent activity log into one text file. Attach it to a GitHub issue when reporting a problem — it turns "it doesn't work" into something the maintainer can actually act on. Your SimBrief username is left out (redacted), and your Windows account name is stripped out of any file path (`C:\Users\<user>\...`) wherever it appears, since this file is meant to be posted publicly. Everything else (paths otherwise, profiles, overrides) is included as-is because it's actually needed to diagnose most issues.
+- **Updates** — FlightOps Hub quietly checks GitHub for a newer release on startup (never a popup). If one's available, a small collapsible notice appears under the version number at the bottom of Settings; expand it to read the release notes and hit **Download update**. It downloads the new `flightops_hub.exe` straight into your Downloads folder (asking first if a file with that name is already sitting there), with a progress bar, and opens Explorer with it highlighted once done. From there it's a simple copy-and-replace over your current exe — close FlightOps Hub, drop the new file in, done. The version number itself is also a link straight to that release's notes on GitHub.
 
 ---
 
@@ -89,6 +91,10 @@ On the Scenery tab, **Check against SimBrief flight** fetches your last-generate
 
 - The **origin/destination/alternate** airports, and whether each has a matching scenery installed (and whether it's currently enabled) — with a one-click **Enable** for anything installed but switched off.
 - A quick **summary**: planned aircraft, estimated flight time, and when the plan was generated — since SimBrief has no concept of "today's flight," just whatever you last generated, this lets you confirm at a glance you're not looking at a stale plan from last week.
+- An **AIRAC mismatch warning** if your plan was generated with a different navdata cycle than what you actually have installed — hover the badge for the exact cycle numbers.
+- Your actual planned route drawn on the map (not a straight line), switchable to Map view.
+
+**ATC awareness (optional):** pick VATSIM or IVAO in Settings → ATC Network to see which ATC positions are currently online at your origin, destination, and alternate — a badge next to each leg, and clickable markers on the map, showing the position and frequency (e.g. "Prague TWR — 118.100"). Off by default; switching it on makes one extra request to that network's public data feed each time you check. Purely a heads-up for planning — not a live traffic display.
 
 This only reads your public SimBrief data (via your username) — no login, no write access.
 
