@@ -72,10 +72,10 @@
 ## 🛠️ Technology Stack
 
 * **Backend:** .NET 10, WPF host + [`Microsoft.Web.WebView2`](https://learn.microsoft.com/microsoft-edge/webview2/), `SimConnect` API
-* **Frontend:** HTML5, modern CSS, [Alpine.js](https://alpinejs.dev/), vanilla JavaScript (ES6) - no build step, unchanged from the previous Python build
+* **Frontend:** HTML5, modern CSS, [Alpine.js](https://alpinejs.dev/), vanilla JavaScript (ES6) - no build step
 * **Mapping & Flight Planning:** [Leaflet.js](https://leafletjs.com/), SimBrief REST API
 
-> **v3.0 note:** FlightOps Hub was rewritten from Python/`pywebview` to .NET/WPF for v3.0, mainly so "minimize to tray" and "launch at Windows startup" could be built on first-party Windows APIs instead of a third-party tray library. The frontend (this repo's `frontend/` folder) is unchanged - only the native host and the ~55 methods it exposes to it were rewritten.
+> **v3.0 note:** FlightOps Hub was rewritten from Python/`pywebview` to .NET/WPF for v3.0, mainly so "minimize to tray" and "launch at Windows startup" could be built on first-party Windows APIs instead of a third-party tray library. The `frontend/` folder also got a visual redesign alongside the rewrite - a left-hand sidebar nav, a branded header, and SVG icons throughout instead of emoji - while every feature and workflow works exactly like before.
 
 ---
 
