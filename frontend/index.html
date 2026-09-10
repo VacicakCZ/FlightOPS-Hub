@@ -8,38 +8,47 @@
 </head>
 <body>
   <div id="app" x-data x-init="window.AppReady = $store.app.init()">
-    <nav class="tab-bar">
-      <button :class="{ active: $store.app.activeTab === 'flight' }" @click="$store.app.setTab('flight')">
-        <span class="tab-icon">✈️</span>
-        <span class="tab-main" x-text="$store.app.tMain('tab_let')"></span>
-        <span class="tab-sub" x-show="$store.app.tParen('tab_let')" x-text="$store.app.tParen('tab_let')"></span>
-      </button>
-      <button :class="{ active: $store.app.activeTab === 'autostart' }" @click="$store.app.setTab('autostart')">
-        <span class="tab-icon">⚡</span>
-        <span class="tab-main" x-text="$store.app.tMain('tab_exe')"></span>
-        <span class="tab-sub" x-show="$store.app.tParen('tab_exe')" x-text="$store.app.tParen('tab_exe')"></span>
-      </button>
-      <button :class="{ active: $store.app.activeTab === 'scenery' }" @click="$store.app.setTab('scenery')">
-        <span class="tab-icon">🗺️</span>
-        <span class="tab-main" x-text="$store.app.tMain('tab_scenery')"></span>
-        <span class="tab-sub" x-show="$store.app.tParen('tab_scenery')" x-text="$store.app.tParen('tab_scenery')"></span>
-      </button>
-      <button :class="{ active: $store.app.activeTab === 'aircraft' }" @click="$store.app.setTab('aircraft')">
-        <span class="tab-icon">🛫</span>
-        <span class="tab-main" x-text="$store.app.tMain('tab_aircraft')"></span>
-        <span class="tab-sub" x-show="$store.app.tParen('tab_aircraft')" x-text="$store.app.tParen('tab_aircraft')"></span>
-      </button>
-      <button :class="{ active: $store.app.activeTab === 'settings' }" @click="$store.app.setTab('settings')">
-        <span class="tab-icon">⚙️</span>
-        <span class="tab-main" x-text="$store.app.tMain('tab_set')"></span>
-        <span class="tab-sub" x-show="$store.app.tParen('tab_set')" x-text="$store.app.tParen('tab_set')"></span>
-      </button>
-    </nav>
+    <div class="brand-bar">
+      <div class="brand-mark"><img src="img/app-icon.png" alt="" /></div>
+      <div class="brand-name"><span class="brand-name-main">FlightOps</span><span class="brand-name-sub">Hub</span></div>
+    </div>
 
-    <button type="button" class="global-update-banner" x-show="$store.app.updateInfo" x-cloak @click="$store.app.goToUpdate()"
-            x-text="$store.app.t('update_available_banner', $store.app.updateInfo ? $store.app.updateInfo.version : '')"></button>
+    <button type="button" class="global-update-banner" x-show="$store.app.updateInfo" x-cloak @click="$store.app.goToUpdate()">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+      <span x-text="$store.app.t('update_available_banner', $store.app.updateInfo ? $store.app.updateInfo.version : '')"></span>
+    </button>
 
-    <div class="tab-panels">
+    <div class="app-body">
+      <nav class="side-nav">
+        <button class="side-nav-item" :class="{ active: $store.app.activeTab === 'flight' }" @click="$store.app.setTab('flight')">
+          <span class="side-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></span>
+          <span class="side-nav-main" x-text="$store.app.tMain('tab_let')"></span>
+          <span class="side-nav-sub" x-show="$store.app.tParen('tab_let')" x-text="$store.app.tParen('tab_let')"></span>
+        </button>
+        <button class="side-nav-item" :class="{ active: $store.app.activeTab === 'autostart' }" @click="$store.app.setTab('autostart')">
+          <span class="side-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
+          <span class="side-nav-main" x-text="$store.app.tMain('tab_exe')"></span>
+          <span class="side-nav-sub" x-show="$store.app.tParen('tab_exe')" x-text="$store.app.tParen('tab_exe')"></span>
+        </button>
+        <button class="side-nav-item" :class="{ active: $store.app.activeTab === 'scenery' }" @click="$store.app.setTab('scenery')">
+          <span class="side-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg></span>
+          <span class="side-nav-main" x-text="$store.app.tMain('tab_scenery')"></span>
+          <span class="side-nav-sub" x-show="$store.app.tParen('tab_scenery')" x-text="$store.app.tParen('tab_scenery')"></span>
+        </button>
+        <button class="side-nav-item" :class="{ active: $store.app.activeTab === 'aircraft' }" @click="$store.app.setTab('aircraft')">
+          <span class="side-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v7"></path><path d="M4 13l8-2 8 2"></path><path d="M12 9v9"></path><path d="M8 21l4-2 4 2"></path></svg></span>
+          <span class="side-nav-main" x-text="$store.app.tMain('tab_aircraft')"></span>
+          <span class="side-nav-sub" x-show="$store.app.tParen('tab_aircraft')" x-text="$store.app.tParen('tab_aircraft')"></span>
+        </button>
+        <button class="side-nav-item" :class="{ active: $store.app.activeTab === 'settings' }" @click="$store.app.setTab('settings')">
+          <span class="side-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"></circle><circle cx="12" cy="12" r="7"></circle><rect x="10.6" y="1.5" width="2.8" height="3.4" rx="1" fill="currentColor" stroke="none"></rect><rect x="10.6" y="1.5" width="2.8" height="3.4" rx="1" fill="currentColor" stroke="none" transform="rotate(45 12 12)"></rect><rect x="10.6" y="1.5" width="2.8" height="3.4" rx="1" fill="currentColor" stroke="none" transform="rotate(90 12 12)"></rect><rect x="10.6" y="1.5" width="2.8" height="3.4" rx="1" fill="currentColor" stroke="none" transform="rotate(135 12 12)"></rect><rect x="10.6" y="1.5" width="2.8" height="3.4" rx="1" fill="currentColor" stroke="none" transform="rotate(180 12 12)"></rect><rect x="10.6" y="1.5" width="2.8" height="3.4" rx="1" fill="currentColor" stroke="none" transform="rotate(225 12 12)"></rect><rect x="10.6" y="1.5" width="2.8" height="3.4" rx="1" fill="currentColor" stroke="none" transform="rotate(270 12 12)"></rect><rect x="10.6" y="1.5" width="2.8" height="3.4" rx="1" fill="currentColor" stroke="none" transform="rotate(315 12 12)"></rect></svg></span>
+          <span class="side-nav-main" x-text="$store.app.tMain('tab_set')"></span>
+          <span class="side-nav-sub" x-show="$store.app.tParen('tab_set')" x-text="$store.app.tParen('tab_set')"></span>
+        </button>
+        <div class="side-nav-footer" x-text="$store.app.version"></div>
+      </nav>
+
+      <div class="tab-panels">
       <section x-show="$store.app.activeTab === 'flight'" x-data="flightTab">
         <div class="onboarding-panel" x-show="showOnboarding" x-cloak>
           <h3 x-text="$store.app.t('onboarding_title')"></h3>
@@ -71,7 +80,7 @@
 
           <p class="hint" x-text="$store.app.t('onboarding_optional_hint')"></p>
 
-          <button type="button" class="btn primary" @click="dismissOnboarding()" x-text="$store.app.t('onboarding_dismiss')"></button>
+          <button type="button" class="btn primary" @click="dismissOnboarding()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span x-text="$store.app.t('onboarding_dismiss')"></span></button>
         </div>
 
         <h2 x-text="$store.app.t('main_title')"></h2>
@@ -84,12 +93,16 @@
               <option :value="name" :selected="name === profileName" x-text="name"></option>
             </template>
           </select>
-          <button class="btn" @click="updateProfile()" :disabled="!profileName" :title="$store.app.t('tt_update')" x-text="updateJustSaved ? '✓' : '🔄'"></button>
-          <button class="btn" @click="saveProfileAs()" :title="$store.app.t('tt_add')">➕</button>
-          <button class="btn" @click="deleteProfile()" :disabled="!profileName" :title="$store.app.t('tt_delete')">🗑</button>
+          <button class="btn" @click="updateProfile()" :disabled="!profileName" :title="$store.app.t('tt_update')" x-html="updateJustSaved ? `<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'></polyline></svg>` : `<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><polyline points='23 4 23 10 17 10'></polyline><polyline points='1 20 1 14 7 14'></polyline><path d='M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'></path></svg>`"></button>
+          <button class="btn" @click="saveProfileAs()" :title="$store.app.t('tt_add')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+          <button class="btn" @click="deleteProfile()" :disabled="!profileName" :title="$store.app.t('tt_delete')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
         </div>
 
-        <p class="airac-status" :class="airacStatusClass" x-text="airacStatusText"></p>
+        <p class="airac-status" :class="airacStatusClass">
+          <svg x-show="airacStatusClass === 'airac-ok'" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <svg x-show="airacStatusClass === 'airac-old'" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <span x-text="airacStatusText"></span>
+        </p>
 
         <div class="app-checklist">
           <template x-for="name in appNames" :key="name">
@@ -115,13 +128,13 @@
               <option :value="name" :selected="name === profileName" x-text="name"></option>
             </template>
           </select>
-          <button class="btn" @click="updateProfile()" :disabled="!profileName" :title="$store.app.t('tt_update')" x-text="updateJustSaved ? '✓' : '🔄'"></button>
-          <button class="btn" @click="saveProfileAs()" :title="$store.app.t('tt_add')">➕</button>
-          <button class="btn" @click="deleteProfile()" :disabled="!profileName" :title="$store.app.t('tt_delete')">🗑</button>
+          <button class="btn" @click="updateProfile()" :disabled="!profileName" :title="$store.app.t('tt_update')" x-html="updateJustSaved ? `<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'></polyline></svg>` : `<svg class='icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><polyline points='23 4 23 10 17 10'></polyline><polyline points='1 20 1 14 7 14'></polyline><path d='M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'></path></svg>`"></button>
+          <button class="btn" @click="saveProfileAs()" :title="$store.app.t('tt_add')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+          <button class="btn" @click="deleteProfile()" :disabled="!profileName" :title="$store.app.t('tt_delete')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
         </div>
 
         <p class="hint" x-text="path"></p>
-        <p class="hint" x-text="$store.app.t('exe_rename_hint')"></p>
+        <p class="hint"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.72c.6.53 1 1.28 1 2.28h6c0-1 .4-1.75 1-2.28A7 7 0 0 0 12 2z"></path></svg> <span x-text="$store.app.t('exe_rename_hint')"></span></p>
 
         <button type="button" class="btn" x-show="hasBackup" @click="restoreBackup()" x-text="$store.app.t('exe_restore_btn')"></button>
 
@@ -139,7 +152,7 @@
               <input type="text" class="scenery-search-input" x-model="searchQuery"
                      :placeholder="$store.app.t('autostart_search_placeholder')" />
               <button class="btn icon-btn" x-show="searchQuery" @click="searchQuery = ''"
-                      :title="$store.app.t('scenery_search_clear')">✕</button>
+                      :title="$store.app.t('scenery_search_clear')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
 
             <p class="placeholder-note" x-show="searchQuery.trim() && filteredAddons.length === 0"
@@ -152,7 +165,7 @@
                     <input type="checkbox" :checked="addon.enabled" @change="toggle(addon)" />
                     <span x-text="addon.display_name"></span>
                   </label>
-                  <button class="btn" @click="rename(addon)" :title="$store.app.t('exe_rename_tt')">✏️</button>
+                  <button class="btn" @click="rename(addon)" :title="$store.app.t('exe_rename_tt')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button>
                 </div>
               </template>
             </div>
@@ -186,15 +199,15 @@
               <button class="btn primary" :disabled="applying" @click="apply()" x-text="$store.app.t('scenery_apply_btn')"></button>
             </div>
 
-            <p class="hint" x-text="$store.app.t('scenery_apply_pending_hint')"></p>
+            <p class="hint"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.72c.6.53 1 1.28 1 2.28h6c0-1 .4-1.75 1-2.28A7 7 0 0 0 12 2z"></path></svg> <span x-text="$store.app.t('scenery_apply_pending_hint')"></span></p>
 
             <div class="view-toggle">
               <button class="view-toggle-btn" :class="{ active: !mapView }" :disabled="applying" @click="showListView()">
-                <span class="view-toggle-icon">☰</span>
+                <span class="view-toggle-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></span>
                 <span x-text="$store.app.t('scenery_view_list_btn')"></span>
               </button>
               <button class="view-toggle-btn" :class="{ active: mapView }" :disabled="applying" @click="showMapView()">
-                <span class="view-toggle-icon">🗺</span>
+                <span class="view-toggle-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></span>
                 <span x-text="$store.app.t('scenery_view_map_btn')"></span>
               </button>
             </div>
@@ -206,7 +219,7 @@
             </div>
 
             <div class="warning-panel" x-show="!mapView && conflicts.length" x-cloak>
-              <p class="warning-text" x-text="$store.app.t('scenery_conflict_hint')"></p>
+              <p class="warning-text"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span x-text="$store.app.t('scenery_conflict_hint')"></span></p>
               <template x-for="c in conflicts" :key="c.icao">
                 <p class="hint">
                   <strong x-text="c.icao"></strong>: <span x-text="c.records.map(r => r.display_name).join(', ')"></span>
@@ -226,7 +239,7 @@
                 <span class="hint" x-show="simbriefSummary && simbriefSummary.duration_minutes != null" x-text="$store.app.t('simbrief_summary_duration', formatDuration(simbriefSummary.duration_minutes))"></span>
                 <span class="hint" x-show="simbriefSummary && simbriefSummary.planned_at != null" x-text="$store.app.t('simbrief_summary_planned', formatPlannedAt(simbriefSummary.planned_at))"></span>
                 <span class="airac-mismatch-badge" x-show="airacMismatch" x-cloak
-                      :title="simbriefSummary ? $store.app.t('simbrief_airac_mismatch', simbriefSummary.simbrief_airac, simbriefSummary.installed_airac) : ''">⚠️ AIRAC</span>
+                      :title="simbriefSummary ? $store.app.t('simbrief_airac_mismatch', simbriefSummary.simbrief_airac, simbriefSummary.installed_airac) : ''"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> AIRAC</span>
               </div>
 
               <template x-if="simbriefLegs.length">
@@ -260,7 +273,7 @@
                       <div class="atc-popover" x-show="atcPopoverFor === leg.icao" x-cloak>
                         <div class="atc-popover-head">
                           <span x-text="$store.app.t('atc_popover_title', leg.icao)"></span>
-                          <button type="button" class="btn icon-btn" @click="atcPopoverFor = null" :title="$store.app.t('usage_close')">✕</button>
+                          <button type="button" class="btn icon-btn" @click="atcPopoverFor = null" :title="$store.app.t('usage_close')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                         </div>
                         <template x-for="pos in leg.atc_positions" :key="pos.position + ':' + pos.frequency">
                           <div class="atc-popover-row">
@@ -294,10 +307,10 @@
               <input type="text" class="scenery-search-input" x-model="searchQuery"
                      :placeholder="$store.app.t('scenery_search_placeholder')" />
               <button class="btn icon-btn" x-show="searchQuery" @click="searchQuery = ''"
-                      :title="$store.app.t('scenery_search_clear')">✕</button>
+                      :title="$store.app.t('scenery_search_clear')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
 
-            <button type="button" class="btn gsx-folder-link" x-show="!mapView" @click="openGsxFolder()">📁 <span x-text="$store.app.t('gsx_open_folder_btn')"></span></button>
+            <button type="button" class="btn gsx-folder-link" x-show="!mapView" @click="openGsxFolder()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> <span x-text="$store.app.t('gsx_open_folder_btn')"></span></button>
 
             <p class="placeholder-note" x-show="!mapView && searchQuery.trim() && visibleContinents.length === 0"
                x-text="$store.app.t('scenery_search_no_results')"></p>
@@ -388,7 +401,7 @@
 
         <template x-if="(!applying || dataLoaded) && !noCommunity">
           <div>
-            <p class="warning-text" x-text="$store.app.t('aircraft_experimental_notice')"></p>
+            <p class="warning-text"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span x-text="$store.app.t('aircraft_experimental_notice')"></span></p>
 
             <div class="toolbar">
               <button class="btn" :disabled="applying" @click="setAll(true)" x-text="$store.app.t('scenery_select_all_on')"></button>
@@ -397,7 +410,7 @@
               <button class="btn primary" :disabled="applying" @click="apply()" x-text="$store.app.t('scenery_apply_btn')"></button>
             </div>
 
-            <p class="hint" x-text="$store.app.t('scenery_apply_pending_hint')"></p>
+            <p class="hint"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.72c.6.53 1 1.28 1 2.28h6c0-1 .4-1.75 1-2.28A7 7 0 0 0 12 2z"></path></svg> <span x-text="$store.app.t('scenery_apply_pending_hint')"></span></p>
             <p class="hint" x-text="$store.app.t('aircraft_grouping_hint')"></p>
             <p class="hint" x-show="statusText" x-text="statusText"></p>
             <div class="progress-track" x-show="applying">
@@ -412,7 +425,7 @@
               <input type="text" class="scenery-search-input" x-model="searchQuery"
                      :placeholder="$store.app.t('aircraft_search_placeholder')" />
               <button class="btn icon-btn" x-show="searchQuery" @click="searchQuery = ''"
-                      :title="$store.app.t('scenery_search_clear')">✕</button>
+                      :title="$store.app.t('scenery_search_clear')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
 
             <p class="placeholder-note" x-show="searchQuery.trim() && developers.length === 0"
@@ -446,18 +459,18 @@
                                       <input type="checkbox" :checked="isEnabled(record)" @change="onToggleAircraft(record)" />
                                       <span x-text="record.display_name"></span>
                                       <span class="type-tag" x-show="record.type_hint" x-text="record.type_hint"></span>
-                                      <span class="suspect-badge" x-show="record.suspected_livery" title="⚠️">⚠️</span>
+                                      <span class="suspect-badge" x-show="record.suspected_livery" :title="$store.app.t('aircraft_suspected_livery_hint')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
                                     </label>
-                                    <button class="btn icon-btn" @click="toggleOverrideEditor(record.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>
+                                    <button class="btn icon-btn" @click="toggleOverrideEditor(record.folder_name)" :title="$store.app.t('aircraft_override_btn')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
                                   </div>
 
                                   <template x-if="record.suspected_livery">
                                     <div class="livery-suggestion">
-                                      <span x-text="$store.app.t('aircraft_suspected_livery_hint')"></span>
+                                      <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span x-text="$store.app.t('aircraft_suspected_livery_hint')"></span></span>
                                       <div class="livery-suggestion-actions">
-                                        <button class="btn" @click="approveLiverySuggestion(record)" x-text="$store.app.t('aircraft_suspected_livery_approve')"></button>
+                                        <button class="btn" @click="approveLiverySuggestion(record)"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span x-text="$store.app.t('aircraft_suspected_livery_approve')"></span></button>
                                         <button class="btn" @click="toggleOverrideEditor(record.folder_name)" x-text="$store.app.t('aircraft_suspected_livery_manual')"></button>
-                                        <button class="btn icon-btn" @click="dismissLiverySuggestion(record)" :title="$store.app.t('aircraft_suspected_livery_ignore')">✕</button>
+                                        <button class="btn icon-btn" @click="dismissLiverySuggestion(record)" :title="$store.app.t('aircraft_suspected_livery_ignore')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                                       </div>
                                     </div>
                                   </template>
@@ -491,7 +504,7 @@
                                             <input type="checkbox" :checked="isEnabled(livery)" @change="onToggleLivery(livery)" />
                                             <span x-text="livery.display_name"></span>
                                           </label>
-                                          <button class="btn icon-btn" @click="toggleOverrideEditor(livery.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>
+                                          <button class="btn icon-btn" @click="toggleOverrideEditor(livery.folder_name)" :title="$store.app.t('aircraft_override_btn')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
                                         </div>
                                         <template x-if="isOverrideOpen(livery.folder_name)">
                                           <div class="override-editor">
@@ -542,7 +555,7 @@
                                       <input type="checkbox" :checked="isEnabled(record)" @change="onToggleLivery(record)" />
                                       <span x-text="record.display_name"></span>
                                     </label>
-                                    <button class="btn icon-btn" @click="toggleOverrideEditor(record.folder_name)" :title="$store.app.t('aircraft_override_btn')">⚙</button>
+                                    <button class="btn icon-btn" @click="toggleOverrideEditor(record.folder_name)" :title="$store.app.t('aircraft_override_btn')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
                                   </div>
                                   <template x-if="isOverrideOpen(record.folder_name)">
                                     <div class="override-editor">
@@ -591,7 +604,7 @@
               <option :value="lang.code" :selected="lang.code === $store.app.language" x-text="lang.label"></option>
             </template>
           </select>
-          <p class="hint" x-show="$store.app.language !== 'CZ' && $store.app.language !== 'EN'" x-text="$store.app.t('lang_ai_notice')"></p>
+          <p class="hint" x-show="$store.app.language !== 'CZ' && $store.app.language !== 'EN'"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span x-text="$store.app.t('lang_ai_notice')"></span></p>
         </div>
 
         <div class="field-row">
@@ -646,6 +659,13 @@
           </select>
         </div>
 
+        <div class="field-row">
+          <label>
+            <input type="checkbox" :checked="launchAtStartup" @change="toggleLaunchAtStartup($event.target.checked)" />
+            <span x-text="$store.app.t('launch_at_startup_label')"></span>
+          </label>
+        </div>
+
         <hr />
 
         <h3 x-text="$store.app.t('set_nav_title')"></h3>
@@ -656,14 +676,13 @@
         </div>
         <div class="detected-path-row" x-show="communityPathSuggestion" x-cloak>
           <button type="button" class="btn detected-path-btn"
-                  @click="useDetectedCommunityPath()"
-                  x-text="$store.app.t('community_path_detected', communityPathSuggestion)"></button>
+                  @click="useDetectedCommunityPath()"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.72c.6.53 1 1.28 1 2.28h6c0-1 .4-1.75 1-2.28A7 7 0 0 0 12 2z"></path></svg> <span x-text="$store.app.t('community_path_detected', communityPathSuggestion)"></span></button>
           <button type="button" class="btn icon-btn" @click="dismissCommunityPathSuggestion()"
-                  :title="$store.app.t('community_path_detected_dismiss_tt')">✕</button>
+                  :title="$store.app.t('community_path_detected_dismiss_tt')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         </div>
 
         <template x-for="entry in lowDiskSpaceEntries" :key="entry.label">
-          <p class="warning-text" x-text="$store.app.t('low_disk_space_' + entry.label, formatBytes(entry.free_bytes))"></p>
+          <p class="warning-text"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span x-text="$store.app.t('low_disk_space_' + entry.label, formatBytes(entry.free_bytes))"></span></p>
         </template>
 
         <button type="button" class="btn" :disabled="!communityPath || folderUsageScanning.community"
@@ -673,7 +692,7 @@
         <div class="community-usage" x-show="folderUsage.community" x-cloak>
           <div class="community-usage-head">
             <p class="hint" x-text="$store.app.t('folder_usage_total', formatBytes(folderUsage.community ? folderUsage.community.total_bytes : 0))"></p>
-            <button type="button" class="btn icon-btn" @click="closeUsage('community')" :title="$store.app.t('usage_close')">✕</button>
+            <button type="button" class="btn icon-btn" @click="closeUsage('community')" :title="$store.app.t('usage_close')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
           </div>
           <template x-for="pkg in topPackages('community')" :key="pkg.folder_name">
             <div class="community-usage-row">
@@ -698,7 +717,7 @@
         <div class="community-usage" x-show="folderUsage.disabled" x-cloak>
           <div class="community-usage-head">
             <p class="hint" x-text="$store.app.t('folder_usage_total', formatBytes(folderUsage.disabled ? folderUsage.disabled.total_bytes : 0))"></p>
-            <button type="button" class="btn icon-btn" @click="closeUsage('disabled')" :title="$store.app.t('usage_close')">✕</button>
+            <button type="button" class="btn icon-btn" @click="closeUsage('disabled')" :title="$store.app.t('usage_close')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
           </div>
           <template x-for="pkg in topPackages('disabled')" :key="pkg.folder_name">
             <div class="community-usage-row">
@@ -714,8 +733,12 @@
 
         <div class="community-usage" x-show="diagnostics" x-cloak>
           <div class="community-usage-head">
-            <p class="hint" x-text="diagnosticsHasIssues ? $store.app.t('diagnostics_issues_found') : $store.app.t('diagnostics_none_found')"></p>
-            <button type="button" class="btn icon-btn" @click="closeDiagnostics()" :title="$store.app.t('usage_close')">✕</button>
+            <p class="hint">
+              <svg x-show="diagnosticsHasIssues" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <svg x-show="!diagnosticsHasIssues" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span x-text="diagnosticsHasIssues ? $store.app.t('diagnostics_issues_found') : $store.app.t('diagnostics_none_found')"></span>
+            </p>
+            <button type="button" class="btn icon-btn" @click="closeDiagnostics()" :title="$store.app.t('usage_close')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
           </div>
 
           <template x-if="diagnostics && diagnostics.misplaced.length > 0">
@@ -804,7 +827,7 @@
               <span class="app-row-actions">
                 <button class="btn" @click="moveApp(name, 'up')" title="up">▲</button>
                 <button class="btn" @click="moveApp(name, 'down')" title="down">▼</button>
-                <button class="btn" @click="openFolder(data.path)" title="folder">📁</button>
+                <button class="btn" @click="openFolder(data.path)" title="folder"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></button>
                 <button class="btn" @click="startEdit(name)" x-text="$store.app.t('btn_edit')"></button>
                 <button class="btn danger" @click="removeApp(name)" x-text="$store.app.t('btn_remove')"></button>
               </span>
@@ -834,25 +857,28 @@
 
         <div class="update-notice-wrap" x-show="$store.app.updateInfo" x-cloak>
           <button type="button" class="update-notice-toggle" @click="$store.app.updateNotesOpen = !$store.app.updateNotesOpen">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
             <span x-text="$store.app.t('update_available', $store.app.updateInfo ? $store.app.updateInfo.version : '')"></span>
             <span x-text="$store.app.updateNotesOpen ? '▲' : '▼'"></span>
           </button>
           <div class="update-notes" x-show="$store.app.updateNotesOpen" x-cloak>
             <pre x-text="$store.app.updateInfo ? $store.app.updateInfo.notes : ''"></pre>
             <div class="update-actions">
-              <button type="button" class="btn primary" :disabled="$store.app.updateDownloading"
+              <button type="button" class="btn primary" :disabled="$store.app.updateDownloading || $store.app.updateInstalling"
                       x-show="$store.app.updateInfo && $store.app.updateInfo.download_url"
-                      @click="$store.app.downloadUpdate()"
-                      x-text="$store.app.updateDownloading ? $store.app.t('update_downloading') : $store.app.t('update_download_btn')"></button>
+                      @click="$store.app.updateNow()"
+                      ><svg x-show="!$store.app.updateDownloading && !$store.app.updateInstalling" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> <span x-text="$store.app.updateInstalling ? $store.app.t('update_installing') : ($store.app.updateDownloading ? $store.app.t('update_downloading') : $store.app.t('update_install_btn'))"></span></button>
               <button type="button" class="btn" @click="$store.app.openUpdatePage()" x-text="$store.app.t('update_open_btn')"></button>
             </div>
             <div class="progress-track" x-show="$store.app.updateDownloading && $store.app.updateDownloadPercent != null">
               <div class="progress-fill" :style="`width: ${$store.app.updateDownloadPercent}%`"></div>
             </div>
             <p class="error-text" x-show="$store.app.updateDownloadError" x-text="$store.app.t('update_download_error', $store.app.updateDownloadError)"></p>
+            <p class="error-text" x-show="$store.app.updateInstallError" x-text="$store.app.t('update_install_error', $store.app.updateInstallError)"></p>
           </div>
         </div>
       </section>
+      </div>
     </div>
 
     <div class="modal-backdrop" x-show="$store.modal.visible" x-cloak>

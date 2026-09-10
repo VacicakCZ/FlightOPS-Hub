@@ -18,6 +18,8 @@ document.addEventListener("alpine:init", () => {
     updateDownloading: false,
     updateDownloadProgress: null,
     updateDownloadError: null,
+    updateInstalling: false,
+    updateInstallError: null,
 
     async init() {
       this.version = await Api.appVersion();
@@ -42,10 +44,26 @@ document.addEventListener("alpine:init", () => {
       FlightOpsEvents.on("update_download_progress", (payload) => {
         this.updateDownloadProgress = payload;
       });
+      // A successful download transitions straight into a silent install
+      // (see UpdateService.cs) - update_download_done only ever carries a
+      // failure in that case, since success is reported by
+      // update_installing instead.
       FlightOpsEvents.on("update_download_done", (result) => {
+        if (result.ok) return;
         this.updateDownloading = false;
         this.updateDownloadProgress = null;
-        this.updateDownloadError = result.ok ? null : result.error;
+        this.updateDownloadError = result.error;
+      });
+      FlightOpsEvents.on("update_installing", () => {
+        this.updateDownloading = false;
+        this.updateDownloadProgress = null;
+        this.updateInstalling = true;
+      });
+      // Only fires if the installer itself failed to launch - once it's
+      // running, this app process exits and never sees anything more.
+      FlightOpsEvents.on("update_install_failed", (result) => {
+        this.updateInstalling = false;
+        this.updateInstallError = result.error;
       });
 
       // Fire-and-forget: a slow/failed network call must never delay the
@@ -85,28 +103,27 @@ document.addEventListener("alpine:init", () => {
       }, 50);
     },
 
-    async downloadUpdate() {
-      if (!this.updateInfo || !this.updateInfo.download_url || this.updateDownloading) return;
+    async updateNow() {
+      if (!this.updateInfo || !this.updateInfo.download_url || this.updateDownloading || this.updateInstalling) return;
 
-      if (await Api.updateDownloadTargetExists()) {
-        const proceed = await Modal.confirmDialog(
-          this.t("update_overwrite_confirm_title"),
-          this.t("update_overwrite_confirm_message")
-        );
-        if (!proceed) return;
-      }
+      const proceed = await Modal.confirmDialog(
+        this.t("update_confirm_title"),
+        this.t("update_confirm_message", this.updateInfo.version)
+      );
+      if (!proceed) return;
 
       this.updateDownloading = true;
       this.updateDownloadError = null;
+      this.updateInstallError = null;
       this.updateDownloadProgress = null;
       const result = await Api.downloadUpdate(this.updateInfo.download_url);
       if (!result.ok) {
         this.updateDownloading = false;
         this.updateDownloadError = result.error;
       }
-      // On success, updateDownloading/Progress are cleared by the
-      // update_download_done event once the background download actually
-      // finishes - this initial result only confirms the download started.
+      // On success, the download-progress/installing/done events above
+      // drive the rest of the flow (download -> silent install -> the app
+      // closes itself) - this initial result only confirms it started.
     },
 
     get updateDownloadPercent() {

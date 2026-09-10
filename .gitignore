@@ -6,6 +6,12 @@ crash_log.txt
 flightops_hub.log
 flightops_hub.log.1
 
+# .NET rewrite (dotnet/) - see plan bubbly-rolling-teacup.md
+dotnet/**/bin/
+dotnet/**/obj/
+dotnet/publish/
+dotnet/installer/Output/
+
 # Real user data - never track this, it contains local file paths,
 # Windows username, and the user's own SimBrief login. Was already
 # committed accidentally early in this project's history and had to be

@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\FlightOpsHub.Core\FlightOpsHub.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4191.47" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <WarningsAsErrors>Nullable</WarningsAsErrors>
+    <UseWPF>true</UseWPF>
+    <!-- WPF has no tray icon control of its own - System.Windows.Forms.NotifyIcon
+         is the standard, first-party way to add one, used here instead of
+         the third-party pystray library that crashed on the second
+         minimize/restore cycle (see the tray-feature-reverted memory). -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>FlightOpsHub</AssemblyName>
+    <ApplicationIcon>..\..\..\OIG3.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <!--
+    Phase 1 scaffold: the frontend/ folder is not yet part of this project -
+    it still lives at the repo root and is shared with the Python app until
+    the rewrite is cut over. Copy it (and the window icon) into the output
+    directory on every build so WebView2 has something to load locally.
+  -->
+  <ItemGroup>
+    <FrontendFiles Include="..\..\..\frontend\**\*.*" />
+    <DataFiles Include="..\..\..\data\**\*.*" />
+    <!-- ApplicationIcon (below) only embeds this into the exe's own win32
+         resources - TrayIcon needs a loose .ico file at runtime to load
+         via System.Drawing.Icon, so it's copied out like frontend/data. -->
+    <IconFile Include="..\..\..\OIG3.ico" />
+  </ItemGroup>
+
+  <Target Name="CopyFrontendFiles" BeforeTargets="Build">
+    <Copy SourceFiles="@(FrontendFiles)" DestinationFolder="$(OutDir)frontend\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)data\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(IconFile)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <!--
+    dotnet publish builds into an intermediate $(OutDir) (as above) but
+    assembles the actual publish output separately into $(PublishDir) -
+    BeforeTargets="Build" alone leaves a publish folder with no frontend/
+    or data/ at all. Installer packaging (plan phase 6) always publishes,
+    so this has to be covered too.
+  -->
+  <Target Name="CopyFrontendFilesPublish" AfterTargets="Publish">
+    <Copy SourceFiles="@(FrontendFiles)" DestinationFolder="$(PublishDir)frontend\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(PublishDir)data\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(IconFile)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

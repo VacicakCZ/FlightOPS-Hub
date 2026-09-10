@@ -111,6 +111,14 @@ document.addEventListener("alpine:init", () => {
       return this.$store.app.config._post_launch_behavior || "exit";
     },
 
+    get launchAtStartup() {
+      return this.$store.app.config._launch_at_startup_effective || false;
+    },
+
+    async toggleLaunchAtStartup(enabled) {
+      this.$store.app.config = await Api.setLaunchAtStartup(enabled);
+    },
+
     get simbriefUsername() {
       return this.$store.app.config._simbrief_username || "";
     },
@@ -366,14 +374,14 @@ document.addEventListener("alpine:init", () => {
     },
 
     appRowLabel(name, data) {
-      const adminIcon = data.admin ? "🛡️ " : "";
+      const adminSuffix = data.admin ? " [UAC]" : "";
       let suffix = "";
       if (data.launch_mode === "timer") {
         suffix = ` (${data.delay}s)`;
       } else if (data.launch_mode === "smart") {
-        suffix = ` [🎯 ${this.$store.app.t("mode_smart_short")}]`;
+        suffix = ` [${this.$store.app.t("mode_smart_short")}]`;
       }
-      return `${adminIcon}${name}${suffix}`;
+      return `${name}${suffix}${adminSuffix}`;
     },
   }));
 });

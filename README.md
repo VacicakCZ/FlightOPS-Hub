@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/github/downloads/VacicakCZ/FlightOPS-Hub/total?style=for-the-badge&color=28a745" alt="Total Downloads" />
   <img src="https://img.shields.io/github/actions/workflow/status/VacicakCZ/FlightOPS-Hub/tests.yml?style=for-the-badge&label=tests" alt="Tests" />
   <img src="https://img.shields.io/badge/MSFS-2020%20%7C%202024-blue?style=for-the-badge" alt="MSFS Support" />
-  <img src="https://img.shields.io/badge/UI-pywebview%20%2B%20HTML%2FJS-orange?style=for-the-badge" alt="Tech Stack" />
+  <img src="https://img.shields.io/badge/UI-WPF%20%2B%20WebView2-orange?style=for-the-badge" alt="Tech Stack" />
   <img src="https://img.shields.io/github/license/VacicakCZ/FlightOPS-Hub?style=for-the-badge" alt="License" />
 </p>
 
@@ -60,7 +60,9 @@
 ### 🔧 Settings, Backups & Diagnostics
 * **Backup & Restore:** Export your flight profiles, aircraft classification overrides, and addon list to one portable file - useful before reinstalling or moving to a new PC.
 * **Diagnostics Export:** Bundles your app version, OS info, settings, and a recent activity log into one text file, ready to attach to a GitHub issue.
-* **One-Click Updates:** Checks GitHub Releases on startup and shows a subtle in-app notice - never a popup. Downloading the update goes straight to your Downloads folder, ready to swap in for the running copy (with a confirmation if a file is already there).
+* **One-Click Updates:** Checks GitHub Releases on startup and shows a subtle in-app notice - never a popup. Confirm once and FlightOps Hub downloads, silently installs, and restarts itself automatically - no installer window, nothing to double-click yourself.
+* **Minimize to Tray & Launch at Startup:** The native minimize button sends FlightOps Hub to the system tray instead of the taskbar; turn on "Launch FlightOps Hub when Windows starts" to have it launch automatically, straight to tray, every time you log in.
+* **Tray Quick-Launch:** Right-click the tray icon for a **Launch** action plus **Flight profile** / **exe.xml profile** submenus - pick which of each to use (remembered for next time), then Launch applies both and starts MSFS + your selected companion apps, no need to open the window at all.
 
 ### 🌍 Languages
 * Interface available in **English, Czech, German, Spanish, and Chinese** (Czech and English are hand-written; the rest are AI-translated and flagged as such in-app).
@@ -69,22 +71,27 @@
 
 ## 🛠️ Technology Stack
 
-* **Backend:** Python 3, `pywebview`, `SimConnect` API, `pystray`, `requests`
-* **Frontend:** HTML5, modern CSS, [Alpine.js](https://alpinejs.dev/), vanilla JavaScript (ES6) - no build step
+* **Backend:** .NET 10, WPF host + [`Microsoft.Web.WebView2`](https://learn.microsoft.com/microsoft-edge/webview2/), `SimConnect` API
+* **Frontend:** HTML5, modern CSS, [Alpine.js](https://alpinejs.dev/), vanilla JavaScript (ES6) - no build step, unchanged from the previous Python build
 * **Mapping & Flight Planning:** [Leaflet.js](https://leafletjs.com/), SimBrief REST API
+
+> **v3.0 note:** FlightOps Hub was rewritten from Python/`pywebview` to .NET/WPF for v3.0, mainly so "minimize to tray" and "launch at Windows startup" could be built on first-party Windows APIs instead of a third-party tray library. The frontend (this repo's `frontend/` folder) is unchanged - only the native host and the ~55 methods it exposes to it were rewritten.
 
 ---
 
 ## 🚀 Installation & Usage
 
-FlightOps Hub is **100% portable** - no installer, no admin rights needed.
+FlightOps Hub ships as a small **installer** - per-user, no admin rights needed.
 
-1. Download `flightops_hub.exe` from [Releases](https://github.com/VacicakCZ/FlightOPS-Hub/releases) or [flightsim.to](https://flightsim.to/addon/114794/flightops-hub) and put it in a folder of your choice.
-2. Run it.
+1. Download `FlightOpsHub-Setup-x.x.x.exe` from [Releases](https://github.com/VacicakCZ/FlightOPS-Hub/releases) or [flightsim.to](https://flightsim.to/addon/114794/flightops-hub) and run it - it asks which of the app's 5 languages (English, Czech, German, Spanish, Chinese Simplified) to run the installer itself in.
+2. Installs to `%LocalAppData%\Programs\FlightOpsHub` with a Start Menu shortcut (and an optional desktop icon) - no elevation prompt.
+3. Launch it from the Start Menu, or turn on **"Launch FlightOps Hub when Windows starts"** in Settings to have it start automatically (minimized straight to the system tray).
 
-A few small files appear next to the exe the first time you run it - `msfs_apps.json` (your addon list), `msfs_launcher_config.json` (your settings), and `flightops_hub.log` (a runtime log, useful for [diagnostics](docs/MANUAL.md#frequently-asked-questions)). Keep them next to the exe and your setup carries over between updates.
+The installer is small (a few MB) because it doesn't bundle the .NET runtime itself - if the **.NET 10 Desktop Runtime** isn't already on your PC (most Windows 10/11 machines don't have it by default, unlike the WebView2 Runtime, which ships with Windows/Edge), the installer downloads and installs it automatically before finishing. This needs an internet connection and, the first time only, may prompt for admin rights for that one component (FlightOps Hub itself never needs them).
 
-> **Note on UAC (Administrator rights):** You do **not** need to run FlightOps Hub itself as administrator. Individual add-ons that require elevated rights can be flagged with "Run as Administrator (UAC)" per-entry in Settings.
+Your settings/addon list/log live in `%LocalAppData%\FlightOpsHub` (not the install folder), so they survive an uninstall/reinstall for the same version - see [diagnostics](docs/MANUAL.md#frequently-asked-questions) if you ever need to attach `flightops_hub.log` to a bug report.
+
+> **Note on UAC (Administrator rights):** You do **not** need to run FlightOps Hub itself as administrator, and installing it doesn't need admin rights either. Individual add-ons that require elevated rights can be flagged with "Run as Administrator (UAC)" per-entry in Settings.
 
 > **Code signing:** This project has applied for free Windows code signing through the [SignPath Foundation](https://signpath.org/) open-source program. Until that's approved and wired into the release build, Windows SmartScreen may still show an "unknown publisher" warning on first run - the app itself is unaffected either way.
 
@@ -101,31 +108,32 @@ If you want to run the project from source or contribute:
    git clone https://github.com/VacicakCZ/FlightOPS-Hub.git
    cd FlightOPS-Hub
    ```
-2. **Install dependencies** (Python 3.10+ recommended):
+2. **Run the .NET app from source** (.NET 10 SDK required):
    ```bash
-   pip install -r requirements.txt
+   dotnet run --project dotnet/src/FlightOpsHub.App
    ```
-3. **Run from source:**
+3. **Build the installer** (Inno Setup 6 required - `iscc` on PATH, or the default install location):
    ```bash
-   python flightops_hub.pyw
+   dotnet publish dotnet/src/FlightOpsHub.App -c Release -r win-x64 --self-contained false -o dotnet/publish
+   iscc /DMyAppVersion=3.0.0 dotnet/installer/flightops_hub.iss
    ```
-4. **Build a standalone .exe** (PyInstaller, already configured via `flightops_hub.spec` as a single-file build with the `frontend/` assets bundled in):
-   ```bash
-   pyinstaller flightops_hub.spec
-   ```
-   The built executable is written to `dist/flightops_hub.exe`.
+   The installer is written to `dotnet/installer/Output/`. `.github/workflows/release-dotnet.yml` runs the same two steps in CI on every version tag push.
+
+The `backend/`/`flightops_hub.pyw` Python sources are still in this repo as the reference implementation the .NET rewrite was ported from and is still checked against - not the shipped app anymore, but not dead either; `python flightops_hub.pyw` (after `pip install -r requirements.txt`) still runs it if you need to compare behavior against the original.
 
 ---
 
 ## 🧪 Tests
 
-Pure-logic backend modules (config migration, aircraft/scenery classification, GSX detection, SimBrief parsing, backup/diagnostics bundling, version comparison, ...) have a pytest suite, plus a script that checks all 5 locale files stay in sync:
+The .NET app has an xUnit suite (`dotnet/tests/FlightOpsHub.Tests`); the Python reference implementation keeps its own pytest suite plus a script that checks all 5 locale files stay in sync:
 ```bash
+dotnet test dotnet/FlightOpsHub.sln
+
 pip install -r requirements-dev.txt
 pytest
 python scripts/check_locales.py
 ```
-Both run automatically on every push and pull request via GitHub Actions (`.github/workflows/tests.yml`).
+All of these run automatically on every push and pull request via GitHub Actions (`.github/workflows/tests.yml`).
 
 ---
 

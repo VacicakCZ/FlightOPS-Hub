@@ -6,13 +6,13 @@ A practical guide to using FlightOps Hub. For installation instructions and tech
 
 ## What is FlightOps Hub?
 
-FlightOps Hub is a portable Windows companion app for Microsoft Flight Simulator 2020/2024. It solves three everyday annoyances for pilots with a lot of add-ons installed:
+FlightOps Hub is a Windows companion app for Microsoft Flight Simulator 2020/2024. It solves three everyday annoyances for pilots with a lot of add-ons installed:
 
 - **Launching everything together.** One button starts your selected companion apps (SimBrief, GSX, REX, traffic add-ons, ...) and MSFS itself, instead of clicking through a dozen shortcuts every session.
 - **Managing an overgrown Community folder.** Enable/disable installed sceneries and aircraft without manually cutting and pasting folders around, see what's actually using your disk space, and catch broken/duplicate installs.
 - **Pre-flight sanity checks.** Compare your SimBrief flight plan against what's actually installed, and check your Navigraph AIRAC currency, before you're already sitting on the runway.
 
-It's a single portable `.exe` — no installer, no admin rights, no background service.
+It installs like a normal Windows app (Start Menu shortcut, clean uninstall) but never needs admin rights — see the [README](../README.md#-installation--usage) for the installer itself. Minimize the window and it goes to the system tray instead of the taskbar; turn on "Launch FlightOps Hub when Windows starts" in Settings to have it running (minimized) every time you log in, without a separate background service.
 
 ---
 
@@ -22,7 +22,7 @@ The first time you open FlightOps Hub, a welcome panel walks you through the one
 
 GSX folder and SimBrief username are optional at this stage — you can always set them later in **Settings**. Click **✓ Done** once you're happy to close the panel; it won't reappear.
 
-You'll also notice a few small files appear next to `flightops_hub.exe`: `msfs_apps.json` (your addon list), `msfs_launcher_config.json` (your settings), and `flightops_hub.log` (a runtime log - see **Diagnostics** under Settings below). Keep them next to the exe when you update to a new version and your setup carries over automatically.
+Your settings/addon list/log live in `%LocalAppData%\FlightOpsHub`: `msfs_apps.json` (your addon list), `msfs_launcher_config.json` (your settings), and `flightops_hub.log` (a runtime log - see **Diagnostics** under Settings below). That's separate from wherever the app itself is installed, so updating (or even uninstalling and reinstalling) leaves your setup untouched.
 
 ---
 
@@ -81,7 +81,7 @@ A different mechanism from the Scenery/Aircraft tabs above: this manages MSFS's 
 - **UI scale**, **theme** (dark/light/system), and **language** (Czech and English are hand-written; German, Spanish, and Chinese are AI-translated and flagged as such in the language picker).
 - **Backup & Restore** — export your flight profiles, aircraft classification overrides, and addon list to a single JSON file, and import it back later. Useful before reinstalling Windows or moving to a new PC, so you don't have to rebuild your setup from scratch. Importing replaces your current settings outright, so you'll be asked to confirm first.
 - **Diagnostics** — bundles your app version, OS info, current settings, and a recent activity log into one text file. Attach it to a GitHub issue when reporting a problem — it turns "it doesn't work" into something the maintainer can actually act on. Your SimBrief username is left out (redacted), and your Windows account name is stripped out of any file path (`C:\Users\<user>\...`) wherever it appears, since this file is meant to be posted publicly. Everything else (paths otherwise, profiles, overrides) is included as-is because it's actually needed to diagnose most issues.
-- **Updates** — FlightOps Hub quietly checks GitHub for a newer release on startup (never a popup). If one's available, a small collapsible notice appears under the version number at the bottom of Settings; expand it to read the release notes and hit **Download update**. It downloads the new `flightops_hub.exe` straight into your Downloads folder (asking first if a file with that name is already sitting there), with a progress bar, and opens Explorer with it highlighted once done. From there it's a simple copy-and-replace over your current exe — close FlightOps Hub, drop the new file in, done. The version number itself is also a link straight to that release's notes on GitHub.
+- **Updates** — FlightOps Hub quietly checks GitHub for a newer release on startup (never a popup). If one's available, a small collapsible notice appears under the version number at the bottom of Settings; expand it to read the release notes and hit **Update now**. After a one-time confirmation, it downloads the new installer in the background (with a progress bar) and then installs it completely silently — no installer window ever appears — closing and reopening itself automatically once the update is done. Your settings/addon list aren't touched, they live outside the install folder (see **First run** above). Prefer to handle it yourself instead? **Open on GitHub** takes you straight to the release page to download and run it manually. The version number itself is also a link straight to that release's notes on GitHub.
 
 ---
 

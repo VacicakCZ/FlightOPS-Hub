@@ -19,6 +19,9 @@
   --input-bg: #ffffff;
   --tab-bg: #e2e5eb;
   --tab-active-bg: var(--panel);
+  --brand-grad-1: #1c3f8f;
+  --brand-grad-2: #2f6fed;
+  --card-shadow: 0 8px 24px -14px rgba(30, 41, 59, 0.35);
 }
 
 [data-theme="dark"] {
@@ -39,6 +42,9 @@
   --input-bg: #12161f;
   --tab-bg: #0d1119;
   --tab-active-bg: var(--panel);
+  --brand-grad-1: #eaf2ff;
+  --brand-grad-2: #4c8dff;
+  --card-shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.6);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -57,6 +63,9 @@
     --input-bg: #12161f;
     --tab-bg: #0d1119;
     --tab-active-bg: var(--panel);
+    --brand-grad-1: #eaf2ff;
+    --brand-grad-2: #4c8dff;
+    --card-shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -121,69 +130,125 @@ html, body {
   height: 100%;
 }
 
-.tab-bar {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  width: 100%;
-  gap: 2px;
-  padding: 8px 8px 0 8px;
-  background: var(--bg);
+.brand-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  height: 44px;
+  padding: 0 14px;
+  background: var(--tab-bg);
+  border-bottom: 1px solid var(--panel-border);
 }
 
-.tab-bar button {
-  position: relative;
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px var(--accent-glow, transparent);
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.brand-name {
+  display: flex;
+  align-items: baseline;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  /* Gradient wordmark echoes the logo's own metallic-blue text - kept to
+     just this one spot rather than reused as a general text-color trick. */
+  background: linear-gradient(180deg, var(--brand-grad-1) 0%, var(--brand-grad-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.brand-name-main {
+  font-weight: 800;
+}
+
+.brand-name-sub {
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.app-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.side-nav {
+  width: 74px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* flex-start, not center: tabs without a tab-sub line (2 rows) vs with
-     one (3 rows) would otherwise vertically center to different heights,
-     making the icon/label "stair-step" up and down between tabs. Starting
-     everything from the same top padding keeps icon+label at an identical
-     position on every tab regardless of whether a sub-label follows. */
-  justify-content: flex-start;
-  gap: 3px;
-  min-width: 0;
-  min-height: 52px;
-  padding: 9px 3px 7px;
-  border: 1px solid var(--panel-border);
-  border-bottom: 3px solid transparent;
+  padding: 12px 0;
   background: var(--tab-bg);
-  color: var(--text-muted);
-  border-radius: 8px 8px 0 0;
-  cursor: pointer;
-  font-size: 12px;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  border-right: 1px solid var(--panel-border);
 }
 
-.tab-bar button:hover:not(.active) {
+.side-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
+  width: calc(100% - 12px);
+  margin: 0 6px 5px;
+  padding: 9px 2px 7px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.side-nav-item:hover:not(.active) {
   background: var(--panel-border);
   color: var(--text);
 }
 
-.tab-bar button .tab-icon {
-  font-size: 15px;
-  line-height: 1;
-  /* Muted on inactive tabs (like the label text) so it doesn't outshine
-     the active indicator; opacity 1 below on .active restores full color. */
-  opacity: 0.75;
+.side-nav-icon {
+  width: 19px;
+  height: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
 }
 
-.tab-bar button.active .tab-icon {
+.side-nav-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.side-nav-item.active .side-nav-icon {
   opacity: 1;
 }
 
-.tab-bar button .tab-main {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
+.side-nav-main {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
 }
 
-.tab-bar button .tab-sub {
-  font-size: 10px;
+.side-nav-sub {
+  font-size: 8px;
   opacity: 0.8;
   white-space: nowrap;
   overflow: hidden;
@@ -191,12 +256,17 @@ html, body {
   max-width: 100%;
 }
 
-.tab-bar button.active {
+.side-nav-item.active {
   background: var(--tab-active-bg);
-  color: var(--text);
-  font-weight: 600;
-  border-bottom-color: var(--accent);
-  box-shadow: 0 2px 8px -2px var(--accent-glow, transparent);
+  color: var(--accent);
+  box-shadow: 0 2px 10px -2px var(--accent-glow, transparent);
+}
+
+.side-nav-footer {
+  margin-top: auto;
+  font-size: 9px;
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 /* Slim, always-visible (regardless of active tab) one-line notice when an
@@ -225,7 +295,6 @@ html, body {
   min-height: 0;
   overflow-y: auto;
   background: var(--panel);
-  border-top: 1px solid var(--panel-border);
   padding: 16px;
 }
 
@@ -300,6 +369,16 @@ button.btn:disabled {
   font-size: 11px;
 }
 
+/* Inline replacement for the emoji glyphs that used to sit in button
+   labels and hint/warning text - sized and baseline-aligned to drop
+   into the same spot a character would have occupied. */
+.icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2.5px;
+  flex-shrink: 0;
+}
+
 .placeholder-note {
   color: var(--text-muted);
   font-style: italic;
@@ -335,10 +414,11 @@ button.btn:disabled {
 .modal-box {
   background: var(--panel);
   border: 1px solid var(--panel-border);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 16px;
   min-width: 280px;
   max-width: 420px;
+  box-shadow: var(--card-shadow);
 }
 
 .modal-box .actions {
@@ -447,6 +527,11 @@ button.btn.danger {
   flex-direction: column;
   gap: 2px;
   margin-bottom: 20px;
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 4px 8px;
+  box-shadow: var(--card-shadow);
 }
 
 .app-checkbox-row {
@@ -461,6 +546,61 @@ button.btn.danger {
 .app-checkbox-row:hover {
   background: var(--tab-bg);
   border-radius: 6px;
+}
+
+/* Toggle-switch look for the addon/scenery/aircraft/autostart on-off
+   checkboxes - CSS-only restyle of the native input (still a real
+   checkbox for x-model/@change), reordered to the end of its row via
+   flex `order` so it reads left-label / right-switch like the rest of
+   the app's modern controls, regardless of how many sibling spans
+   (name, developer, tags) sit between it and the label text. */
+.app-checkbox-row input[type="checkbox"],
+.exe-row-label input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  order: 1;
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--tab-bg);
+  border: 1px solid var(--panel-border);
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.app-checkbox-row input[type="checkbox"]::before,
+.exe-row-label input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.app-checkbox-row input[type="checkbox"]:checked,
+.exe-row-label input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow, transparent);
+}
+
+.app-checkbox-row input[type="checkbox"]:checked::before,
+.exe-row-label input[type="checkbox"]:checked::before {
+  transform: translateX(16px);
+  background: #fff;
+}
+
+.app-checkbox-row input[type="checkbox"]:focus-visible,
+.exe-row-label input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .scenery-item-text {
@@ -774,6 +914,14 @@ button.btn.danger {
   transition: width 0.2s ease;
 }
 
+.scenery-tree {
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 4px 8px;
+  box-shadow: var(--card-shadow);
+}
+
 .scenery-tree.is-busy {
   pointer-events: none;
   opacity: 0.6;
@@ -932,8 +1080,9 @@ button.btn.danger {
   margin-bottom: 10px;
   padding: 8px 10px;
   border: 1px solid var(--panel-border);
-  border-radius: 6px;
+  border-radius: 12px;
   background: var(--bg);
+  box-shadow: var(--card-shadow);
   /* Card of short, fixed-width rows - stretching it edge-to-edge on a wide
      window just leaves a big empty gray box. Caps it to a sane content
      width instead of filling the panel. */
@@ -1152,8 +1301,9 @@ button.btn.danger {
   margin-bottom: 18px;
   padding: 14px 16px;
   border: 1px solid var(--accent);
-  border-radius: 8px;
+  border-radius: 12px;
   background: var(--bg);
+  box-shadow: var(--card-shadow);
 }
 
 .onboarding-panel h3 {
@@ -1168,10 +1318,11 @@ button.btn.danger {
   margin: 8px 0 14px 0;
   padding: 8px 10px;
   border: 1px solid var(--panel-border);
-  border-radius: 6px;
+  border-radius: 12px;
   background: var(--bg);
   max-height: 260px;
   overflow-y: auto;
+  box-shadow: var(--card-shadow);
 }
 
 .community-usage-head {
@@ -1214,8 +1365,9 @@ button.btn.danger {
   margin-bottom: 10px;
   padding: 8px 10px;
   border: 1px solid var(--warning);
-  border-radius: 6px;
+  border-radius: 12px;
   background: var(--bg);
+  box-shadow: var(--card-shadow);
 }
 
 .warning-panel .warning-text {
